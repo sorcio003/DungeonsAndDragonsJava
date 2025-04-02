@@ -11,33 +11,14 @@ import javafx.beans.property.StringProperty;
 
 public class ClassPg {
     private StringProperty class_pg;
-    private IntegerProperty modificatore;
-    private IntegerProperty bonus_competenza;
     private IntegerProperty life;
     private IntegerProperty guard;
-    private IntegerProperty strength;
-    private IntegerProperty dexterity;
-    private IntegerProperty constitution;
-    private IntegerProperty intelligence;
-    private IntegerProperty wisdom;
-    private IntegerProperty charism;
-    private IntegerProperty dodgePoints;
     private List<StringProperty> Privilegi;
 
     public ClassPg(String class_pg){
         this.class_pg = new SimpleStringProperty(class_pg);
         this.life = new SimpleIntegerProperty(0);
-        this.modificatore = new SimpleIntegerProperty(0);
         this.guard = new SimpleIntegerProperty(0);
-        /* Base Attribute */
-        this.strength = new SimpleIntegerProperty(0);
-        this.dexterity = new SimpleIntegerProperty(0);
-        this.constitution = new SimpleIntegerProperty(0);
-        this.intelligence = new SimpleIntegerProperty(0);
-        this.wisdom = new SimpleIntegerProperty(0);
-        this.charism = new SimpleIntegerProperty(0);
-        this.dodgePoints = new SimpleIntegerProperty(0);
-        this.bonus_competenza = new SimpleIntegerProperty(0);
         this.Privilegi = new ArrayList<StringProperty>();
     }
 
@@ -47,14 +28,6 @@ public class ClassPg {
         this.class_pg.set(class_pg);
     }
 
-    public void setBonus(int bonus_competenza){
-        this.bonus_competenza.set(bonus_competenza);
-    }
-
-    public void setModificatore(int modificatore){
-        this.modificatore.set(modificatore); 
-    }
-
     public void setLife(int life){
         this.life.set(life);
     }
@@ -62,58 +35,6 @@ public class ClassPg {
     public void setGuard(int guard){
         this.guard.set(guard);
     }
-
-    public void setDodgePoints(int points){
-        this.dodgePoints.set(points);
-    }
-
-    public void setStrength(int strength){
-        this.strength.set(strength);
-    }
-
-    public void setDexterity(int dexterity){
-        this.dexterity.set(dexterity);
-    }
-
-    public void setConstitution(int constitution){
-        this.constitution.set(constitution);
-    }
-
-    public void setIntelligence(int intelligence){
-        this.intelligence.set(intelligence);
-    }
-
-    public void setWisdom(int wisdom){
-        this.wisdom.set(wisdom);
-    }
-
-    public void setCharism(int charism){
-        this.charism.set(charism);
-    }
-
-    /* Dodge Points */
-    public void IncreaseDodgePoints(){
-        this.dodgePoints.set(this.dodgePoints.get() + 1);
-    }
-
-    public void IncreaseDodgePoints(int points){
-        this.dodgePoints.set(this.dodgePoints.get() + points);
-    }
-
-    public void DecreaseDodgePoints(){
-        if(this.dodgePoints.get() > 0)
-            this.dodgePoints.set(this.dodgePoints.get() - 1);
-        else
-            this.dodgePoints.set(0);
-    }
-
-    public void DecreaseDodgePoints(int points){
-        if(this.dodgePoints.get() > 0 && ((this.dodgePoints.get() - points) > 0))
-            this.life.set(this.dodgePoints.get() - points);
-        else
-            this.dodgePoints.set(0);
-    }
-
 
     /* Life */
     public void IncreaseLife(){
@@ -160,31 +81,7 @@ public class ClassPg {
 
     /* modificatore */
 
-    public void IncreaseModificatore(){
-        this.modificatore.set(this.modificatore.get() + 1);
-    }
-
-    public void IncreaseModificatore(int modificatore){
-        this.modificatore.set(this.modificatore.get() + modificatore);
-    }
-
-    public void DecreaseModificatore(){
-        this.modificatore.set(this.modificatore.get() - 1);
-    }
-
-    public void DecreaseModificatore(int modificatore){
-        this.modificatore.set(this.modificatore.get() - modificatore);
-    }
-
     /* Getter */
-
-    public int getBonus(){
-        return this.bonus_competenza.get();
-    }
-
-    public int getDodgePoints(){
-        return this.dodgePoints.get();
-    }
 
     public int getLife(){
         return this.life.get();
@@ -198,10 +95,6 @@ public class ClassPg {
         return this.guard.get();
     }
 
-    public int getmodificatore(){
-        return this.modificatore.get();
-    }
-
     public List<String> getPrivilegiList(){
         return this.Privilegi.stream().map((privilegio) -> privilegio.get()).collect(Collectors.toList());
     }
@@ -210,39 +103,7 @@ public class ClassPg {
         return this.Privilegi.get(id).get();
     }
 
-    public int getStrength(){
-        return this.strength.get();
-    }
-
-    public int getDexterity(){
-        return this.dexterity.get();
-    }
-
-    public int getConstitution(){
-        return this.constitution.get();
-    }
-
-    public int getIntelligence(){
-        return this.intelligence.get();
-    }
-
-    public int getWisdom(){
-        return this.wisdom.get();
-    }
-
-    public int getCharism(){
-        return this.charism.get();
-    }
-
     /* Getter Property */
-
-    public IntegerProperty getBonusProperty(){
-        return this.bonus_competenza;
-    }
-
-    public StringProperty getBonusStringProperty(){
-        return new SimpleStringProperty(this.bonus_competenza.toString());
-    }
 
     public IntegerProperty getLifeProperty(){
         return this.life;
@@ -264,44 +125,12 @@ public class ClassPg {
         return new SimpleStringProperty(this.guard.toString());
     }
 
-    public IntegerProperty getmodificatoreProperty(){
-        return this.modificatore;
-    }
-
-    public StringProperty getmodificatoreStringProperty(){
-        return new SimpleStringProperty(this.modificatore.toString());
-    }
-
     public List<StringProperty> getPrivilegiListProperty(){
         return this.Privilegi;
     }
 
     public StringProperty getPrivilegiPropertyByID(int id){
         return this.Privilegi.get(id);
-    }
-
-    public IntegerProperty getStrengthProperty(){
-        return this.strength;
-    }
-
-    public IntegerProperty getDexterityProperty(){
-        return this.dexterity;
-    }
-
-    public IntegerProperty getConstitutionProperty(){
-        return this.constitution;
-    }
-
-    public IntegerProperty getIntelligenceProperty(){
-        return this.intelligence;
-    }
-
-    public IntegerProperty getWisdomProperty(){
-        return this.wisdom;
-    }
-
-    public IntegerProperty getCharismProperty(){
-        return this.charism;
     }
 
 }

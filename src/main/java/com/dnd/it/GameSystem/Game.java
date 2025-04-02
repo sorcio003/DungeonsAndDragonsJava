@@ -35,7 +35,7 @@ public class Game {
     public String BattleTurn(String input){
         String results = "";
         if (input.equals("Attacca")){
-            results = "Hai deciso di Attaccare...\n";
+            results = "Hai deciso di Attaccare...";
 
             String attack_result = this.Attack();
 
@@ -45,7 +45,7 @@ public class Game {
                            "Il nemico ti ha attaccato con un danno pari a "+ this.EnemyAttack() +" + "+ this.EnemyAttack();
             }
             else{
-                results += "Hai fatto un danno pari a "+attack_result+"\n"+
+                results += "\n" + attack_result+"\n"+
                            "Il nemico ti ha attaccato con un danno pari a "+ this.EnemyAttack();
             }
         }
@@ -54,25 +54,18 @@ public class Game {
         }
 
         else if (input.equals("Schiva")){
-            if (player.getClassPgClass().getDodgePoints() > 0){
 
-                player.getClassPgClass().DecreaseDodgePoints();
+            results = "Hai deciso di schivare...\n";
 
-                results = "Hai deciso di schivare...\nLivello di Dodge Points: "+player.getClassPgClass().getDodgePoints()+"\n";
-
-                if (Dodge() == -1){
-                    results += "Il lancio ha avuto come esito un 1 critico!!\nIl nemico di Attacca due volte per vantaggio.";
-                    results += "\nIl nemico ti infligge un danno pari a "+ EnemyAttack() + EnemyAttack();
-                }
-                else if (Dodge() == 1){
-                    results += "Il lancio ha avuto esito positivo, il nemico non ti può attaccare";
-                }
-                else{
-                    results += "Il lancio ha avuto esito negativo. Il nemico ti attacca.\nIl nemico ti infligge un danno pari a "+ EnemyAttack();
-                }
+            if (Dodge() == -1){
+                results += "Il lancio ha avuto come esito un 1 critico!!\nIl nemico di Attacca due volte per vantaggio.";
+                results += "\nIl nemico ti infligge un danno pari a "+ EnemyAttack() + EnemyAttack();
+            }
+            else if (Dodge() == 1){
+                results += "Il lancio ha avuto esito positivo, il nemico non ti può attaccare";
             }
             else{
-                results = "Non puoi più schivare!\nil livello dei tuoi Dodge Points è "+player.getClassPgClass().getDodgePoints();
+                results += "Il lancio ha avuto esito negativo. Il nemico ti attacca.\nIl nemico ti infligge un danno pari a "+ EnemyAttack();
             }
         }
 
@@ -82,12 +75,20 @@ public class Game {
 
     private String Attack(){
 
-        int bonus = player.getClassPgClass().getBonus();
-        int modifier = player.getClassPgClass().getmodificatore();
+        String results = "";
+
+        int bonus = player.getRaceClass().getBonus("Strength");
+        player.getRaceClass().setModificatore(player.getRaceClass().getStrength());
+        int modifier = player.getRaceClass().getmodificatore();
         int damage = 0;
 
         /* Roll D20 to attack enemy */
         d20.RollDice();
+
+        int launch = d20.getResult() + bonus;
+        if(modifier > 0) launch += modifier;
+
+        results += "Tiro su Forza\nD20: "+d20.getResult();
 
         /* Critical hit */
         if (d20.getResult() == 20){
@@ -103,34 +104,35 @@ public class Game {
 
             enemy.getClassPgClass().DecreaseLife(damage);
 
-            return "Danno critico (d20 = 20): "+damage;
+            return results+"\nCritical Hit !!"+"\nBonus Competenza (Forza): "+bonus+"\nModificatore (Forza): "+modifier+"\nEsito del tiro: "+ launch+"\nDanno: "+damage;
         }
 
         /* Critical Failure */
         else if (d20.getResult() == 1){
-            return "critical failure";
+            return results+"\nCritical Failure !!\nEsito del tiro: "+ launch;
         }
 
         /*
          * If Sum of D20 result + Bonus player + Modifier is greater o equals then enemy guard, hit enemy rolling d10
          * Alltough, attack had no effect
          */
-        else if ( (d20.getResult() + bonus + modifier) >= enemy.getClassPgClass().getGuard() ){
+        else if ( launch >= enemy.getClassPgClass().getGuard() ){
             d10.RollDice();
 
             damage = d10.getResult() + bonus + modifier;
 
             enemy.getClassPgClass().DecreaseLife(damage);
 
-            return ""+damage+"\nD20 Results: "+d20.getResult();
+            return results+"\nDanno: "+damage+"\nBonus Competenza (Forza): "+bonus+"\nModificatore (Forza): "+modifier+"\nEsito del tiro: "+ launch;
         }
 
-        return "0"+"\nD20 Results: "+d20.getResult();
+        return results + "\nColpo non andato a segno";
     }
 
     private int EnemyAttack(){
-        int bonus = enemy.getClassPgClass().getBonus();
-        int modifier = enemy.getClassPgClass().getmodificatore();
+        int bonus = enemy.getRaceClass().getBonus("Strength");
+        enemy.getRaceClass().setModificatore(player.getRaceClass().getStrength());
+        int modifier = enemy.getRaceClass().getmodificatore();
 
         /* Roll D20 to attack enemy */
         d20.RollDice();
@@ -152,37 +154,19 @@ public class Game {
 
     private int Dodge(){
 
-        int bonus = player.getClassPgClass().getBonus();
-        int modifier = player.getClassPgClass().getmodificatore();
-
         d20.RollDice();
+        player.getRaceClass().setModificatore(player.getRaceClass().getDexterity());
+        int action = d20.getResult() + player.getRaceClass().getmodificatore() + player.getRaceClass().getBonus("Dexterity");
 
-        if (d20.getResult() == 1){
+        if (action <= 1){
             return -1;
         }
 
-        if ((d20.getResult() + bonus + modifier) >= player.getClassPgClass().getGuard()){
+        if (action >= enemy.getClassPgClass().getGuard()){
             return 1;
         }
 
         return 0;
 
-    }
-
-    private int EnemyDodge(){
-        int bonus = enemy.getClassPgClass().getBonus();
-        int modifier = enemy.getClassPgClass().getmodificatore();
-
-        d20.RollDice();
-
-        if (d20.getResult() == 1){
-            return -1;
-        }
-
-        if ((d20.getResult() + bonus + modifier) >= enemy.getClassPgClass().getGuard()){
-            return 1;
-        }
-
-        return 0;
     }
 }

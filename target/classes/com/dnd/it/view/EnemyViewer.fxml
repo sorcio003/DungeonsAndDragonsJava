@@ -36,18 +36,30 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
                         <Label text="LIFE" />
-                        <Label text="BONUS" GridPane.rowIndex="1" />
-                        <Label text="MODIFIER" GridPane.rowIndex="2" />
-                        <Label text="CA" GridPane.rowIndex="3" />
-                        <Label text="SPEED x meters" GridPane.rowIndex="4" />
+                        <Label text="CA" GridPane.rowIndex="1" />
+                        <Label text="SPEED x meters" GridPane.rowIndex="2" />
                         <Label fx:id="LifeLabelText" text="LABEL" GridPane.columnIndex="1" />
-                        <Label fx:id="BonusLabelText" text="LABEL" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Label fx:id="ModifierLabelText" text="LABEL" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <Label fx:id="GuardLabelText" text="LABEL" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <Label fx:id="SpeedLabelText" text="LABEL" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <Label fx:id="GuardLabelText" text="LABEL" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="SpeedLabelText" text="LABEL" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label text="STRENGTH" GridPane.rowIndex="3" />
+                        <Label text="DEXTERITY" GridPane.rowIndex="4" />
+                        <Label text="CONSTITUTION" GridPane.rowIndex="5" />
+                        <Label text="INTELLIGENCE" GridPane.rowIndex="6" />
+                        <Label text="WISDOM" GridPane.rowIndex="7" />
+                        <Label text="CHARISM" GridPane.rowIndex="8" />
+                        <Label fx:id="StrengthTextLabel" text="LABEL" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label fx:id="DexterityTextLabel" text="LABEL" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <Label fx:id="ConstitutionTextLabel" text="LABEL" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <Label fx:id="IntelligenceTextLabel" text="LABEL" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <Label fx:id="WisdomTextLabel" text="LABEL" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                        <Label fx:id="CharismTextLabel" text="LABEL" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                      </children>
                   </GridPane>
                </children>

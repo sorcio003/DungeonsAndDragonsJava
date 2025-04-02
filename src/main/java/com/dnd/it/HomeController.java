@@ -294,20 +294,20 @@ public class HomeController {
         PlayerNameLabel.setText(app.getPlayer().getName());
         /* Base Attribute */
         LifeLabelText.setText("" + app.getPlayer().getClassPgClass().getLife());
-        BonusLabelText.setText("" + app.getPlayer().getClassPgClass().getBonus());
-        ModifierLabelText.setText("" + app.getPlayer().getClassPgClass().getmodificatore());
+        //BonusLabelText.setText("" + app.getPlayer().getRaceClass().getBonus("Strength"));
+        //ModifierLabelText.setText("" + app.getPlayer().getRaceClass().getmodificatore());
         GuardLabelText.setText("" + app.getPlayer().getClassPgClass().getGuard());
         SpeedLabelText.setText("" + app.getPlayer().getRaceClass().getSpeed());
 
         current_player_speed = app.getPlayer().getRaceClass().getSpeed();
         current_enemy_speed = app.getEnemy().getRaceClass().getSpeed();
         /* Attribute  */
-        StrengthLabelText.setText("" + app.getPlayer().getClassPgClass().getStrength());
-        DexterityLabelText.setText("" + app.getPlayer().getClassPgClass().getDexterity());
-        ConstitutionLabelText.setText("" + app.getPlayer().getClassPgClass().getConstitution());
-        IntelligenceLabelText.setText("" + app.getPlayer().getClassPgClass().getIntelligence());
-        WisdomLabelText.setText("" + app.getPlayer().getClassPgClass().getWisdom());
-        CharismLabelText.setText("" + app.getPlayer().getClassPgClass().getCharism());
+        StrengthLabelText.setText("" + app.getPlayer().getRaceClass().getStrength());
+        DexterityLabelText.setText("" + app.getPlayer().getRaceClass().getDexterity());
+        ConstitutionLabelText.setText("" + app.getPlayer().getRaceClass().getConstitution());
+        IntelligenceLabelText.setText("" + app.getPlayer().getRaceClass().getIntelligence());
+        WisdomLabelText.setText("" + app.getPlayer().getRaceClass().getWisdom());
+        CharismLabelText.setText("" + app.getPlayer().getRaceClass().getCharism());
         MoneyLabelText.setText("" + app.getPlayer().getMoney());
     }
 

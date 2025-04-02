@@ -33,6 +33,8 @@ public class App extends Application {
 
     public App(){
         player = new Characters("Drake", 256, new Elf(), new Barbaro());
+        player.getRaceClass().setStrength(14);
+        player.getRaceClass().setBonus("Strength", 2);
         enemy = new Characters("Golem", 1098, new Golem(), new Barbaro());
         player.setDescription("Tutorials Point originated from the idea that there exists a class of readers who respond better to online content and prefer to learn new skills at their own pace from the comforts of their drawing rooms.");
         player.setMoneyValue(100);

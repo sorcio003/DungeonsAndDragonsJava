@@ -14,15 +14,24 @@ public class EnemyViewerController {
     @FXML
     private Label LifeLabelText;
     @FXML
-    private Label BonusLabelText;
-    @FXML
-    private Label ModifierLabelText;
-    @FXML
     private Label GuardLabelText;
     @FXML
     private Label SpeedLabelText;
     @FXML
     private Label EnemyNameLabel;
+    /*Attribute */
+    @FXML
+    private Label StrengthTextLabel;
+    @FXML
+    private Label DexterityTextLabel;
+    @FXML
+    private Label ConstitutionTextLabel;
+    @FXML
+    private Label IntelligenceTextLabel;
+    @FXML
+    private Label WisdomTextLabel;
+    @FXML
+    private Label CharismTextLabel;
 
     private App app;
 
@@ -37,10 +46,14 @@ public class EnemyViewerController {
         EnemyImage.setImage(new Image(file.toURI().toString()));
         EnemyNameLabel.setText(app.getEnemy().getName());
         LifeLabelText.setText("" + app.getEnemy().getClassPgClass().getLife());
-        BonusLabelText.setText("" + app.getEnemy().getClassPgClass().getBonus());
-        ModifierLabelText.setText("" + app.getEnemy().getClassPgClass().getmodificatore());
         GuardLabelText.setText("" + app.getEnemy().getClassPgClass().getGuard());
         SpeedLabelText.setText("" + app.getEnemy().getRaceClass().getSpeed());
+        StrengthTextLabel.setText("" + app.getEnemy().getRaceClass().getStrength());
+        DexterityTextLabel.setText("" + app.getEnemy().getRaceClass().getDexterity());
+        ConstitutionTextLabel.setText("" + app.getEnemy().getRaceClass().getConstitution());
+        IntelligenceTextLabel.setText("" + app.getEnemy().getRaceClass().getIntelligence());
+        WisdomTextLabel.setText("" + app.getEnemy().getRaceClass().getWisdom());
+        CharismTextLabel.setText("" + app.getEnemy().getRaceClass().getCharism());
     }
 
     public void text(String texString){

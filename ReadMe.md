@@ -9,9 +9,12 @@ Attualmente il gioco da la possibilita di:
 - La schiva si basa su Dexterity
 
 Fix e Bug da sistemare (+ Nuove Features da fare):
-- Il nemico attacca solo quando il player attacca o schiva
-- Randomizzazione del movimento del nemico
+- Fixare la AI Nemico e i movimenti i scena (dargli una logica)
+- Sistemare alcuni problemi, ad esempio quando il player attacca e apparentemente sembra che il nemico non faccia nulla
 
 3 Aprile Update and Fix:
 - Il player non si accavalla più con il nemico
 - Bordi mappa gestiti
+- Aggiornamento del Game system Battle
+- Aggiunta della AI Enemy per gestire la probabilità di attacco, schivata o movimento in arena
+- Fix dei movimenti in arena e decisione del nemico se attaccare o no

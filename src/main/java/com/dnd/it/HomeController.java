@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Random;
 
 import com.dnd.it.GameSystem.Game;
-import com.dnd.it.GameSystem.Classes.Barbaro;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -107,7 +106,15 @@ public class HomeController {
 
     public void AttackBtnAction(ActionEvent event) throws IOException{
         if (mapController.check()){
+            String enemy_movement = "";
             HistoryLabel.setText(game.BattleTurn("Attacca"));  
+            enemy_movement = this.game.BattleTurn("Azione Nemico");
+            HistoryLabel.setText(HistoryLabel.getText() + enemy_movement);  
+            if(enemy_movement.equals("Il nemico si muove")){
+                while(current_enemy_speed > 0) {
+                    this.EnemyMovements();
+                }
+            }
             this.Enemycontroller.text("" + app.getEnemy().getClassPgClass().getLife());
             LifeLabelText.setText("" + app.getPlayer().getClassPgClass().getLife());
         }
@@ -115,6 +122,7 @@ public class HomeController {
             HistoryLabel.setText("Non puoi attaccare finchè non sei vicino al nemico");  
         }
         current_player_speed = app.getPlayer().getRaceClass().getSpeed();
+        current_enemy_speed = app.getEnemy().getRaceClass().getSpeed();
     }
 
     public void DodgeBtnAction(ActionEvent event) throws IOException{
@@ -131,183 +139,190 @@ public class HomeController {
 
     public void UpBtnAction(ActionEvent event) throws IOException{
         if (current_player_speed > 0 ){
-            if(this.mapController.Up() == 1){
+            int moves = this.mapController.Up();
+            if(moves == 1){
                current_player_speed -= mapController.getMeterForCell();
-                HistoryLabel.setText("Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti"); 
+                HistoryLabel.setText("Player Moves - Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti"); 
             }
-            else if(this.mapController.Up() == 0){
-                HistoryLabel.setText("Movimento in alto non possibile, Bordo mappa");
+            else if(moves == 0){
+                HistoryLabel.setText("Player Moves - Movimento in alto non possibile, Bordo mappa");
             }
-            else if(this.mapController.Up() == -1){
-                HistoryLabel.setText("Movimento in alto non possibile, Presenza Nemico");
-            }
-        }
-        else if (current_player_speed == 0 && ! mapController.check() && current_enemy_speed > 0){
-            HistoryLabel.setText("Il Nemico esegue i suoi "+ current_enemy_speed/mapController.getMeterForCell()+" movimenti");
-            Random rand_num = new Random();
-            while(current_enemy_speed > 0) {
-                int moves = 1 + rand_num.nextInt(3);
-
-                if(moves == 1)
-                    this.mapController.UpEnemy();
-                else if(moves == 2)
-                    this.mapController.DownEnemy();
-                else if(moves == 3)
-                    this.mapController.LeftEnemy();
-                else if(moves == 4)
-                    this.mapController.RightEnemy();
-
-                current_enemy_speed -= mapController.getMeterForCell();
+            else if(moves == -1){
+                HistoryLabel.setText("Player Moves - Movimento in alto non possibile, Presenza Nemico");
             }
         }
         else{
-            HistoryLabel.setText("Ricarica Velocità Movimenti");
-            current_player_speed = app.getPlayer().getRaceClass().getSpeed();
-            current_enemy_speed = app.getEnemy().getRaceClass().getSpeed();
+            this.EnemyMoves();
         }
+        
     }
 
     public void DownBtnAction(ActionEvent event) throws IOException{
         if (current_player_speed > 0 ){
-            if(this.mapController.Down() == 1){
+            int moves = this.mapController.Down();
+            if(moves == 1){
                current_player_speed -= mapController.getMeterForCell();
-                HistoryLabel.setText("Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti"); 
+                HistoryLabel.setText("Player Moves - Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti"); 
             }
-            else if(this.mapController.Down() == 0){
-                HistoryLabel.setText("Movimento in basso non possibile, Bordo mappa");
+            else if(moves == 0){
+                HistoryLabel.setText("Player Moves - Movimento in basso non possibile, Bordo mappa");
             }
-            else if(this.mapController.Down() == -1){
-                HistoryLabel.setText("Movimento in basso non possibile, Presenza Nemico");
-            }
-        }
-        else if (current_player_speed == 0 && ! mapController.check() && current_enemy_speed > 0){
-            HistoryLabel.setText("Il Nemico esegue i suoi "+ current_enemy_speed/mapController.getMeterForCell()+" movimenti");
-            Random rand_num = new Random();
-            while(current_enemy_speed > 0) {
-                int moves = 1 + rand_num.nextInt(3);
-
-                if(moves == 1)
-                    this.mapController.UpEnemy();
-                else if(moves == 2)
-                    this.mapController.DownEnemy();
-                else if(moves == 3)
-                    this.mapController.LeftEnemy();
-                else if(moves == 4)
-                    this.mapController.RightEnemy();
-
-                current_enemy_speed -= mapController.getMeterForCell();
+            else if(moves == -1){
+                HistoryLabel.setText("Player Moves - Movimento in basso non possibile, Presenza Nemico");
             }
         }
         else{
-            HistoryLabel.setText("Ricarica Velocità Movimenti");
-            current_player_speed = app.getPlayer().getRaceClass().getSpeed();
-            current_enemy_speed = app.getEnemy().getRaceClass().getSpeed();
+            this.EnemyMoves();
         }
+        
     }
 
     public void LeftBtnAction(ActionEvent event) throws IOException{
         if (current_player_speed > 0 ){
-            if(this.mapController.Left() == 1){
+            int moves = this.mapController.Left();
+            if(moves == 1){
                current_player_speed -= mapController.getMeterForCell();
-                HistoryLabel.setText("Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti"); 
+                HistoryLabel.setText("Player Moves - Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti"); 
             }
-            else if(this.mapController.Left() == 0){
-                HistoryLabel.setText("Movimento a sinistra non possibile, Bordo mappa");
+            else if(moves == 0){
+                HistoryLabel.setText("Player Moves - Movimento a sinistra non possibile, Bordo mappa");
             }
-            else if(this.mapController.Left() == -1){
-                HistoryLabel.setText("Movimento a sinistra non possibile, Presenza Nemico");
-            }
-        }
-        else if (current_player_speed == 0 && ! mapController.check() && current_enemy_speed > 0){
-            HistoryLabel.setText("Il Nemico esegue i suoi "+ current_enemy_speed/mapController.getMeterForCell()+" movimenti");
-            Random rand_num = new Random();
-            while(current_enemy_speed > 0) {
-                int moves = 1 + rand_num.nextInt(3);
-
-                if(moves == 1)
-                    this.mapController.UpEnemy();
-                else if(moves == 2)
-                    this.mapController.DownEnemy();
-                else if(moves == 3)
-                    this.mapController.LeftEnemy();
-                else if(moves == 4)
-                    this.mapController.RightEnemy();
-
-                current_enemy_speed -= mapController.getMeterForCell();
+            else if(moves == -1){
+                HistoryLabel.setText("Player Moves - Movimento a sinistra non possibile, Presenza Nemico");
             }
         }
         else{
-            HistoryLabel.setText("Ricarica Velocità Movimenti");
-            current_player_speed = app.getPlayer().getRaceClass().getSpeed();
-            current_enemy_speed = app.getEnemy().getRaceClass().getSpeed();
+           this.EnemyMoves(); 
         }
+        
     }
 
     public void RigthBtnAction(ActionEvent event) throws IOException{
         if (current_player_speed > 0 ){
-            if(this.mapController.Right() == 1){
+            int moves = this.mapController.Right();
+            if(moves == 1){
                current_player_speed -= mapController.getMeterForCell();
-                HistoryLabel.setText("Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti"); 
+               HistoryLabel.setText("Player Moves - Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti"); 
             }
-            else if(this.mapController.Right() == 0){
-                HistoryLabel.setText("Movimento a destra non possibile, Bordo mappa");
+            else if(moves == 0){
+                HistoryLabel.setText("Player Moves - Movimento a destra non possibile, Bordo mappa");
             }
-            else if(this.mapController.Right() == -1){
-                HistoryLabel.setText("Movimento a destra non possibile, Presenza Nemico");
-            }
-        }
-        else if (current_player_speed == 0 && ! mapController.check() && current_enemy_speed > 0){
-            HistoryLabel.setText("Il Nemico esegue i suoi "+ current_enemy_speed/mapController.getMeterForCell()+" movimenti");
-            Random rand_num = new Random();
-            while(current_enemy_speed > 0) {
-                int moves = 1 + rand_num.nextInt(3);
-
-                if(moves == 1)
-                    this.mapController.UpEnemy();
-                else if(moves == 2)
-                    this.mapController.DownEnemy();
-                else if(moves == 3)
-                    this.mapController.LeftEnemy();
-                else if(moves == 4)
-                    this.mapController.RightEnemy();
-
-                current_enemy_speed -= mapController.getMeterForCell();
+            else if(moves == -1){
+                HistoryLabel.setText("Player Moves - Movimento a destra non possibile, Presenza Nemico");
             }
         }
         else{
-            HistoryLabel.setText("Ricarica Velocità Movimenti");
+           this.EnemyMoves(); 
+        }
+    }
+
+    private void EnemyMoves() throws IOException{
+        if (current_player_speed == 0 && current_enemy_speed > 0){
+            if(mapController.check() && this.game.EnemyAttackDecision()){
+                this.EnemyTurn();
+            }
+            else{
+                HistoryLabel.setText("Il Nemico esegue i suoi "+ current_enemy_speed/mapController.getMeterForCell()+" movimenti");
+                while(current_enemy_speed > 0) {
+
+                    this.EnemyMovements();
+
+                    if(mapController.check() && this.game.EnemyAttackDecision()){
+                        this.EnemyTurn();
+                        break;
+                    }
+                }
+            }
+            
+            /* Alla fine del movimento del nemico si ricaricano le velocità */
             current_player_speed = app.getPlayer().getRaceClass().getSpeed();
             current_enemy_speed = app.getEnemy().getRaceClass().getSpeed();
         }
     }
 
+    private void EnemyTurn() throws IOException{
+        HistoryLabel.setText(game.BattleTurn("Attacco Nemico"));  
+        this.Enemycontroller.text("" + app.getEnemy().getClassPgClass().getLife());
+        LifeLabelText.setText("" + app.getPlayer().getClassPgClass().getLife());
+    }
+
     public void EndTurn() throws IOException{
-        if (! mapController.check() && current_enemy_speed > 0){
-            HistoryLabel.setText("Il Nemico esegue i suoi "+ current_enemy_speed/mapController.getMeterForCell()+" movimenti");
-            Random rand_num = new Random();
-            while(current_enemy_speed > 0) {
-                int moves = 1 + rand_num.nextInt(3);
+        HistoryLabel.setText("Il Nemico esegue i suoi "+ current_enemy_speed/mapController.getMeterForCell()+" movimenti");
+                while(current_enemy_speed > 0) {
 
-                if(moves == 1)
-                    this.mapController.UpEnemy();
-                else if(moves == 2)
-                    this.mapController.DownEnemy();
-                else if(moves == 3)
-                    this.mapController.LeftEnemy();
-                else if(moves == 4)
-                    this.mapController.RightEnemy();
+                    this.EnemyMovements();
 
-                current_enemy_speed -= mapController.getMeterForCell();
-            }
-        }
-        else{
-            HistoryLabel.setText(game.BattleTurn("Attacco Nemico"));  
-            this.Enemycontroller.text("" + app.getEnemy().getClassPgClass().getLife());
-            LifeLabelText.setText("" + app.getPlayer().getClassPgClass().getLife());
-        }
+                    if(mapController.check() && this.game.EnemyAttackDecision()){
+                        this.EnemyTurn();
+                        break;
+                    }
+                }
 
         current_enemy_speed = app.getEnemy().getRaceClass().getSpeed();
         current_player_speed = app.getPlayer().getRaceClass().getSpeed();
+    }
+
+    private void EnemyMovements(){
+        Random rand_num = new Random();
+        int moves = 1 + rand_num.nextInt(3);
+
+        /* Movimento in Alto */
+        if(moves == 1){
+            moves = this.mapController.UpEnemy();
+            if(moves == -1){
+                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento in alto non possibile, Presenza Player");
+            }
+            else if (moves == 1){
+                current_enemy_speed -= mapController.getMeterForCell();
+                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Ancora max: "+current_enemy_speed/mapController.getMeterForCell()+" movimenti"); 
+            }
+            else{
+                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento in alto non possibile, Bordo mappa");
+            }
+
+        }
+        /* Movimento in Basso */
+        else if(moves == 2){            
+            moves = this.mapController.DownEnemy();
+            if(moves == -1){
+                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento in basso non possibile, Presenza Player");
+            }
+            else if (moves == 1){
+                current_enemy_speed -= mapController.getMeterForCell();
+                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Ancora max: "+current_enemy_speed/mapController.getMeterForCell()+" movimenti"); 
+            }
+            else{
+                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento in basso non possibile, Bordo mappa");
+            }
+        }
+        /* Movimento A Sinistra */
+        else if(moves == 3){
+            moves = this.mapController.LeftEnemy();
+            if(moves == -1){
+                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento a sinistra non possibile, Presenza Player");
+            }
+            else if (moves == 1){
+                current_enemy_speed -= mapController.getMeterForCell();
+                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Ancora max: "+current_enemy_speed/mapController.getMeterForCell()+" movimenti"); 
+            }
+            else{
+                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento a sinistra non possibile, Bordo mappa");
+            }
+        }
+        /* Movimento a Destra */
+        else if(moves == 4){
+            moves = this.mapController.RightEnemy();
+            if(moves == -1){
+                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento a destra non possibile, Presenza Player");
+            }
+            else if (moves == 1){
+                current_enemy_speed -= mapController.getMeterForCell();
+                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Ancora max: "+current_enemy_speed/mapController.getMeterForCell()+" movimenti"); 
+            }
+            else{
+                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento a destra non possibile, Bordo mappa");
+            }
+        }
     }
 
     public void setApp(App app) {

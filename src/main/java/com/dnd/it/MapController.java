@@ -2,10 +2,7 @@ package com.dnd.it;
 
 import java.io.File;
 import java.net.URL;
-import java.time.Duration;
 import java.util.ResourceBundle;
-
-import javafx.animation.Animation;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -35,15 +32,7 @@ public class MapController implements Initializable{
 
     public void initialize(URL arg0, ResourceBundle arg1){
         meters_for_cell = 3;
-
-        
     }
-
-    @FXML 
-    private void HidleAnimation(){
-        
-    }
-
     /*
      * Per ogni movimento (Up, Down, Left, Rigth), prima di 'spostare' l'immagine o il personaggio, esso viene
      * eliminato come figlio dall'elemento GridPane poichè verrebbe lanciata una eccezione se ci sono dei duplicati
@@ -113,48 +102,61 @@ public class MapController implements Initializable{
 
     /* Enemy Movements */
 
-    public void UpEnemy(){
-        if (current_y_enemy > 0){
+    public int UpEnemy(){
+        if((current_y_enemy-1) == current_y_player && current_x_player == current_x_enemy)
+            return -1;
+        if (current_y_enemy > 0 ){
             gridMap.getChildren().remove(enemyPixel);
 
             current_y_enemy--;
 
             gridMap.add(enemyPixel, current_x_enemy, current_y_enemy); 
+            return 1;
         }
-        
+        return 0;
     }
 
-    public void DownEnemy(){
+    public int DownEnemy(){
+        if((current_y_enemy+1) == current_y_player && current_x_player == current_x_enemy)
+            return -1;
         if (current_y_enemy < n_rows - 1){
             gridMap.getChildren().remove(enemyPixel);
 
             current_y_enemy++;
 
             gridMap.add(enemyPixel, current_x_enemy, current_y_enemy);
+            return 1;
         }
-        
+        return 0;
     }
 
-    public void LeftEnemy(){
+    public int LeftEnemy(){
+        if((current_x_enemy-1) == current_x_player && current_y_player == current_y_enemy)
+            return -1;
         if (current_x_enemy > 0){
             gridMap.getChildren().remove(enemyPixel);
 
             current_x_enemy--;
 
-            gridMap.add(enemyPixel, current_x_enemy, current_y_enemy);            
+            gridMap.add(enemyPixel, current_x_enemy, current_y_enemy);    
+            return 1;        
         }
-
+        return 0;
     }
 
-    public void RightEnemy(){
+    public int RightEnemy(){
+        if((current_x_enemy+1) == current_x_player && current_y_player == current_y_enemy)
+            return -1;
         if (current_x_enemy < n_columns -1){
             gridMap.getChildren().remove(enemyPixel);
 
             current_x_enemy++;
 
-            gridMap.add(enemyPixel, current_x_enemy, current_y_enemy);            
+            gridMap.add(enemyPixel, current_x_enemy, current_y_enemy);
+            
+            return 1;
         }
-
+        return 0;
     }
 
     /* si verifica se nell'intorno del player c'è il nemico 

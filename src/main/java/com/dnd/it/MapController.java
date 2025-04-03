@@ -50,47 +50,64 @@ public class MapController implements Initializable{
      * poi naturalmente viene fatto un check su se gli indici raggiungono max e min value
      */
 
-    public void Up(){
-        if (current_y_player > 0){
+    public int Up(){
+        if((current_y_player-1) == current_y_enemy && current_x_player == current_x_enemy)
+            return -1;
+        if (current_y_player > 0 ){
             gridMap.getChildren().remove(playerPixel);
 
             current_y_player--;
 
             gridMap.add(playerPixel, current_x_player, current_y_player); 
+            return 1;
         }
+        return 0;
         
     }
 
-    public void Down(){
+    public int Down(){
+        if((current_y_player+1) == current_y_enemy && current_x_player == current_x_enemy)
+            return -1;
         if (current_y_player < n_rows - 1){
             gridMap.getChildren().remove(playerPixel);
 
             current_y_player++;
 
             gridMap.add(playerPixel, current_x_player, current_y_player);
+            return 1;
         }
+        return 0;
         
     }
 
-    public void Left(){
+    public int Left(){
+        if((current_x_player-1) == current_x_enemy && current_y_player == current_y_enemy)
+            return -1;
         if (current_x_player > 0){
             gridMap.getChildren().remove(playerPixel);
 
             current_x_player--;
 
-            gridMap.add(playerPixel, current_x_player, current_y_player);            
+            gridMap.add(playerPixel, current_x_player, current_y_player);    
+            return 1;        
         }
+        return 0;
 
     }
 
-    public void Right(){
+    public int Right(){
+        if((current_x_player+1) == current_x_enemy && current_y_player == current_y_enemy)
+            return -1;
         if (current_x_player < n_columns -1){
             gridMap.getChildren().remove(playerPixel);
 
             current_x_player++;
 
-            gridMap.add(playerPixel, current_x_player, current_y_player);            
+            gridMap.add(playerPixel, current_x_player, current_y_player);
+            
+            return 1;
         }
+        return 0;
 
     }
 

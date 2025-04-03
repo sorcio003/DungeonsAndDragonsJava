@@ -11,4 +11,7 @@ Attualmente il gioco da la possibilita di:
 Fix e Bug da sistemare (+ Nuove Features da fare):
 - Il nemico attacca solo quando il player attacca o schiva
 - Randomizzazione del movimento del nemico
-- Il player si accavvalla allo sprite del nemico nella mappa
+
+3 Aprile Update and Fix:
+- Il player non si accavalla più con il nemico
+- Bordi mappa gestiti

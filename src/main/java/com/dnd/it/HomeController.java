@@ -130,10 +130,17 @@ public class HomeController {
     }
 
     public void UpBtnAction(ActionEvent event) throws IOException{
-        if (current_player_speed > 0){
-            this.mapController.Up();
-            current_player_speed -= mapController.getMeterForCell();
-            HistoryLabel.setText("Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti");
+        if (current_player_speed > 0 ){
+            if(this.mapController.Up() == 1){
+               current_player_speed -= mapController.getMeterForCell();
+                HistoryLabel.setText("Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti"); 
+            }
+            else if(this.mapController.Up() == 0){
+                HistoryLabel.setText("Movimento in alto non possibile, Bordo mappa");
+            }
+            else if(this.mapController.Up() == -1){
+                HistoryLabel.setText("Movimento in alto non possibile, Presenza Nemico");
+            }
         }
         else if (current_player_speed == 0 && ! mapController.check() && current_enemy_speed > 0){
             HistoryLabel.setText("Il Nemico esegue i suoi "+ current_enemy_speed/mapController.getMeterForCell()+" movimenti");
@@ -161,10 +168,17 @@ public class HomeController {
     }
 
     public void DownBtnAction(ActionEvent event) throws IOException{
-        if (current_player_speed > 0){
-            this.mapController.Down();
-            current_player_speed -= mapController.getMeterForCell(); 
-            HistoryLabel.setText("Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti");
+        if (current_player_speed > 0 ){
+            if(this.mapController.Down() == 1){
+               current_player_speed -= mapController.getMeterForCell();
+                HistoryLabel.setText("Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti"); 
+            }
+            else if(this.mapController.Down() == 0){
+                HistoryLabel.setText("Movimento in basso non possibile, Bordo mappa");
+            }
+            else if(this.mapController.Down() == -1){
+                HistoryLabel.setText("Movimento in basso non possibile, Presenza Nemico");
+            }
         }
         else if (current_player_speed == 0 && ! mapController.check() && current_enemy_speed > 0){
             HistoryLabel.setText("Il Nemico esegue i suoi "+ current_enemy_speed/mapController.getMeterForCell()+" movimenti");
@@ -192,10 +206,17 @@ public class HomeController {
     }
 
     public void LeftBtnAction(ActionEvent event) throws IOException{
-        if (current_player_speed > 0){
-            this.mapController.Left();
-            current_player_speed -= mapController.getMeterForCell();
-            HistoryLabel.setText("Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti");
+        if (current_player_speed > 0 ){
+            if(this.mapController.Left() == 1){
+               current_player_speed -= mapController.getMeterForCell();
+                HistoryLabel.setText("Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti"); 
+            }
+            else if(this.mapController.Left() == 0){
+                HistoryLabel.setText("Movimento a sinistra non possibile, Bordo mappa");
+            }
+            else if(this.mapController.Left() == -1){
+                HistoryLabel.setText("Movimento a sinistra non possibile, Presenza Nemico");
+            }
         }
         else if (current_player_speed == 0 && ! mapController.check() && current_enemy_speed > 0){
             HistoryLabel.setText("Il Nemico esegue i suoi "+ current_enemy_speed/mapController.getMeterForCell()+" movimenti");
@@ -223,10 +244,17 @@ public class HomeController {
     }
 
     public void RigthBtnAction(ActionEvent event) throws IOException{
-        if (current_player_speed > 0){
-            this.mapController.Right();
-            current_player_speed -= mapController.getMeterForCell();
-            HistoryLabel.setText("Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti");
+        if (current_player_speed > 0 ){
+            if(this.mapController.Right() == 1){
+               current_player_speed -= mapController.getMeterForCell();
+                HistoryLabel.setText("Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti"); 
+            }
+            else if(this.mapController.Right() == 0){
+                HistoryLabel.setText("Movimento a destra non possibile, Bordo mappa");
+            }
+            else if(this.mapController.Right() == -1){
+                HistoryLabel.setText("Movimento a destra non possibile, Presenza Nemico");
+            }
         }
         else if (current_player_speed == 0 && ! mapController.check() && current_enemy_speed > 0){
             HistoryLabel.setText("Il Nemico esegue i suoi "+ current_enemy_speed/mapController.getMeterForCell()+" movimenti");

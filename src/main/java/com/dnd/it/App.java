@@ -28,16 +28,29 @@ public class App extends Application {
     private Characters player;
     private Characters enemy;
 
+    private HomeController homeController;
     private EnemyViewerController controller;
     private MapController mapcontroller;
 
     public App(){
+        this.setCharacters();
+    }
+
+    private void setCharacters(){
         player = new Characters("Drake", 256, new Elf(), new Barbaro());
         player.getRaceClass().setStrength(14);
         player.getRaceClass().setBonus("Strength", 2);
         enemy = new Characters("Golem", 1098, new Golem(), new Barbaro());
         player.setDescription("Tutorials Point originated from the idea that there exists a class of readers who respond better to online content and prefer to learn new skills at their own pace from the comforts of their drawing rooms.");
         player.setMoneyValue(100);
+    }
+
+    public void restartGame(){
+        this.setCharacters();
+        this.mapcontroller.clearMap();
+        this.mapcontroller.setMap(this);
+        this.controller.setData(this);
+        this.homeController.setApp(this);
     }
 
     @Override
@@ -105,10 +118,12 @@ public class App extends Application {
             loader.setLocation(App.class.getResource("view/Home.fxml"));
             AnchorPane personOverview = (AnchorPane) loader.load();
 
-            HomeController homeController = loader.getController();
-            homeController.setApp(this);
-            homeController.getEnemyController(this);
-            homeController.getMapController(this);
+            HomeController controllerHome = loader.getController();
+            controllerHome.setApp(this);
+            controllerHome.getEnemyController(this);
+            controllerHome.getMapController(this);
+
+            this.homeController = controllerHome;
             
             // Set person overview into the center of root layout.
             rootLayout.setCenter(personOverview);

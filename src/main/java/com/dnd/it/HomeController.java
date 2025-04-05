@@ -5,13 +5,17 @@ import java.io.IOException;
 import java.util.Random;
 
 import com.dnd.it.GameSystem.Game;
+import com.dnd.it.GameSystem.Model.Characters;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
@@ -76,6 +80,8 @@ public class HomeController {
 
     private int current_player_speed;
     private int current_enemy_speed;
+    private int enemy_moves;
+    private String enemy_decision;
     
     private App app;
     private Stage stage;
@@ -83,6 +89,8 @@ public class HomeController {
     private Parent root;
 
     private Game game;
+    private Characters player;
+    private Characters enemy;
     private EnemyViewerController Enemycontroller;
     private MapController mapController;
 
@@ -90,6 +98,7 @@ public class HomeController {
 
     }
 
+    /* Scene Manager */
     public void SwitchInventory(ActionEvent event) throws IOException{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("view/Inventory.fxml"));
         root = loader.load();
@@ -104,30 +113,48 @@ public class HomeController {
 
     }
 
+    public void BattleResultsScreen() throws IOException{
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Battle Results");
+        alert.initOwner(app.getPrimaryStage());
+        alert.setHeaderText(this.game.EndBattle()+" Do you want to restart Battle?");
+        alert.setContentText("If you click Cancel You'll close App");
+        // Wait User Answer
+        ButtonType result = alert.showAndWait().orElse(ButtonType.CANCEL);
+        if (result == ButtonType.CANCEL) {
+            System.exit(0);
+        } else {
+            app.restartGame();
+        }
+    }
+
     public void AttackBtnAction(ActionEvent event) throws IOException{
         if (mapController.check()){
-            String enemy_movement = "";
-            HistoryLabel.setText(game.BattleTurn("Attacca"));  
-            enemy_movement = this.game.BattleTurn("Azione Nemico");
-            HistoryLabel.setText(HistoryLabel.getText() + enemy_movement);  
-            if(enemy_movement.equals("Il nemico si muove")){
-                while(current_enemy_speed > 0) {
-                    this.EnemyMovements();
-                }
-            }
-            this.Enemycontroller.text("" + app.getEnemy().getClassPgClass().getLife());
-            LifeLabelText.setText("" + app.getPlayer().getClassPgClass().getLife());
+            /* Pre decisione della mossa del nemico, viene creato qui la decisione di attaccare, schivare o muoversi */
+            this.Battle("Player");
         }
         else{
             HistoryLabel.setText("Non puoi attaccare finchè non sei vicino al nemico");  
         }
-        current_player_speed = app.getPlayer().getRaceClass().getSpeed();
-        current_enemy_speed = app.getEnemy().getRaceClass().getSpeed();
+        this.RechargeSpeed();
     }
 
     public void DodgeBtnAction(ActionEvent event) throws IOException{
         if (mapController.check()){
-            HistoryLabel.setText(game.BattleTurn("Schiva"));  
+            /* Cosa succede qui, naturalmente sarà da rendere più elegante 
+             * viene già deciso inizialmente quale sarà la mossa del nemico se attacare, schivare o muoversi
+             * viene eseguita la mossa del player, poi viene eseguita la mossa del nemico, il tutto viene deciso e calcolato in base alla enemy_move
+            */
+            enemy_moves = this.game.EnemyAI();
+            enemy_decision = "";
+            HistoryLabel.setText(game.BattleTurn("Schiva", 0));  
+            enemy_decision = this.game.BattleTurn("Azione Nemico", enemy_moves);
+            HistoryLabel.setText(HistoryLabel.getText() +"\n"+ enemy_decision);  
+            if(enemy_decision.equals("Il nemico si muove")){
+                while(current_enemy_speed > 0) {
+                    this.EnemyMovements();
+                }
+            }
             this.Enemycontroller.text("" + app.getEnemy().getClassPgClass().getLife());
             LifeLabelText.setText("" + app.getPlayer().getClassPgClass().getLife());
         }
@@ -152,7 +179,7 @@ public class HomeController {
             }
         }
         else{
-            this.EnemyMoves();
+            this.EndTurn();
         }
         
     }
@@ -172,7 +199,7 @@ public class HomeController {
             }
         }
         else{
-            this.EnemyMoves();
+            this.EndTurn();
         }
         
     }
@@ -192,7 +219,7 @@ public class HomeController {
             }
         }
         else{
-           this.EnemyMoves(); 
+           this.EndTurn(); 
         }
         
     }
@@ -212,56 +239,45 @@ public class HomeController {
             }
         }
         else{
-           this.EnemyMoves(); 
+           this.EndTurn(); 
         }
     }
 
-    private void EnemyMoves() throws IOException{
-        if (current_player_speed == 0 && current_enemy_speed > 0){
-            if(mapController.check() && this.game.EnemyAttackDecision()){
-                this.EnemyTurn();
-            }
-            else{
-                HistoryLabel.setText("Il Nemico esegue i suoi "+ current_enemy_speed/mapController.getMeterForCell()+" movimenti");
+    /* Battle System */
+    private void Battle(String Player) throws IOException{
+        enemy_moves = this.game.EnemyAI();
+        if(Player.equals("Player")){
+            HistoryLabel.setText(game.BattleTurn("Attacca", enemy_moves));  
+        }
+        enemy_decision = this.game.BattleTurn("Azione Nemico", enemy_moves);
+        HistoryLabel.setText(HistoryLabel.getText() + enemy_decision);   
+            if(enemy_decision.equals("Il nemico si muove")){
                 while(current_enemy_speed > 0) {
-
                     this.EnemyMovements();
-
-                    if(mapController.check() && this.game.EnemyAttackDecision()){
-                        this.EnemyTurn();
-                        break;
-                    }
                 }
-            }
-            
-            /* Alla fine del movimento del nemico si ricaricano le velocità */
-            current_player_speed = app.getPlayer().getRaceClass().getSpeed();
-            current_enemy_speed = app.getEnemy().getRaceClass().getSpeed();
-        }
-    }
-
-    private void EnemyTurn() throws IOException{
-        HistoryLabel.setText(game.BattleTurn("Attacco Nemico"));  
+            }  
         this.Enemycontroller.text("" + app.getEnemy().getClassPgClass().getLife());
         LifeLabelText.setText("" + app.getPlayer().getClassPgClass().getLife());
+        /* Check Who is the Winner */
+        if(this.game.CheckEndBattle())
+            BattleResultsScreen();
     }
 
     public void EndTurn() throws IOException{
-        HistoryLabel.setText("Il Nemico esegue i suoi "+ current_enemy_speed/mapController.getMeterForCell()+" movimenti");
-                while(current_enemy_speed > 0) {
-
-                    this.EnemyMovements();
-
-                    if(mapController.check() && this.game.EnemyAttackDecision()){
-                        this.EnemyTurn();
-                        break;
-                    }
-                }
-
-        current_enemy_speed = app.getEnemy().getRaceClass().getSpeed();
-        current_player_speed = app.getPlayer().getRaceClass().getSpeed();
+        HistoryLabel.setText("Turno del Nemico");
+        if(mapController.check()){
+            HistoryLabel.setText(HistoryLabel.getText() +  "\n");
+            this.Battle("Enemy");
+        }
+        else{
+            while(current_enemy_speed > 0) {
+                this.EnemyMovements();
+            }
+        }
+        RechargeSpeed();
     }
 
+    /* per muoversi nella mappa */
     private void EnemyMovements(){
         Random rand_num = new Random();
         int moves = 1 + rand_num.nextInt(3);
@@ -269,89 +285,75 @@ public class HomeController {
         /* Movimento in Alto */
         if(moves == 1){
             moves = this.mapController.UpEnemy();
-            if(moves == -1){
-                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento in alto non possibile, Presenza Player");
-            }
-            else if (moves == 1){
+            if (moves == 1){
                 current_enemy_speed -= mapController.getMeterForCell();
-                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Ancora max: "+current_enemy_speed/mapController.getMeterForCell()+" movimenti"); 
+                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento in Alto"); 
             }
-            else{
-                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento in alto non possibile, Bordo mappa");
-            }
-
         }
         /* Movimento in Basso */
         else if(moves == 2){            
             moves = this.mapController.DownEnemy();
-            if(moves == -1){
-                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento in basso non possibile, Presenza Player");
-            }
-            else if (moves == 1){
+            if (moves == 1){
                 current_enemy_speed -= mapController.getMeterForCell();
-                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Ancora max: "+current_enemy_speed/mapController.getMeterForCell()+" movimenti"); 
-            }
-            else{
-                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento in basso non possibile, Bordo mappa");
+                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento in Basso"); 
             }
         }
         /* Movimento A Sinistra */
         else if(moves == 3){
             moves = this.mapController.LeftEnemy();
-            if(moves == -1){
-                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento a sinistra non possibile, Presenza Player");
-            }
-            else if (moves == 1){
+            if (moves == 1){
                 current_enemy_speed -= mapController.getMeterForCell();
-                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Ancora max: "+current_enemy_speed/mapController.getMeterForCell()+" movimenti"); 
-            }
-            else{
-                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento a sinistra non possibile, Bordo mappa");
+                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento a Sinistra"); 
             }
         }
         /* Movimento a Destra */
         else if(moves == 4){
             moves = this.mapController.RightEnemy();
-            if(moves == -1){
-                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento a destra non possibile, Presenza Player");
-            }
-            else if (moves == 1){
+            if (moves == 1){
                 current_enemy_speed -= mapController.getMeterForCell();
-                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Ancora max: "+current_enemy_speed/mapController.getMeterForCell()+" movimenti"); 
-            }
-            else{
-                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento a destra non possibile, Bordo mappa");
+                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento a Destra"); 
             }
         }
     }
+    /* Recharge Speed */
+    private void RechargeSpeed(){
+        current_enemy_speed = app.getEnemy().getRaceClass().getSpeed();
+        current_player_speed = app.getPlayer().getRaceClass().getSpeed();
+    }
 
+    /* Method to Call on App Class */
     public void setApp(App app) {
 
         this.app = app;
 
-        this.game = new Game(app.getPlayer(), app.getEnemy());
+        this.player = app.getPlayer();
+        this.enemy = app.getEnemy();
+
+        this.game = new Game(player, enemy);
 
         // Add observable list data to the table
-        File file = new File("src/main/resources/Assets/Chracters_Icon/"+app.getPlayer().getClassPgClass().getClass_Pg()+".jpg");
+        File file = new File("src/main/resources/Assets/Chracters_Icon/"+player.getClassPgClass().getClass_Pg()+".jpg");
         PhotoPG.setImage(new Image(file.toURI().toString()));
-        PlayerNameLabel.setText(app.getPlayer().getName());
+        PlayerNameLabel.setText(player.getName());
         /* Base Attribute */
-        LifeLabelText.setText("" + app.getPlayer().getClassPgClass().getLife());
+        LifeLabelText.setText("" + player.getClassPgClass().getLife());
         //BonusLabelText.setText("" + app.getPlayer().getRaceClass().getBonus("Strength"));
         //ModifierLabelText.setText("" + app.getPlayer().getRaceClass().getmodificatore());
-        GuardLabelText.setText("" + app.getPlayer().getClassPgClass().getGuard());
-        SpeedLabelText.setText("" + app.getPlayer().getRaceClass().getSpeed());
+        GuardLabelText.setText("" + player.getClassPgClass().getGuard());
+        SpeedLabelText.setText("" + player.getRaceClass().getSpeed());
 
-        current_player_speed = app.getPlayer().getRaceClass().getSpeed();
-        current_enemy_speed = app.getEnemy().getRaceClass().getSpeed();
+        current_player_speed = player.getRaceClass().getSpeed();
+        current_enemy_speed = enemy.getRaceClass().getSpeed();
         /* Attribute  */
-        StrengthLabelText.setText("" + app.getPlayer().getRaceClass().getStrength());
-        DexterityLabelText.setText("" + app.getPlayer().getRaceClass().getDexterity());
-        ConstitutionLabelText.setText("" + app.getPlayer().getRaceClass().getConstitution());
-        IntelligenceLabelText.setText("" + app.getPlayer().getRaceClass().getIntelligence());
-        WisdomLabelText.setText("" + app.getPlayer().getRaceClass().getWisdom());
-        CharismLabelText.setText("" + app.getPlayer().getRaceClass().getCharism());
-        MoneyLabelText.setText("" + app.getPlayer().getMoney());
+        StrengthLabelText.setText("" + player.getRaceClass().getStrength());
+        DexterityLabelText.setText("" + player.getRaceClass().getDexterity());
+        ConstitutionLabelText.setText("" + player.getRaceClass().getConstitution());
+        IntelligenceLabelText.setText("" + player.getRaceClass().getIntelligence());
+        WisdomLabelText.setText("" + player.getRaceClass().getWisdom());
+        CharismLabelText.setText("" + player.getRaceClass().getCharism());
+        MoneyLabelText.setText("" + player.getMoney());
+
+        HistoryLabel.setText("");
     }
 
     public void getEnemyController(App app){

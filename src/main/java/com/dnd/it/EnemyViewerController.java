@@ -3,6 +3,8 @@ package com.dnd.it;
 
 import java.io.File;
 
+import com.dnd.it.GameSystem.Model.Characters;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -34,6 +36,7 @@ public class EnemyViewerController {
     private Label CharismTextLabel;
 
     private App app;
+    private Characters enemy;
 
     public void initialize(){
 
@@ -42,18 +45,20 @@ public class EnemyViewerController {
     public void setData(App app){
         this.app = app;
 
-        File file = new File("src/main/resources/Assets/Chracters_Icon/"+app.getEnemy().getRaceClass().getRace()+".jpg");
+        this.enemy = app.getEnemy();
+
+        File file = new File("src/main/resources/Assets/Chracters_Icon/"+enemy.getRaceClass().getRace()+".jpg");
         EnemyImage.setImage(new Image(file.toURI().toString()));
-        EnemyNameLabel.setText(app.getEnemy().getName());
-        LifeLabelText.setText("" + app.getEnemy().getClassPgClass().getLife());
-        GuardLabelText.setText("" + app.getEnemy().getClassPgClass().getGuard());
-        SpeedLabelText.setText("" + app.getEnemy().getRaceClass().getSpeed());
-        StrengthTextLabel.setText("" + app.getEnemy().getRaceClass().getStrength());
-        DexterityTextLabel.setText("" + app.getEnemy().getRaceClass().getDexterity());
-        ConstitutionTextLabel.setText("" + app.getEnemy().getRaceClass().getConstitution());
-        IntelligenceTextLabel.setText("" + app.getEnemy().getRaceClass().getIntelligence());
-        WisdomTextLabel.setText("" + app.getEnemy().getRaceClass().getWisdom());
-        CharismTextLabel.setText("" + app.getEnemy().getRaceClass().getCharism());
+        EnemyNameLabel.setText(enemy.getName());
+        LifeLabelText.setText("" + enemy.getClassPgClass().getLife());
+        GuardLabelText.setText("" + enemy.getClassPgClass().getGuard());
+        SpeedLabelText.setText("" + enemy.getRaceClass().getSpeed());
+        StrengthTextLabel.setText("" + enemy.getRaceClass().getStrength());
+        DexterityTextLabel.setText("" + enemy.getRaceClass().getDexterity());
+        ConstitutionTextLabel.setText("" + enemy.getRaceClass().getConstitution());
+        IntelligenceTextLabel.setText("" + enemy.getRaceClass().getIntelligence());
+        WisdomTextLabel.setText("" + enemy.getRaceClass().getWisdom());
+        CharismTextLabel.setText("" + enemy.getRaceClass().getCharism());
     }
 
     public void text(String texString){

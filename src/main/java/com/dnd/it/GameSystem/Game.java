@@ -1,7 +1,5 @@
 package com.dnd.it.GameSystem;
 import java.util.Random;
-
-import com.dnd.it.MapController;
 import com.dnd.it.GameSystem.Dice.*;
 import com.dnd.it.GameSystem.Model.Characters;
 
@@ -12,6 +10,7 @@ public class Game {
     private Boolean untouchable;
     private Boolean double_hit;
     private Boolean already_dodge;
+    private Boolean player_tried_to_dodge;
     private D20 d20;
     private D10 d10;
     private D6 d6;
@@ -22,14 +21,13 @@ public class Game {
         this.untouchable = false;
         this.already_dodge = false;
         this.double_hit = false;
+        this.player_tried_to_dodge = false;
         this.d20 = new D20();
         this.d10 = new D10();
         this.d6 = new D6();
     }
 
     /* Algorithms for Battle */
-
-    /* Player turn */
 
     /*
      * Il giocatore ha tre opzioni, per iniziare con il codice gli do solo la possibilità di attaccare o schivare
@@ -41,9 +39,8 @@ public class Game {
      *    tira un D10 + modificatore + bouns_competenza ( se esce fuori un 10 dal D10, hai diritto ad un secondo tiro di un D6 + modificatore + bonus_competenza)
      */
 
-    public String BattleTurn(String input){
+    public String BattleTurn(String input, int enemy_moves){
         String results = "";
-        int enemy_moves = this.EnemyAI();
         if (input.equals("Attacca")){
             results = "Hai deciso di Attaccare...";
 
@@ -55,6 +52,7 @@ public class Game {
         if (input.equals("Schiva")){
 
             results = "Hai deciso di schivare...\n";
+            player_tried_to_dodge = true;
 
             if (Dodge() == -1){
                 results += "Il lancio ha avuto come esito un 1 critico!!\nIl nemico di Attacca può attaccare due volte per vantaggio.";
@@ -71,22 +69,32 @@ public class Game {
             }
         }
         if(input.equals("Azione Nemico")){
-            if(! already_dodge){
-                if(enemy_moves == 3){
+            if(enemy_moves == 2 && player_tried_to_dodge){
+                enemy_moves = 1;
+                player_tried_to_dodge = false;
+            }
+            if(! already_dodge ){
+                if(enemy_moves == 3 ){
                     results += "Il nemico si muove";
                 }
 
-                if(enemy_moves == 1 && (!untouchable)){
-                    results += "Il nemico ti attacca...\nDanno: "+this.EnemyAttack()+"\n";
-                    if(double_hit){
-                        results += "Il nemico ti attacca una seconda volta...\n"+this.EnemyAttack()+"\n";
-                        double_hit = false;
+                if(enemy_moves == 1){
+                    if(!untouchable){
+                        results += "Il nemico ti attacca...\nDanno: "+this.EnemyAttack()+"\n";
+                        if(double_hit){
+                            results += "Il nemico ti attacca una seconda volta...\n"+this.EnemyAttack()+"\n";
+                            double_hit = false;
+                        }
+                    }
+                    else{
+                        results += "Il player ha schivato il tuo colpo";
+                        untouchable = false;
                     }
                 }
+                
             }
             else{
                 already_dodge = false;
-                results += "Azione già compiuta\n";
             }
             
         }
@@ -95,18 +103,15 @@ public class Game {
     }
 
     private String Attack(int enemy_status){
-
         String results = "";
-
         int bonus = player.getRaceClass().getBonus("Strength");
         player.getRaceClass().setModificatore(player.getRaceClass().getStrength());
         int modifier = player.getRaceClass().getmodificatore();
         int damage = 0;
-
         /* Roll D20 to attack enemy */
         d20.RollDice();
-
         int launch = d20.getResult() + bonus;
+
         if(modifier > 0) launch += modifier;
 
         results += "Tiro su Forza\nD20: "+d20.getResult();
@@ -120,27 +125,26 @@ public class Game {
             }
             else{
                 results += "\nIl nemico ha provato a schivare ma con esito negativo";
-            }
-            
+            }  
         }
-
         /* Critical hit */
         if (d20.getResult() == 20){
+            int add = 0;
 
             d6.RollDice();
 
-            damage += d6.getResult() + bonus + modifier;
+            add = d6.getResult() + bonus + modifier;
 
-            enemy.getClassPgClass().DecreaseLife(damage); 
+            enemy.getClassPgClass().DecreaseLife(damage+add); 
 
-            return results+"\nCritical Hit !!"+"\nBonus Competenza (Forza): "+bonus+"\nModificatore (Forza): "+modifier+"\nEsito del tiro: "+ launch+"\nDanno: "+damage;
+            return results+"\nCritical Hit !!"+"\nBonus Competenza (Forza): "+bonus+"\nModificatore (Forza): "+modifier+"\nEsito del tiro: "+ launch+"\nDanno: "+damage+" + "+add;
         }
 
         /* Critical Failure */
         else if (d20.getResult() == 1){
+            double_hit = true;
             return results+"\nCritical Failure !!\nIl nemico può attaccare due volte per vantaggio!\nEsito del tiro: "+ launch;
         }
-
         /*
          * If Sum of D20 result + Bonus player + Modifier is greater o equals then enemy guard, hit enemy rolling d10
          * Alltough, attack had no effect
@@ -244,5 +248,20 @@ public class Game {
         else{
             return 3; /* 3 indica il fatto che il nemico si muove invece di difendersi o attaccare */
         }
+    }
+
+    public Boolean CheckEndBattle(){
+        if(player.getClassPgClass().getLife() <= 0 || enemy.getClassPgClass().getLife() <= 0)
+            return true;
+        return false;
+    }
+    public String EndBattle(){
+        String results = "";
+        if(player.getClassPgClass().getLife() <= 0)
+            results = "You Lost !";
+        if(enemy.getClassPgClass().getLife() <= 0)
+            results = "You Win!";
+        
+        return results;
     }
 }

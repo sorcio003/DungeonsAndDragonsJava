@@ -178,6 +178,11 @@ public class MapController implements Initializable{
         return this.meters_for_cell;
     }
 
+    public void clearMap(){
+        gridMap.getChildren().remove(playerPixel);
+        gridMap.getChildren().remove(enemyPixel);
+    }
+
     public void setMap(App app) {
 
         this.app = app;
@@ -193,7 +198,7 @@ public class MapController implements Initializable{
         current_x_player = 0;
         current_y_player = n_rows/2;
         current_x_enemy = n_columns-1;
-        current_y_enemy = n_rows/2;
+        current_y_enemy = n_rows/2;        
 
         gridMap.add(playerPixel, current_x_player, current_y_player);
         gridMap.add(enemyPixel, current_x_enemy, current_y_enemy);

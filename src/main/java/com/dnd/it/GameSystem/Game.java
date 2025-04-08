@@ -1,5 +1,8 @@
 package com.dnd.it.GameSystem;
 import java.util.Random;
+
+import javax.crypto.spec.RC2ParameterSpec;
+
 import com.dnd.it.GameSystem.Dice.*;
 import com.dnd.it.GameSystem.Model.Characters;
 
@@ -7,17 +10,31 @@ public class Game {
 
     private Characters player;
     private Characters enemy;
+    private EnemyAI enemyAI;
     private Boolean untouchable;
     private Boolean double_hit;
     private Boolean already_dodge;
     private Boolean player_tried_to_dodge;
+    private String results_action;
+    private int bonus;
+    private int modifier;
+    private int damage;
+    private int launch;
+    private int action;
     private D20 d20;
     private D10 d10;
     private D6 d6;
 
-    public Game(Characters player, Characters enemy){
+    public Game(Characters player, Characters enemy, EnemyAI enemyAI){
         this.player = player;
         this.enemy = enemy;
+        this.enemyAI = enemyAI;
+        this.results_action = "";
+        this.damage = 0;
+        this.bonus = 0;
+        this.modifier = 0;
+        this.launch = 0;
+        this.action = 0;
         this.untouchable = false;
         this.already_dodge = false;
         this.double_hit = false;
@@ -25,6 +42,74 @@ public class Game {
         this.d20 = new D20();
         this.d10 = new D10();
         this.d6 = new D6();
+    }
+
+    /* Setter */
+    private void setResultsAction(String results){
+        this.results_action = results;
+    }
+    private void setBonus(int bonus){
+        this.bonus = bonus;
+    }
+    private void setModifier(int modifier){
+        this.modifier = modifier;
+    }
+    private void setLaunch(int launch){
+        this.launch = launch;
+    }
+    private void setDamage(int damage){
+        this.damage = damage;
+    }
+    private void setAction(int action){
+        this.action = action;
+    }   
+    
+    /* Getter */
+    public String getResultsAction(){
+        return this.results_action;
+    }
+    private int getBonus(){
+        return this.bonus;
+    }
+    private int getModifier(){
+        return this.modifier;
+    }
+    private int getLaunch(){
+        return this.launch;
+    }
+    private int getDamage(){
+        return this.damage;
+    }
+    private int getAction(){
+        return this.action;
+    }
+    public EnemyAI getEnemyAI(){
+        return this.enemyAI;
+    }
+
+    private void ClearResulstActionString(){
+        this.results_action = "";
+    }
+
+    /* Questo metodo si occupa di pre settare il bonus, il modificatore, il danno e il risulatto del lancio del d20 */
+    private void PreSetBattleAction(Characters character){
+        this.ClearResulstActionString();
+        /* set bonus value */
+        setBonus(character.getRaceClass().getBonus("Strength"));
+        /* setting modifier of characters */
+        character.getRaceClass().setModificatore(character.getRaceClass().getStrength());
+        setModifier(character.getRaceClass().getmodificatore());
+        setDamage(0);
+        /* Roll D20 to attack enemy */
+        d20.RollDice();
+        /* pre set del risultato del lancio d20 results + bonus + modificatore, anche se negativo */
+        setLaunch(d20.getResult() + bonus + modifier);
+    }
+
+    private void PreSetBattleDodge(Characters character){
+        d20.RollDice();
+        character.getRaceClass().setModificatore(character.getRaceClass().getDexterity());
+        setAction(d20.getResult() + character.getRaceClass().getmodificatore() + character.getRaceClass().getBonus("Dexterity"));
     }
 
     /* Algorithms for Battle */
@@ -39,35 +124,36 @@ public class Game {
      *    tira un D10 + modificatore + bouns_competenza ( se esce fuori un 10 dal D10, hai diritto ad un secondo tiro di un D6 + modificatore + bonus_competenza)
      */
 
-    public String BattleTurn(String input, int enemy_moves){
-        String results = "";
+    /* Battle Turn Manager */
+    public void BattleTurn(String input, int enemy_moves){
+        this.ClearResulstActionString();
+        /* Attacco Player */
         if (input.equals("Attacca")){
-            results = "Hai deciso di Attaccare...";
-
-            String attack_result = this.Attack(enemy_moves);
-            results += "\n" + attack_result+"\n";
+            this.Attack(enemy_moves);
+            setResultsAction("Hai deciso di Attaccare...\n"+ getResultsAction() +"\n");
             untouchable = false;
         }
-
+        /* Schivata Player */
         if (input.equals("Schiva")){
 
-            results = "Hai deciso di schivare...\n";
+            setResultsAction("Hai deciso di schivare...\n");
             player_tried_to_dodge = true;
 
             if (Dodge() == -1){
-                results += "Il lancio ha avuto come esito un 1 critico!!\nIl nemico di Attacca può attaccare due volte per vantaggio.";
+                setResultsAction(this.getResultsAction() + "Il lancio ha avuto come esito un 1 critico!!\nIl nemico di Attacca può attaccare due volte per vantaggio.");
                 untouchable = false;
-                //results += "\nIl nemico ti infligge un danno pari a "+ EnemyAttack() + EnemyAttack();
+                //results_action += "\nIl nemico ti infligge un danno pari a "+ EnemyAttack() + EnemyAttack();
             }
             else if (Dodge() == 1){
-                results += "Il lancio ha avuto esito positivo, il nemico non ti può attaccare";
+                setResultsAction(this.getResultsAction() + "Il lancio ha avuto esito positivo, il nemico non ti può attaccare");
                 untouchable = true;
             }
             else{
-                results += "Il lancio ha avuto esito negativo. Il nemico ti può attaccare.\n";//Il nemico ti infligge un danno pari a "+ EnemyAttack();
+                setResultsAction(this.getResultsAction() + "Il lancio ha avuto esito negativo. Il nemico ti può attaccare.\n");//Il nemico ti infligge un danno pari a "+ EnemyAttack();
                 untouchable = false;
             }
         }
+        /* Azione Nemico */
         if(input.equals("Azione Nemico")){
             if(enemy_moves == 2 && player_tried_to_dodge){
                 enemy_moves = 1;
@@ -75,19 +161,19 @@ public class Game {
             }
             if(! already_dodge ){
                 if(enemy_moves == 3 ){
-                    results += "Il nemico si muove";
+                    setResultsAction(this.getResultsAction() + "Il nemico si muove");
                 }
 
                 if(enemy_moves == 1){
                     if(!untouchable){
-                        results += "Il nemico ti attacca...\nDanno: "+this.EnemyAttack()+"\n";
+                        setResultsAction(this.getResultsAction() + "Il nemico ti attacca...\nDanno: "+this.EnemyAttack()+"\n");
                         if(double_hit){
-                            results += "Il nemico ti attacca una seconda volta...\n"+this.EnemyAttack()+"\n";
+                            setResultsAction(this.getResultsAction() + "Il nemico ti attacca una seconda volta...\nDanno: "+this.EnemyAttack()+"\n");
                             double_hit = false;
                         }
                     }
                     else{
-                        results += "Il player ha schivato il tuo colpo";
+                        setResultsAction(this.getResultsAction() + "Il player ha schivato il tuo colpo");
                         untouchable = false;
                     }
                 }
@@ -99,32 +185,25 @@ public class Game {
             
         }
 
-        return results;
+        
     }
 
-    private String Attack(int enemy_status){
-        String results = "";
-        int bonus = player.getRaceClass().getBonus("Strength");
-        player.getRaceClass().setModificatore(player.getRaceClass().getStrength());
-        int modifier = player.getRaceClass().getmodificatore();
-        int damage = 0;
-        /* Roll D20 to attack enemy */
-        d20.RollDice();
-        int launch = d20.getResult() + bonus;
+    /* Player Movements */
+    private void Attack(int enemy_status){
+        this.PreSetBattleAction(player);
 
-        if(modifier > 0) launch += modifier;
-
-        results += "Tiro su Forza\nD20: "+d20.getResult();
+        setResultsAction(this.getResultsAction() + "Tiro su Forza\nD20: "+d20.getResult());
+        
         d10.RollDice();
-        damage = d10.getResult() + bonus + modifier;
+        setDamage(d10.getResult() + getBonus() + getModifier());
 
         if(enemy_status == 2){
             already_dodge = true;
             if(this.EnemyDodge() == 1){
-                return results+"\nBonus Competenza (Forza): "+bonus+"\nModificatore (Forza): "+modifier+"\nEsito del tiro: "+ launch+"\nIl nemico ha schivato il colpo";
+                setResultsAction(this.getResultsAction() + "\nBonus Competenza (Forza): "+bonus+"\nModificatore (Forza): "+modifier+"\nEsito del tiro: "+ launch+"\nIl nemico ha schivato il colpo");
             }
             else{
-                results += "\nIl nemico ha provato a schivare ma con esito negativo";
+                setResultsAction(this.getResultsAction() + "\nIl nemico ha provato a schivare ma con esito negativo");
             }  
         }
         /* Critical hit */
@@ -133,50 +212,45 @@ public class Game {
 
             d6.RollDice();
 
-            add = d6.getResult() + bonus + modifier;
+            add = d6.getResult() + getBonus() + getModifier();
 
-            enemy.getClassPgClass().DecreaseLife(damage+add); 
-
-            return results+"\nCritical Hit !!"+"\nBonus Competenza (Forza): "+bonus+"\nModificatore (Forza): "+modifier+"\nEsito del tiro: "+ launch+"\nDanno: "+damage+" + "+add;
+            enemy.getClassPgClass().DecreaseLife(getDamage()+add); 
+            setResultsAction(this.getResultsAction() + "\nCritical Hit !!"+"\nBonus Competenza (Forza): "+getBonus()+"\nModificatore (Forza): "+getModifier()+"\nEsito del tiro: "+ getLaunch()+"\nDanno: "+getDamage()+" + "+add);
         }
 
         /* Critical Failure */
         else if (d20.getResult() == 1){
             double_hit = true;
-            return results+"\nCritical Failure !!\nIl nemico può attaccare due volte per vantaggio!\nEsito del tiro: "+ launch;
+            setResultsAction(this.getResultsAction() +"\nCritical Failure !!\nIl nemico può attaccare due volte per vantaggio!\nEsito del tiro: "+ getLaunch()); 
         }
         /*
          * If Sum of D20 result + Bonus player + Modifier is greater o equals then enemy guard, hit enemy rolling d10
          * Alltough, attack had no effect
          */
-        else if ( launch >= enemy.getClassPgClass().getGuard() ){
+        else if ( getLaunch() >= enemy.getClassPgClass().getGuard() ){
 
-            enemy.getClassPgClass().DecreaseLife(damage); 
-
-            return results+"\nDanno: "+damage+"\nBonus Competenza (Forza): "+bonus+"\nModificatore (Forza): "+modifier+"\nEsito del tiro: "+ launch;
+            enemy.getClassPgClass().DecreaseLife(getDamage()); 
+            setResultsAction(this.getResultsAction() + "\nDanno: "+getDamage()+"\nBonus Competenza (Forza): "+getBonus()+"\nModificatore (Forza): "+getModifier()+"\nEsito del tiro: "+ getLaunch());
         }
-
-        return results + "\nColpo non andato a segno";
+        else{ 
+            setResultsAction(this.getResultsAction() + "\nColpo non andato a segno");
+        }
     }
 
     private int EnemyAttack(){
-        int bonus = enemy.getRaceClass().getBonus("Strength");
-        enemy.getRaceClass().setModificatore(player.getRaceClass().getStrength());
-        int modifier = enemy.getRaceClass().getmodificatore();
-
-        /* Roll D20 to attack enemy */
-        d20.RollDice();
+        this.PreSetBattleAction(enemy);
 
         /*
          * If Sum of D20 result + Bonus player + Modifier is greater o equals then enemy guard, hit enemy rolling d10
          * Alltough, attack had no effect
          */
-        if ( (d20.getResult() + bonus + modifier) >= player.getClassPgClass().getGuard() ){
+        if ( getLaunch() >= player.getClassPgClass().getGuard() ){
             d10.RollDice();
 
-            player.getClassPgClass().DecreaseLife(d10.getResult() + bonus + modifier);
+            setDamage(d10.getResult() + getBonus() + getModifier());
+            player.getClassPgClass().DecreaseLife(getDamage());
 
-            return d10.getResult() + bonus + modifier;
+            return getDamage();
         }
 
         return 0;
@@ -184,15 +258,13 @@ public class Game {
 
     private int Dodge(){
 
-        d20.RollDice();
-        player.getRaceClass().setModificatore(player.getRaceClass().getDexterity());
-        int action = d20.getResult() + player.getRaceClass().getmodificatore() + player.getRaceClass().getBonus("Dexterity");
+        this.PreSetBattleDodge(player);
 
-        if (action <= 1){
+        if (getAction() <= 1){
             return -1;
         }
 
-        if (action >= enemy.getClassPgClass().getGuard()){
+        if (getAction() >= enemy.getClassPgClass().getGuard()){
             return 1;
         }
 
@@ -200,17 +272,16 @@ public class Game {
 
     }
 
+    /* Enemy AI (Move And Decision) */
     private int EnemyDodge(){
 
-        d20.RollDice();
-        enemy.getRaceClass().setModificatore(enemy.getRaceClass().getDexterity());
-        int action = d20.getResult() + enemy.getRaceClass().getmodificatore() + enemy.getRaceClass().getBonus("Dexterity");
+        this.PreSetBattleDodge(enemy);
 
-        if (action <= 1){
+        if (getAction() <= 1){
             return -1;
         }
 
-        if (action >= player.getClassPgClass().getGuard()){
+        if (getAction() >= player.getClassPgClass().getGuard()){
             return 1;
         }
 
@@ -218,50 +289,17 @@ public class Game {
 
     }
 
-    public Boolean EnemyAttackDecision(){
-        Random rand_num = new Random();
-
-        int decision = 1 + rand_num.nextInt(100);
-        if(decision >= 50)
-            return true;
-        
-        return false;
-    }
-
-    public Boolean EnemyDodgeDecision(){
-        Random rand_num = new Random();
-
-        int decision = 1 + rand_num.nextInt(100);
-        if(decision >= 80)
-            return true;
-        
-        return false;
-    }
-
-    public int EnemyAI(){
-        if (this.EnemyAttackDecision()){
-            return 1;
-        }
-        else if(this.EnemyDodgeDecision()){
-            return 2;
-        }
-        else{
-            return 3; /* 3 indica il fatto che il nemico si muove invece di difendersi o attaccare */
-        }
-    }
-
+    /* End Battle Manager */
     public Boolean CheckEndBattle(){
         if(player.getClassPgClass().getLife() <= 0 || enemy.getClassPgClass().getLife() <= 0)
             return true;
         return false;
     }
-    public String EndBattle(){
-        String results = "";
+    public void EndBattle(){
+        this.ClearResulstActionString();
         if(player.getClassPgClass().getLife() <= 0)
-            results = "You Lost !";
+            setResultsAction("You Lost !");
         if(enemy.getClassPgClass().getLife() <= 0)
-            results = "You Win!";
-        
-        return results;
+            setResultsAction("You Win!");
     }
 }

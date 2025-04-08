@@ -18,6 +18,9 @@ Fix e Bug da sistemare (+ Nuove Features da fare):
 - Inventory System
 - Provare ad aggiungere una nuova razza
 
+8 Aprile Report:
+- Sistemazione del codice, reso più elegante, ma in alcuni punti da migliorare
+
 5 Aprile Report:
 - Aggiunta del sistema di riavvio del gioco
 - Gestione della AI del nemico migliorata, capacità di decidere se attaccare schivare o muoversi(non in maniera razionale)

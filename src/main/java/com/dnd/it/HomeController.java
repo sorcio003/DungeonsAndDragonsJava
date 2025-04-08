@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
+import com.dnd.it.GameSystem.EnemyAI;
 import com.dnd.it.GameSystem.Game;
 import com.dnd.it.GameSystem.Model.Characters;
 
@@ -95,7 +96,7 @@ public class HomeController {
     private MapController mapController;
 
     public void initialize(){
-
+        enemy_decision = "";
     }
 
     /* Scene Manager */
@@ -117,7 +118,8 @@ public class HomeController {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Battle Results");
         alert.initOwner(app.getPrimaryStage());
-        alert.setHeaderText(this.game.EndBattle()+" Do you want to restart Battle?");
+        this.game.EndBattle();
+        alert.setHeaderText(this.game.getResultsAction()+" Do you want to restart Battle?");
         alert.setContentText("If you click Cancel You'll close App");
         // Wait User Answer
         ButtonType result = alert.showAndWait().orElse(ButtonType.CANCEL);
@@ -145,10 +147,14 @@ public class HomeController {
              * viene già deciso inizialmente quale sarà la mossa del nemico se attacare, schivare o muoversi
              * viene eseguita la mossa del player, poi viene eseguita la mossa del nemico, il tutto viene deciso e calcolato in base alla enemy_move
             */
-            enemy_moves = this.game.EnemyAI();
-            enemy_decision = "";
-            HistoryLabel.setText(game.BattleTurn("Schiva", 0));  
-            enemy_decision = this.game.BattleTurn("Azione Nemico", enemy_moves);
+            enemy_moves = this.game.getEnemyAI().EnemyAIDecision();
+            /* esecuzione BattleTurn Schiva */
+            this.game.BattleTurn("Schiva", 0);
+            /* print a schermo risultato esecuzione BattleTurn Schiva */
+            HistoryLabel.setText(this.game.getResultsAction()); 
+            /* esecuzione BattleTurn Azione Nemico */
+            this.game.BattleTurn("Azione Nemico", enemy_moves); 
+            enemy_decision = this.game.getResultsAction();
             HistoryLabel.setText(HistoryLabel.getText() +"\n"+ enemy_decision);  
             if(enemy_decision.equals("Il nemico si muove")){
                 while(current_enemy_speed > 0) {
@@ -179,7 +185,7 @@ public class HomeController {
             }
         }
         else{
-            this.EndTurn();
+            HistoryLabel.setText("Player Moves - Movimento non concesso!\nMovimenti esauriti (Click EndTurn BTN)");
         }
         
     }
@@ -199,7 +205,7 @@ public class HomeController {
             }
         }
         else{
-            this.EndTurn();
+            HistoryLabel.setText("Player Moves - Movimento non concesso!\nMovimenti esauriti (Click EndTurn BTN)");
         }
         
     }
@@ -219,7 +225,7 @@ public class HomeController {
             }
         }
         else{
-           this.EndTurn(); 
+            HistoryLabel.setText("Player Moves - Movimento non concesso!\nMovimenti esauriti (Click EndTurn BTN)");
         }
         
     }
@@ -239,17 +245,19 @@ public class HomeController {
             }
         }
         else{
-           this.EndTurn(); 
+            HistoryLabel.setText("Player Moves - Movimento non concesso!\nMovimenti esauriti (Click EndTurn BTN)");
         }
     }
 
     /* Battle System */
     private void Battle(String Player) throws IOException{
-        enemy_moves = this.game.EnemyAI();
+        enemy_moves = this.game.getEnemyAI().EnemyAIDecision();
         if(Player.equals("Player")){
-            HistoryLabel.setText(game.BattleTurn("Attacca", enemy_moves));  
+            this.game.BattleTurn("Attacca", enemy_moves);
+            HistoryLabel.setText(this.game.getResultsAction());  
         }
-        enemy_decision = this.game.BattleTurn("Azione Nemico", enemy_moves);
+        this.game.BattleTurn("Azione Nemico", enemy_moves);
+        enemy_decision = this.game.getResultsAction();
         HistoryLabel.setText(HistoryLabel.getText() + enemy_decision);   
             if(enemy_decision.equals("Il nemico si muove")){
                 while(current_enemy_speed > 0) {
@@ -329,7 +337,7 @@ public class HomeController {
         this.player = app.getPlayer();
         this.enemy = app.getEnemy();
 
-        this.game = new Game(player, enemy);
+        this.game = new Game(player, enemy, new EnemyAI());
 
         // Add observable list data to the table
         File file = new File("src/main/resources/Assets/Chracters_Icon/"+player.getClassPgClass().getClass_Pg()+".jpg");

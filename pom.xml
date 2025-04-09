@@ -46,6 +46,19 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--Puglin for building .exe APP-->
+            <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>3.2.0</version>
+            <configuration>
+                <archive>
+                    <manifestEntries>
+                        <Main-Class>com.dnd.it.App</Main-Class> <!-- Your main class -->
+                    </manifestEntries>
+                </archive>
+            </configuration>
+        </plugin>
         </plugins>
     </build>
 </project>

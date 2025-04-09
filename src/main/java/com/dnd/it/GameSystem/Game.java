@@ -1,8 +1,4 @@
 package com.dnd.it.GameSystem;
-import java.util.Random;
-
-import javax.crypto.spec.RC2ParameterSpec;
-
 import com.dnd.it.GameSystem.Dice.*;
 import com.dnd.it.GameSystem.Model.Characters;
 
@@ -15,11 +11,15 @@ public class Game {
     private Boolean double_hit;
     private Boolean already_dodge;
     private Boolean player_tried_to_dodge;
+    private Boolean enemyDodge;
+    private Boolean enemyMoving;
     private String results_action;
     private int bonus;
     private int modifier;
     private int damage;
+    private int additional_damage;
     private int launch;
+    private int dodge_action; // diversa da action e already_dodge pk serve al player per gestire il cirtical failure della schivata o il successo o insuccesso della schivata
     private int action;
     private D20 d20;
     private D10 d10;
@@ -31,14 +31,18 @@ public class Game {
         this.enemyAI = enemyAI;
         this.results_action = "";
         this.damage = 0;
+        this.additional_damage = 0;
         this.bonus = 0;
         this.modifier = 0;
         this.launch = 0;
         this.action = 0;
+        this.dodge_action = 0;
         this.untouchable = false;
         this.already_dodge = false;
         this.double_hit = false;
         this.player_tried_to_dodge = false;
+        this.enemyDodge = false;
+        this.enemyMoving = false;
         this.d20 = new D20();
         this.d10 = new D10();
         this.d6 = new D6();
@@ -60,10 +64,36 @@ public class Game {
     private void setDamage(int damage){
         this.damage = damage;
     }
+    private void setAdditionDamage(int add){
+        this.additional_damage = add;
+    }
     private void setAction(int action){
         this.action = action;
-    }   
-    
+    }  
+    private void setDodgeAction(int value){
+        this.dodge_action = value;
+    } 
+    private void setUntouchable(Boolean bool){
+        this.untouchable = bool;
+    }
+    private void setAlreadyDodge(Boolean bool){
+        this.already_dodge = bool;
+    }
+    private void setDoubleHit(Boolean bool){
+        this.double_hit = bool;
+    }
+    private void setPlayerTryDodge(Boolean bool){
+        this.player_tried_to_dodge = bool;
+    }
+    private void setEnemyDodge(Boolean bool){
+        this.enemyDodge = bool;
+    }
+    private void setEnemyMoving(Boolean bool){
+        this.enemyMoving = bool;
+    }
+    private void ClearResulstActionString(){
+        this.results_action = "";
+    }
     /* Getter */
     public String getResultsAction(){
         return this.results_action;
@@ -80,20 +110,50 @@ public class Game {
     private int getDamage(){
         return this.damage;
     }
+    private int getAdditionalDamage(){
+        return this.additional_damage;
+    }
     private int getAction(){
         return this.action;
+    }
+    private int getDodgeAction(){
+        return this.dodge_action;
     }
     public EnemyAI getEnemyAI(){
         return this.enemyAI;
     }
-
-    private void ClearResulstActionString(){
-        this.results_action = "";
+    private Boolean Is_Untouchable(){
+        return this.untouchable;
+    }
+    private Boolean Are_Already_Dodge(){
+        return this.already_dodge;
+    }
+    private Boolean Are_Double_Hit(){
+        return this.double_hit;
+    }
+    private Boolean Are_Player_Triyed_To_Dodge(){
+        return this.player_tried_to_dodge;
+    }
+    public Boolean Are_Enemy_Moving(){
+        return this.enemyMoving;
+    }
+    private Boolean Is_Enemy_Dodge(){
+        return this.enemyDodge;
     }
 
-    /* Questo metodo si occupa di pre settare il bonus, il modificatore, il danno e il risulatto del lancio del d20 */
+    /* Pre setting Battle Action
+     * I metodi sottostanti si occupano di Pre settarre i valori di:
+     *      - Calcolo del bonus su forza o destrezza (così come modificatore)
+     *      - lancio del D20
+     *      - Potenziale Danno del player o nemico già calcolato in base a D20 + bonus + modificatore
+     *      - Setting del esito del lancio
+     * 
+     * Invece il Metodo CalculateAdditionalDamage serve per calcolare il danno aggiuntivo nel caso in cui il player ottinee un Critical Hit
+     */
+
+    /* Metodi per la Battaglia */
     private void PreSetBattleAction(Characters character){
-        this.ClearResulstActionString();
+        //this.ClearResulstActionString();
         /* set bonus value */
         setBonus(character.getRaceClass().getBonus("Strength"));
         /* setting modifier of characters */
@@ -112,16 +172,41 @@ public class Game {
         setAction(d20.getResult() + character.getRaceClass().getmodificatore() + character.getRaceClass().getBonus("Dexterity"));
     }
 
+    private void CalculateAdditionalDamage(){
+        d6.RollDice();
+        setAdditionDamage(d6.getResult() + getBonus() + getModifier());
+    }
+    
     /* Algorithms for Battle */
 
     /*
      * Il giocatore ha tre opzioni, per iniziare con il codice gli do solo la possibilità di attaccare o schivare
      * 
      * Attacco:
-     *  IL giocatore decide di attaccare, quindi tira un dado D20 + bonus_competenza + modificatore per vedere se il colpo fa a segno (se è >= alla guard del nemico)
-     *  - Se il D20 + bonus_competenza + modificatore < guard, il colpo non ha effetto, e si passa al turno del nemico ( c'è da gestire il 20 critcio o 1 critico)
-     *  - Se il D20 + bonus_competenza + modificatore >= guard, allora il giocatore (in base al suo personaggio, ma solo per il codice di prova) 
-     *    tira un D10 + modificatore + bouns_competenza ( se esce fuori un 10 dal D10, hai diritto ad un secondo tiro di un D6 + modificatore + bonus_competenza)
+     *  IL giocatore decide di attaccare, quindi tira un dado D20 + bonus_competenza +- modificatore per vedere se il colpo va a segno:
+     *  - Se il D20 + bonus_competenza +- modificatore < guard, il colpo non ha effetto, e si passa al turno del nemico
+     *  - Se il D20 + bonus_competenza +- modificatore >= guard, allora il giocatore attacca con il calcolo del Danno (d6 + bonus +- modificatore)
+     *  - Casi Eccezionali:
+     *      - Se il D20 = 1, si entra nell'eccezione di Critical Failure, quindi il player non attacca, e da un vantaggio al nemico, che può attaccare due volte
+     *      - Se il D20 == 20, si entra nell'eccezione di Critical Hit, quindi il player può attaccare due volte il nemico
+     * 
+     *  - La medesima logica è applicata all'azione del nemico che in base al risultato del D20:
+     *      - Attacca Normalmente ( D20 >= player.guard)
+     *      - Attacca 2 volte     ( D20 == 1)
+     *      - Attacca 0 volte     ( D20 == 20)
+     * 
+     *  - Inoltre il Nemico è dotato di una AI (ancora stupida) che gli permette di decidere se attaccare, schivare o muoversi, quindi compiere come 1 di queste tre azioni
+     *  - Si gestisce anche il cosa in cui, se decide di muoversi e si avvicina al player, può decidere se attaccare oppure no
+     * 
+     *  - La EnemyAI è gestita come Classe a parte 
+     *  - Idee su come migliorarla:
+     *       - Aggiungere caratteristiche come:
+     *          - intelligenza
+     *          - Impulsività
+     *          - Stratega
+     *    Cercando di gestire le casistiche su "cosa devo fare se mi ritrovo in una determinata situazione", in sostanza creare una "finta AI programmata" con pattern
+     * 
+     * - Attualmente il Bonus e il Modificatore per ATTACCARE sono calcolati basandosi sull'attributo forza (Strenght) , invece per Schivare sono calcolati su destrezza(Dexterity)
      */
 
     /* Battle Turn Manager */
@@ -130,162 +215,169 @@ public class Game {
         /* Attacco Player */
         if (input.equals("Attacca")){
             this.Attack(enemy_moves);
-            setResultsAction("Hai deciso di Attaccare...\n"+ getResultsAction() +"\n");
-            untouchable = false;
+            this.setResultsAction("Hai deciso di Attaccare...\n"+ this.getResultsAction() +"\n");
+            this.setUntouchable(false);
         }
         /* Schivata Player */
         if (input.equals("Schiva")){
 
-            setResultsAction("Hai deciso di schivare...\n");
-            player_tried_to_dodge = true;
+            this.setResultsAction("Hai deciso di schivare...\n");
+            this.setPlayerTryDodge(true);
 
-            if (Dodge() == -1){
-                setResultsAction(this.getResultsAction() + "Il lancio ha avuto come esito un 1 critico!!\nIl nemico di Attacca può attaccare due volte per vantaggio.");
-                untouchable = false;
+            /* Avvio la procedura di calcolo della schivata */
+            this.Dodge(player, enemy);
+
+            if (this.getDodgeAction() == -1){
+                this.setResultsAction(this.getResultsAction() + "Il lancio ha avuto come esito un 1 critico!!\nIl nemico di Attacca può attaccare due volte per vantaggio.");
+                this.setUntouchable(false);
                 //results_action += "\nIl nemico ti infligge un danno pari a "+ EnemyAttack() + EnemyAttack();
             }
-            else if (Dodge() == 1){
-                setResultsAction(this.getResultsAction() + "Il lancio ha avuto esito positivo, il nemico non ti può attaccare");
-                untouchable = true;
+            else if (this.getDodgeAction() == 1){
+                this.setResultsAction(this.getResultsAction() + "Il lancio ha avuto esito positivo\nIl nemico non ti può attaccare");
+                this.setUntouchable(true);
             }
             else{
-                setResultsAction(this.getResultsAction() + "Il lancio ha avuto esito negativo. Il nemico ti può attaccare.\n");//Il nemico ti infligge un danno pari a "+ EnemyAttack();
-                untouchable = false;
+                this.setResultsAction(this.getResultsAction() + "Il lancio ha avuto esito negativo\nIl nemico ti può attaccare.\n");//Il nemico ti infligge un danno pari a "+ EnemyAttack();
+                this.setUntouchable(false);
             }
         }
         /* Azione Nemico */
         if(input.equals("Azione Nemico")){
-            if(enemy_moves == 2 && player_tried_to_dodge){
+            this.setEnemyMoving(false);
+            if(enemy_moves == 2){
                 enemy_moves = 1;
-                player_tried_to_dodge = false;
+                this.setPlayerTryDodge(false);
             }
-            if(! already_dodge ){
+            /* Are_Already_Dodge return false or true */
+            if( ! this.Are_Already_Dodge() ){
                 if(enemy_moves == 3 ){
-                    setResultsAction(this.getResultsAction() + "Il nemico si muove");
+                    this.setResultsAction("Il nemico si muove");
+                    this.setEnemyMoving(true);
                 }
 
                 if(enemy_moves == 1){
-                    if(!untouchable){
-                        setResultsAction(this.getResultsAction() + "Il nemico ti attacca...\nDanno: "+this.EnemyAttack()+"\n");
-                        if(double_hit){
-                            setResultsAction(this.getResultsAction() + "Il nemico ti attacca una seconda volta...\nDanno: "+this.EnemyAttack()+"\n");
-                            double_hit = false;
+                    if( ! this.Is_Untouchable() ){
+                        /* Il nemico attacco e setta il valore del danno che verrà concatenato come stringa nel results */
+                        this.EnemyAttack();
+                        this.setResultsAction("Il nemico ti attacca...\nDanno: "+this.getDamage()+"\n");
+                        if(this.Are_Double_Hit()){
+                            this.EnemyAttack();
+                            this.setResultsAction(this.getResultsAction() + "Il nemico ti attacca una seconda volta...\nDanno: "+this.getDamage()+"\n");
                         }
                     }
                     else{
-                        setResultsAction(this.getResultsAction() + "Il player ha schivato il tuo colpo");
-                        untouchable = false;
+                        this.setResultsAction("\n" + this.getResultsAction() + "Il player ha schivato il tuo colpo");
+                        this.setUntouchable(false);
                     }
                 }
                 
             }
             else{
-                already_dodge = false;
+                this.setAlreadyDodge(false);
             }
-            
+            /* Ho riscontrato un problema con il set false di double hit, rimane true quando il nemico non decide di attaccare, quindi set false alla fine di ogni scelta */
+            this.setDoubleHit(false);
         }
 
         
     }
 
-    /* Player Movements */
+    /* Player Attack */
     private void Attack(int enemy_status){
         this.PreSetBattleAction(player);
 
-        setResultsAction(this.getResultsAction() + "Tiro su Forza\nD20: "+d20.getResult());
+        this.setResultsAction(this.getResultsAction() + "Tiro su Forza\nD20: "+d20.getResult());
         
         d10.RollDice();
-        setDamage(d10.getResult() + getBonus() + getModifier());
+        this.setDamage(d10.getResult() + getBonus() + getModifier());
 
         if(enemy_status == 2){
-            already_dodge = true;
-            if(this.EnemyDodge() == 1){
-                setResultsAction(this.getResultsAction() + "\nBonus Competenza (Forza): "+bonus+"\nModificatore (Forza): "+modifier+"\nEsito del tiro: "+ launch+"\nIl nemico ha schivato il colpo");
+            this.setAlreadyDodge(true);
+            this.Dodge(enemy, player);
+            if(this.getDodgeAction() == 1){
+                this.setResultsAction(this.getResultsAction() + "\nBonus Competenza (Forza): "+ this.getBonus() +"\nModificatore (Forza): "+ this.getModifier() +"\nEsito del tiro: "+ this.getLaunch() +"\nIl nemico ha schivato il colpo");
+                /* Attributo boolean per dire se l'esito della sc hivata è andata a buon fine o no */
+                this.setEnemyDodge(true);
             }
             else{
-                setResultsAction(this.getResultsAction() + "\nIl nemico ha provato a schivare ma con esito negativo");
-            }  
+                this.setResultsAction(this.getResultsAction() + "\nIl nemico ha provato a schivare ma con esito negativo");
+                this.setEnemyDodge(false);
+            } 
+            /* Already Dodge settato indipendentemente se ha esito positivo o negativo */
+            this.setAlreadyDodge(true); 
         }
         /* Critical hit */
-        if (d20.getResult() == 20){
-            int add = 0;
+        if( ! this.Is_Enemy_Dodge() ){
+            /* Critical Hit */
+            if (d20.getResult() == 20){
+                this.CalculateAdditionalDamage();
+                enemy.getClassPgClass().DecreaseLife(getDamage()+getAdditionalDamage()); 
+                this.setResultsAction(this.getResultsAction() + "\nCritical Hit !!"+"\nBonus Competenza (Forza): "+ this.getBonus() +"\nModificatore (Forza): "+ this.getModifier() +"\nEsito del tiro: "+ this.getLaunch() +"\nDanno: "+ this.getDamage() +" + "+ this.getAdditionalDamage());
+            }
 
-            d6.RollDice();
-
-            add = d6.getResult() + getBonus() + getModifier();
-
-            enemy.getClassPgClass().DecreaseLife(getDamage()+add); 
-            setResultsAction(this.getResultsAction() + "\nCritical Hit !!"+"\nBonus Competenza (Forza): "+getBonus()+"\nModificatore (Forza): "+getModifier()+"\nEsito del tiro: "+ getLaunch()+"\nDanno: "+getDamage()+" + "+add);
+            /* Critical Failure */
+            else if (d20.getResult() == 1){
+                this.setDoubleHit(true);
+                this.setResultsAction(this.getResultsAction() +"\nCritical Failure !!\nIl nemico può attaccare due volte per vantaggio!\nEsito del tiro: "+ getLaunch()); 
+            }
+            /*
+            * If Sum of D20 result + Bonus player + Modifier is greater o equals then enemy guard, hit enemy rolling d10
+            * Alltough, attack had no effect
+            */
+            /* Normale Damage */
+            else if ( getLaunch() >= enemy.getClassPgClass().getGuard() ){
+                enemy.getClassPgClass().DecreaseLife(getDamage()); 
+                this.setResultsAction(this.getResultsAction() + "\nDanno: "+ this.getDamage() +"\nBonus Competenza (Forza): "+ this.getBonus() +"\nModificatore (Forza): "+ this.getModifier() +"\nEsito del tiro: "+ this.getLaunch());
+            }
+            /* Missed Hit */
+            else{ 
+                this.setResultsAction(this.getResultsAction() + "\nColpo non andato a segno");
+            }
         }
+        /* setto a false il check dell'avvenuta schivata del nemico per il nuovo turno */
+        this.setEnemyDodge(false);
 
-        /* Critical Failure */
-        else if (d20.getResult() == 1){
-            double_hit = true;
-            setResultsAction(this.getResultsAction() +"\nCritical Failure !!\nIl nemico può attaccare due volte per vantaggio!\nEsito del tiro: "+ getLaunch()); 
-        }
-        /*
-         * If Sum of D20 result + Bonus player + Modifier is greater o equals then enemy guard, hit enemy rolling d10
-         * Alltough, attack had no effect
-         */
-        else if ( getLaunch() >= enemy.getClassPgClass().getGuard() ){
-
-            enemy.getClassPgClass().DecreaseLife(getDamage()); 
-            setResultsAction(this.getResultsAction() + "\nDanno: "+getDamage()+"\nBonus Competenza (Forza): "+getBonus()+"\nModificatore (Forza): "+getModifier()+"\nEsito del tiro: "+ getLaunch());
-        }
-        else{ 
-            setResultsAction(this.getResultsAction() + "\nColpo non andato a segno");
-        }
     }
 
-    private int EnemyAttack(){
+    /* Enemy Attack */
+    private void EnemyAttack(){
         this.PreSetBattleAction(enemy);
 
         /*
          * If Sum of D20 result + Bonus player + Modifier is greater o equals then enemy guard, hit enemy rolling d10
          * Alltough, attack had no effect
          */
-        if ( getLaunch() >= player.getClassPgClass().getGuard() ){
+        if ( this.getLaunch() >= player.getClassPgClass().getGuard() ){
             d10.RollDice();
 
-            setDamage(d10.getResult() + getBonus() + getModifier());
-            player.getClassPgClass().DecreaseLife(getDamage());
-
-            return getDamage();
+            this.setDamage(d10.getResult() + this.getBonus() + this.getModifier());
+            player.getClassPgClass().DecreaseLife(this.getDamage());
         }
-
-        return 0;
+        else{
+            this.setDamage(0);
+        }
     }
 
-    private int Dodge(){
+    /* Player or Enemy Dodge */
+    /* Non confondersi col fatto che la classe java ha degli attributi con nomi uguali
+     * il 'player' è inteso come la classe characters che invoca il metodo Dodge e quindi è il soggetto
+     * che dovrà tentare di schivare contro il soggetto 'enemy'
+     */
+    private void Dodge(Characters player, Characters enemy){
 
         this.PreSetBattleDodge(player);
 
-        if (getAction() <= 1){
-            return -1;
+        if ( this.getAction() <= 1 ){
+            this.setDodgeAction(-1);
         }
 
-        if (getAction() >= enemy.getClassPgClass().getGuard()){
-            return 1;
+        else if ( this.getAction() >= enemy.getClassPgClass().getGuard() ){
+            this.setDodgeAction(1);
         }
 
-        return 0;
-
-    }
-
-    /* Enemy AI (Move And Decision) */
-    private int EnemyDodge(){
-
-        this.PreSetBattleDodge(enemy);
-
-        if (getAction() <= 1){
-            return -1;
+        else{
+            this.setDodgeAction(0);
         }
-
-        if (getAction() >= player.getClassPgClass().getGuard()){
-            return 1;
-        }
-
-        return 0;
 
     }
 
@@ -298,8 +390,8 @@ public class Game {
     public void EndBattle(){
         this.ClearResulstActionString();
         if(player.getClassPgClass().getLife() <= 0)
-            setResultsAction("You Lost !");
+            this.setResultsAction("You Lost!");
         if(enemy.getClassPgClass().getLife() <= 0)
-            setResultsAction("You Win!");
+            this.setResultsAction("You Win!");
     }
 }

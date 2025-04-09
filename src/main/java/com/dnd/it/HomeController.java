@@ -82,7 +82,6 @@ public class HomeController {
     private int current_player_speed;
     private int current_enemy_speed;
     private int enemy_moves;
-    private String enemy_decision;
     
     private App app;
     private Stage stage;
@@ -96,7 +95,7 @@ public class HomeController {
     private MapController mapController;
 
     public void initialize(){
-        enemy_decision = "";
+
     }
 
     /* Scene Manager */
@@ -154,9 +153,8 @@ public class HomeController {
             HistoryLabel.setText(this.game.getResultsAction()); 
             /* esecuzione BattleTurn Azione Nemico */
             this.game.BattleTurn("Azione Nemico", enemy_moves); 
-            enemy_decision = this.game.getResultsAction();
-            HistoryLabel.setText(HistoryLabel.getText() +"\n"+ enemy_decision);  
-            if(enemy_decision.equals("Il nemico si muove")){
+            HistoryLabel.setText(HistoryLabel.getText() +"\n"+ this.game.getResultsAction());  
+            if( this.game.Are_Enemy_Moving() ){
                 while(current_enemy_speed > 0) {
                     this.EnemyMovements();
                 }
@@ -167,7 +165,7 @@ public class HomeController {
         else{
             HistoryLabel.setText("Non puoi schivare finchè non sei vicino al nemico");  
         }
-        current_player_speed = app.getPlayer().getRaceClass().getSpeed();
+        RechargeSpeed();
     }
 
     public void UpBtnAction(ActionEvent event) throws IOException{
@@ -185,7 +183,8 @@ public class HomeController {
             }
         }
         else{
-            HistoryLabel.setText("Player Moves - Movimento non concesso!\nMovimenti esauriti (Click EndTurn BTN)");
+            this.EndTurn();
+            //HistoryLabel.setText("Player Moves - Movimento non concesso!\nMovimenti esauriti (Click EndTurn BTN)");
         }
         
     }
@@ -205,7 +204,8 @@ public class HomeController {
             }
         }
         else{
-            HistoryLabel.setText("Player Moves - Movimento non concesso!\nMovimenti esauriti (Click EndTurn BTN)");
+            this.EndTurn();
+            //HistoryLabel.setText("Player Moves - Movimento non concesso!\nMovimenti esauriti (Click EndTurn BTN)");
         }
         
     }
@@ -225,7 +225,8 @@ public class HomeController {
             }
         }
         else{
-            HistoryLabel.setText("Player Moves - Movimento non concesso!\nMovimenti esauriti (Click EndTurn BTN)");
+            this.EndTurn();
+            //HistoryLabel.setText("Player Moves - Movimento non concesso!\nMovimenti esauriti (Click EndTurn BTN)");
         }
         
     }
@@ -245,21 +246,22 @@ public class HomeController {
             }
         }
         else{
-            HistoryLabel.setText("Player Moves - Movimento non concesso!\nMovimenti esauriti (Click EndTurn BTN)");
+            this.EndTurn();
+            //HistoryLabel.setText("Player Moves - Movimento non concesso!\nMovimenti esauriti (Click EndTurn BTN)");
         }
     }
 
     /* Battle System */
     private void Battle(String Player) throws IOException{
+        /* valore tra 1 , 2 e 3 che decide se il nemico attacca, schiva o si muove */
         enemy_moves = this.game.getEnemyAI().EnemyAIDecision();
         if(Player.equals("Player")){
             this.game.BattleTurn("Attacca", enemy_moves);
             HistoryLabel.setText(this.game.getResultsAction());  
         }
         this.game.BattleTurn("Azione Nemico", enemy_moves);
-        enemy_decision = this.game.getResultsAction();
-        HistoryLabel.setText(HistoryLabel.getText() + enemy_decision);   
-            if(enemy_decision.equals("Il nemico si muove")){
+        HistoryLabel.setText(HistoryLabel.getText() + this.game.getResultsAction());   
+            if( this.game.Are_Enemy_Moving() ){
                 while(current_enemy_speed > 0) {
                     this.EnemyMovements();
                 }

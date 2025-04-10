@@ -24,7 +24,7 @@ Il giocatore ha tre opzioni, per iniziare con il codice gli do solo la possibili
      *  IL giocatore decide di attaccare, quindi tira un dado D20 + bonus_competenza +- modificatore per vedere se il colpo va a segno:
      *  Se il D20 + bonus_competenza +- modificatore < guard, il colpo non ha effetto, e si passa al turno del nemico
      *  Se il D20 + bonus_competenza +- modificatore >= guard, allora il giocatore attacca con il calcolo del Danno (d6 + bonus +- modificatore)
-     *  Casi Eccezionali:
+     *  # Casi Eccezionali:
      *  - Se il D20 = 1, si entra nell'eccezione di Critical Failure, quindi il player non attacca, e da un vantaggio al nemico, che può attaccare due volte
      *  - Se il D20 == 20, si entra nell'eccezione di Critical Hit, quindi il player può attaccare due volte il nemico
      * 
@@ -36,7 +36,7 @@ Il giocatore ha tre opzioni, per iniziare con il codice gli do solo la possibili
      *  Inoltre il Nemico è dotato di una AI (ancora stupida) che gli permette di decidere se attaccare, schivare o muoversi, quindi compiere come 1 di queste tre azioni
      *  Si gestisce anche il cosa in cui, se decide di muoversi e si avvicina al player, può decidere se attaccare oppure no
      * 
-     *  La EnemyAI è gestita come Classe a parte 
+- La EnemyAI è gestita come Classe a parte 
      *  Idee su come migliorarla:
      *  Aggiungere caratteristiche come:
      *  - intelligenza

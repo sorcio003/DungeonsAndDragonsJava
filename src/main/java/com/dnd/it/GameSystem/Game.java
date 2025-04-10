@@ -143,7 +143,7 @@ public class Game {
 
     /* dal momento che mi serve sapere se il player ha avuto come esito un fallimento critico decido di crare un metodo per lanciare il dado d20 prima della decisione del nemico  */
     private void RollD20(){
-        this.d20.RollDice();
+        this.d20.RollD20();
     }
     /* questo serve al EnemyAi per capire se il risultato dell'attacco o della schivata è stato un Fallimento critico, così automaticamente attacca */
     public int getD20PlayerResults(){
@@ -181,7 +181,7 @@ public class Game {
     }
 
     private void CalculateAdditionalDamage(){
-        d6.RollDice();
+        d6.RollD6();
         setAdditionDamage(d6.getResult() + getBonus() + getModifier());
     }
     
@@ -267,10 +267,10 @@ public class Game {
                     if( ! this.Is_Untouchable() ){
                         /* Il nemico attacco e setta il valore del danno che verrà concatenato come stringa nel results */
                         this.EnemyAttack();
-                        this.setResultsAction("Il nemico ti attacca...\nDanno: "+this.getDamage()+"\n");
+                        this.setResultsAction("Il nemico ti attacca...\nD20: "+this.d20.getResult()+"\nEsito del tiro: "+getLaunch()+"\nDanno: "+this.getDamage()+"\n");
                         if(this.Are_Double_Hit()){
                             this.EnemyAttack();
-                            this.setResultsAction(this.getResultsAction() + "Il nemico ti attacca una seconda volta...\nDanno: "+this.getDamage()+"\n");
+                            this.setResultsAction(this.getResultsAction() + "Il nemico ti attacca una seconda volta...\nD20: "+this.d20.getResult()+"\nEsito del tiro: "+getLaunch()+"\nDanno: "+this.getDamage()+"\n");
                         }
                     }
                     else{
@@ -286,17 +286,16 @@ public class Game {
             /* Ho riscontrato un problema con il set false di double hit, rimane true quando il nemico non decide di attaccare, quindi set false alla fine di ogni scelta */
             this.setDoubleHit(false);
         }
-
-        
+   
     }
 
     /* Player Attack */
     private void Attack(int enemy_status){
-        this.PreSetBattleAction(player);
+        this.PreSetBattleAction(this.player);
 
         this.setResultsAction(this.getResultsAction() + "Tiro su Forza\nD20: "+d20.getResult());
         
-        d10.RollDice();
+        d10.RollD10();
         this.setDamage(d10.getResult() + getBonus() + getModifier());
 
         if(enemy_status == 2){
@@ -314,10 +313,12 @@ public class Game {
             /* Already Dodge settato indipendentemente se ha esito positivo o negativo */
             this.setAlreadyDodge(true); 
         }
+        System.out.println("Critical hit: " +(d20.getResult() == 20));
         /* Critical hit */
         if( ! this.Is_Enemy_Dodge() ){
             /* Critical Hit */
             if (d20.getResult() == 20){
+                System.out.println("Critical hit: " +(d20.getResult() == 20));
                 this.CalculateAdditionalDamage();
                 enemy.getClassPgClass().DecreaseLife(getDamage()+getAdditionalDamage()); 
                 this.setResultsAction(this.getResultsAction() + "\nCritical Hit !!"+"\nBonus Competenza (Forza): "+ this.getBonus() +"\nModificatore (Forza): "+ this.getModifier() +"\nEsito del tiro: "+ this.getLaunch() +"\nDanno: "+ this.getDamage() +" + "+ this.getAdditionalDamage());
@@ -339,7 +340,7 @@ public class Game {
             }
             /* Missed Hit */
             else{ 
-                this.setResultsAction(this.getResultsAction() + "\nColpo non andato a segno");
+                this.setResultsAction(this.getResultsAction() + "\nEsito del tiro: "+getLaunch()+ "\nColpo non andato a segno");
             }
         }
         /* setto a false il check dell'avvenuta schivata del nemico per il nuovo turno */
@@ -349,14 +350,17 @@ public class Game {
 
     /* Enemy Attack */
     private void EnemyAttack(){
-        this.PreSetBattleAction(enemy);
+        this.RollD20();
+        this.PreSetBattleAction(this.enemy);
+
+        System.out.println("Launche enemy: "+getLaunch()+" D20 enemy: "+d20.getResult());
 
         /*
          * If Sum of D20 result + Bonus player + Modifier is greater o equals then enemy guard, hit enemy rolling d10
          * Alltough, attack had no effect
          */
         if ( this.getLaunch() >= player.getClassPgClass().getGuard() ){
-            d10.RollDice();
+            d10.RollD10();
 
             this.setDamage(d10.getResult() + this.getBonus() + this.getModifier());
             player.getClassPgClass().DecreaseLife(this.getDamage());

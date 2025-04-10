@@ -319,7 +319,6 @@ public class HomeController {
         }
     }
     public void RigthBtnAction(ActionEvent event) throws IOException{
-            System.out.println("Right arrow pressed");
             if (current_player_speed > 0 ){
                 int moves = this.mapController.Right();
                 if(moves == 1){
@@ -342,7 +341,9 @@ public class HomeController {
     /* Battle System */
     private void Battle(String Player) throws IOException{
         /* valore tra 1 , 2 e 3 che decide se il nemico attacca, schiva o si muove */
-        this.game.getEnemyAI().EnemyAIDecision(this.game.getD20PlayerResults());
+        int d20resulst = this.game.getD20PlayerResults();
+        System.out.println("D20 player: "+d20resulst);
+        this.game.getEnemyAI().EnemyAIDecision(d20resulst);
         enemy_moves = this.game.getEnemyAI().getDecision();
         if(Player.equals("Player")){
             this.game.BattleTurn("Attacca", enemy_moves);

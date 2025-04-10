@@ -48,6 +48,12 @@ Il giocatore ha tre opzioni, per iniziare con il codice gli do solo la possibili
 
 # Report and Update
 
+10 Aprile Update and Report:
+- Aggiunta della possibilià di muoversi con frecciette da tastiera
+- Superclasse Dice che gestisce i Dadi (D20, D10, D6)
+- Sistemato il codice (+ elegante)
+- Aggiornata EnemyAI
+
 9 Aprile Update and Report:
 - Ogni valore calcolato in battaglia è stato diversificato come attributo della classe Game
 - Aggiunta di metodi per il PresettingBattleAction del player e del nemico 

@@ -49,14 +49,6 @@ public class EnemyAI {
     }
 
     public void EnemyAIDecision(int d20PlayerResults){
-        /* se l'ultima decisione presa, quindi la decisione precedente, è uguale a 3 e il numero di movimenti non è calato sotto a 0, continua a decidere di muoverti */
-        if(this.getDecision() == 3 && this.getBlock_Of_Movements() > 0){
-            this.decision = 3;
-            this.DecreaseBlock_Of_Movements();
-        }
-        else{
-            /* Reset a 3 */
-            this.setBlock_Of_Movements(3);
             /* se il player ha ottenuto un fallimento critico automaticamente il nemico attacca */
             if (d20PlayerResults == 1){
                 this.setDecision(1);
@@ -73,7 +65,6 @@ public class EnemyAI {
                     this.setDecision(3); /* 3 indica il fatto che il nemico si muove invece di difendersi o attaccare */
                 }
             }
-        }
     }
 
     /* Setter */

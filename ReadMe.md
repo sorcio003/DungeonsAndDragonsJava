@@ -20,31 +20,31 @@ Fix e Bug da sistemare (+ Nuove Features da fare):
 # Algorithms for Battle
 
 Il giocatore ha tre opzioni, per iniziare con il codice gli do solo la possibilità di attaccare o schivare o muoversi 
-     * Attacco:
+- Attacco:
      *  IL giocatore decide di attaccare, quindi tira un dado D20 + bonus_competenza +- modificatore per vedere se il colpo va a segno:
-     *  - Se il D20 + bonus_competenza +- modificatore < guard, il colpo non ha effetto, e si passa al turno del nemico
-     *  - Se il D20 + bonus_competenza +- modificatore >= guard, allora il giocatore attacca con il calcolo del Danno (d6 + bonus +- modificatore)
-     *  - Casi Eccezionali:
-     *      - Se il D20 = 1, si entra nell'eccezione di Critical Failure, quindi il player non attacca, e da un vantaggio al nemico, che può attaccare due volte
-     *      - Se il D20 == 20, si entra nell'eccezione di Critical Hit, quindi il player può attaccare due volte il nemico
+     *  Se il D20 + bonus_competenza +- modificatore < guard, il colpo non ha effetto, e si passa al turno del nemico
+     *  Se il D20 + bonus_competenza +- modificatore >= guard, allora il giocatore attacca con il calcolo del Danno (d6 + bonus +- modificatore)
+     *  Casi Eccezionali:
+     *  - Se il D20 = 1, si entra nell'eccezione di Critical Failure, quindi il player non attacca, e da un vantaggio al nemico, che può attaccare due volte
+     *  - Se il D20 == 20, si entra nell'eccezione di Critical Hit, quindi il player può attaccare due volte il nemico
      * 
-     *  - La medesima logica è applicata all'azione del nemico che in base al risultato del D20:
-     *      - Attacca Normalmente ( D20 >= player.guard)
-     *      - Attacca 2 volte     ( D20 == 1)
-     *      - Attacca 0 volte     ( D20 == 20)
+     *  La medesima logica è applicata all'azione del nemico che in base al risultato del D20:
+     *  - Attacca Normalmente ( D20 >= player.guard)
+     *  - Attacca 2 volte     ( D20 == 1)
+     *  - Attacca 0 volte     ( D20 == 20)
      * 
-     *  - Inoltre il Nemico è dotato di una AI (ancora stupida) che gli permette di decidere se attaccare, schivare o muoversi, quindi compiere come 1 di queste tre azioni
-     *  - Si gestisce anche il cosa in cui, se decide di muoversi e si avvicina al player, può decidere se attaccare oppure no
+     *  Inoltre il Nemico è dotato di una AI (ancora stupida) che gli permette di decidere se attaccare, schivare o muoversi, quindi compiere come 1 di queste tre azioni
+     *  Si gestisce anche il cosa in cui, se decide di muoversi e si avvicina al player, può decidere se attaccare oppure no
      * 
-     *  - La EnemyAI è gestita come Classe a parte 
-     *  - Idee su come migliorarla:
-     *       - Aggiungere caratteristiche come:
-     *          - intelligenza
-     *          - Impulsività
-     *          - Stratega
-     *    Cercando di gestire le casistiche su "cosa devo fare se mi ritrovo in una determinata situazione", in sostanza creare una "finta AI programmata" con pattern
+     *  La EnemyAI è gestita come Classe a parte 
+     *  Idee su come migliorarla:
+     *  Aggiungere caratteristiche come:
+     *  - intelligenza
+     *  - Impulsività
+     *  - Stratega
+     *  Cercando di gestire le casistiche su "cosa devo fare se mi ritrovo in una determinata situazione", in sostanza creare una "finta AI programmata" con pattern
      * 
-     * - Attualmente il Bonus e il Modificatore per ATTACCARE sono calcolati basandosi sull'attributo forza (Strenght) , invece per Schivare sono calcolati su destrezza(Dexterity)
+     *  Attualmente il Bonus e il Modificatore per ATTACCARE sono calcolati basandosi sull'attributo forza (Strenght) , invece per Schivare sono calcolati su destrezza(Dexterity)
 
 9 Aprile Update and Report:
 - Ogni valore calcolato in battaglia è stato diversificato come attributo della classe Game

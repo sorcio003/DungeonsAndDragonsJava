@@ -46,6 +46,8 @@ Il giocatore ha tre opzioni, per iniziare con il codice gli do solo la possibili
      * 
      *  Attualmente il Bonus e il Modificatore per ATTACCARE sono calcolati basandosi sull'attributo forza (Strenght) , invece per Schivare sono calcolati su destrezza(Dexterity)
 
+# Report and Update
+
 9 Aprile Update and Report:
 - Ogni valore calcolato in battaglia è stato diversificato come attributo della classe Game
 - Aggiunta di metodi per il PresettingBattleAction del player e del nemico 

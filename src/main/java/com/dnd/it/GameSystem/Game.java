@@ -141,6 +141,15 @@ public class Game {
         return this.enemyDodge;
     }
 
+    /* dal momento che mi serve sapere se il player ha avuto come esito un fallimento critico decido di crare un metodo per lanciare il dado d20 prima della decisione del nemico  */
+    private void RollD20(){
+        this.d20.RollDice();
+    }
+    /* questo serve al EnemyAi per capire se il risultato dell'attacco o della schivata è stato un Fallimento critico, così automaticamente attacca */
+    public int getD20PlayerResults(){
+        this.RollD20();
+        return this.d20.getResult();
+    }
     /* Pre setting Battle Action
      * I metodi sottostanti si occupano di Pre settarre i valori di:
      *      - Calcolo del bonus su forza o destrezza (così come modificatore)
@@ -160,14 +169,13 @@ public class Game {
         character.getRaceClass().setModificatore(character.getRaceClass().getStrength());
         setModifier(character.getRaceClass().getmodificatore());
         setDamage(0);
-        /* Roll D20 to attack enemy */
-        d20.RollDice();
+        /* il lancio è gia avvenuto pre-pre calcolo per la decisione del nemico */
         /* pre set del risultato del lancio d20 results + bonus + modificatore, anche se negativo */
         setLaunch(d20.getResult() + bonus + modifier);
     }
 
     private void PreSetBattleDodge(Characters character){
-        d20.RollDice();
+        this.RollD20();
         character.getRaceClass().setModificatore(character.getRaceClass().getDexterity());
         setAction(d20.getResult() + character.getRaceClass().getmodificatore() + character.getRaceClass().getBonus("Dexterity"));
     }

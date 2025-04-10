@@ -23,6 +23,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 public class HomeController {
@@ -146,7 +148,8 @@ public class HomeController {
              * viene già deciso inizialmente quale sarà la mossa del nemico se attacare, schivare o muoversi
              * viene eseguita la mossa del player, poi viene eseguita la mossa del nemico, il tutto viene deciso e calcolato in base alla enemy_move
             */
-            enemy_moves = this.game.getEnemyAI().EnemyAIDecision();
+            this.game.getEnemyAI().EnemyAIDecision(this.game.getD20PlayerResults());
+            enemy_moves = this.game.getEnemyAI().getDecision();
             /* esecuzione BattleTurn Schiva */
             this.game.BattleTurn("Schiva", 0);
             /* print a schermo risultato esecuzione BattleTurn Schiva */
@@ -188,6 +191,27 @@ public class HomeController {
         }
         
     }
+    public void UpBtnActionKey(KeyEvent keyEvent) throws IOException{
+        if(keyEvent.getCode().equals(KeyCode.UP)){
+        if (current_player_speed > 0 ){
+                int moves = this.mapController.Up();
+                if(moves == 1){
+                current_player_speed -= mapController.getMeterForCell();
+                    HistoryLabel.setText("Player Moves - Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti"); 
+                }
+                else if(moves == 0){
+                    HistoryLabel.setText("Player Moves - Movimento in alto non possibile, Bordo mappa");
+                }
+                else if(moves == -1){
+                    HistoryLabel.setText("Player Moves - Movimento in alto non possibile, Presenza Nemico");
+                }
+            }
+            else{
+                this.EndTurn();
+                //HistoryLabel.setText("Player Moves - Movimento non concesso!\nMovimenti esauriti (Click EndTurn BTN)");
+            }
+        }
+    }
 
     public void DownBtnAction(ActionEvent event) throws IOException{
         if (current_player_speed > 0 ){
@@ -208,6 +232,27 @@ public class HomeController {
             //HistoryLabel.setText("Player Moves - Movimento non concesso!\nMovimenti esauriti (Click EndTurn BTN)");
         }
         
+    }
+    public void DownBtnActionKey(KeyEvent keyEvent) throws IOException{
+        if(keyEvent.getCode().equals(KeyCode.DOWN)){
+            if (current_player_speed > 0 ){
+                int moves = this.mapController.Down();
+                if(moves == 1){
+                current_player_speed -= mapController.getMeterForCell();
+                    HistoryLabel.setText("Player Moves - Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti"); 
+                }
+                else if(moves == 0){
+                    HistoryLabel.setText("Player Moves - Movimento in basso non possibile, Bordo mappa");
+                }
+                else if(moves == -1){
+                    HistoryLabel.setText("Player Moves - Movimento in basso non possibile, Presenza Nemico");
+                }
+            }
+            else{
+                this.EndTurn();
+                //HistoryLabel.setText("Player Moves - Movimento non concesso!\nMovimenti esauriti (Click EndTurn BTN)");
+            }
+        }
     }
 
     public void LeftBtnAction(ActionEvent event) throws IOException{
@@ -230,31 +275,75 @@ public class HomeController {
         }
         
     }
+    public void LeftBtnActionKey(KeyEvent keyEvent) throws IOException{
+        if(keyEvent.getCode().equals(KeyCode.LEFT)){
+            if (current_player_speed > 0 ){
+                int moves = this.mapController.Left();
+                if(moves == 1){
+                current_player_speed -= mapController.getMeterForCell();
+                    HistoryLabel.setText("Player Moves - Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti"); 
+                }
+                else if(moves == 0){
+                    HistoryLabel.setText("Player Moves - Movimento a sinistra non possibile, Bordo mappa");
+                }
+                else if(moves == -1){
+                    HistoryLabel.setText("Player Moves - Movimento a sinistra non possibile, Presenza Nemico");
+                }
+            }
+            else{
+                this.EndTurn();
+                //HistoryLabel.setText("Player Moves - Movimento non concesso!\nMovimenti esauriti (Click EndTurn BTN)");
+            }
+        }
+    }
 
+    public void RigthBtnActionKey(KeyEvent keyEvent) throws IOException{
+        if(keyEvent.getCode().equals(KeyCode.RIGHT)){
+            if (current_player_speed > 0 ){
+                int moves = this.mapController.Right();
+                if(moves == 1){
+                current_player_speed -= mapController.getMeterForCell();
+                HistoryLabel.setText("Player Moves - Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti"); 
+                }
+                else if(moves == 0){
+                    HistoryLabel.setText("Player Moves - Movimento a destra non possibile, Bordo mappa");
+                }
+                else if(moves == -1){
+                    HistoryLabel.setText("Player Moves - Movimento a destra non possibile, Presenza Nemico");
+                }
+            }
+            else{
+                this.EndTurn();
+                //HistoryLabel.setText("Player Moves - Movimento non concesso!\nMovimenti esauriti (Click EndTurn BTN)");
+            }
+        }
+    }
     public void RigthBtnAction(ActionEvent event) throws IOException{
-        if (current_player_speed > 0 ){
-            int moves = this.mapController.Right();
-            if(moves == 1){
-               current_player_speed -= mapController.getMeterForCell();
-               HistoryLabel.setText("Player Moves - Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti"); 
+            System.out.println("Right arrow pressed");
+            if (current_player_speed > 0 ){
+                int moves = this.mapController.Right();
+                if(moves == 1){
+                current_player_speed -= mapController.getMeterForCell();
+                HistoryLabel.setText("Player Moves - Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti"); 
+                }
+                else if(moves == 0){
+                    HistoryLabel.setText("Player Moves - Movimento a destra non possibile, Bordo mappa");
+                }
+                else if(moves == -1){
+                    HistoryLabel.setText("Player Moves - Movimento a destra non possibile, Presenza Nemico");
+                }
             }
-            else if(moves == 0){
-                HistoryLabel.setText("Player Moves - Movimento a destra non possibile, Bordo mappa");
+            else{
+                this.EndTurn();
+                //HistoryLabel.setText("Player Moves - Movimento non concesso!\nMovimenti esauriti (Click EndTurn BTN)");
             }
-            else if(moves == -1){
-                HistoryLabel.setText("Player Moves - Movimento a destra non possibile, Presenza Nemico");
-            }
-        }
-        else{
-            this.EndTurn();
-            //HistoryLabel.setText("Player Moves - Movimento non concesso!\nMovimenti esauriti (Click EndTurn BTN)");
-        }
     }
 
     /* Battle System */
     private void Battle(String Player) throws IOException{
         /* valore tra 1 , 2 e 3 che decide se il nemico attacca, schiva o si muove */
-        enemy_moves = this.game.getEnemyAI().EnemyAIDecision();
+        this.game.getEnemyAI().EnemyAIDecision(this.game.getD20PlayerResults());
+        enemy_moves = this.game.getEnemyAI().getDecision();
         if(Player.equals("Player")){
             this.game.BattleTurn("Attacca", enemy_moves);
             HistoryLabel.setText(this.game.getResultsAction());  

@@ -6,7 +6,7 @@ Un gioco ispirato al celebre universo di **Dungeons & Dragons**, sviluppato in J
 
 ## ⚔️ Funzionalità Attuali
 
-- ✅ Movimento del personaggio tramite tastiera (WASD o frecce direzionali)
+- ✅ Movimento del personaggio tramite tastiera (WASD)
 - ✅ Combattimento a turni: Attacco (`F`), Schivata (`Q`), Termine turno (`Z`)
 - ✅ Tiri salvezza e colpi basati su meccaniche D20 + bonus
 - ✅ AI del nemico con comportamento pseudo-casuale

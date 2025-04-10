@@ -87,6 +87,7 @@ public class HomeController {
     private int current_player_speed;
     private int current_enemy_speed;
     private int enemy_moves;
+    private int d20resulst;
     
     private App app;
     private Stage stage;
@@ -151,14 +152,17 @@ public class HomeController {
              * viene già deciso inizialmente quale sarà la mossa del nemico se attacare, schivare o muoversi
              * viene eseguita la mossa del player, poi viene eseguita la mossa del nemico, il tutto viene deciso e calcolato in base alla enemy_move
             */
-            this.game.getEnemyAI().EnemyAIDecision(this.game.getD20PlayerResults());
+            this.game.getEnemyAI().EnemyAIDecision(this.game.Roll_and_getD20Results());
             enemy_moves = this.game.getEnemyAI().getDecision();
             /* esecuzione BattleTurn Schiva */
             this.game.BattleTurn("Schiva", 0);
             /* print a schermo risultato esecuzione BattleTurn Schiva */
             HistoryLabel.setText(this.game.getResultsAction()); 
             /* esecuzione BattleTurn Azione Nemico */
+            d20resulst = this.game.Roll_and_getD20Results();
             this.game.BattleTurn("Azione Nemico", enemy_moves); 
+            this.game.getEnemyAI().setLastD20Results(d20resulst);
+
             HistoryLabel.setText(HistoryLabel.getText() +"\n"+ this.game.getResultsAction());  
             if( this.game.Are_Enemy_Moving() ){
                 while(current_enemy_speed > 0) {
@@ -281,15 +285,20 @@ public class HomeController {
 
     /* Battle System */
     private void Battle(String Player) throws IOException{
-        /* valore tra 1 , 2 e 3 che decide se il nemico attacca, schiva o si muove */
-        int d20resulst = this.game.getD20PlayerResults();
+        /* pre lancio del dado da parte del player */
+        d20resulst = this.game.Roll_and_getD20Results();
         this.game.getEnemyAI().EnemyAIDecision(d20resulst);
+        /* valore tra 1 , 2 e 3 che decide se il nemico attacca, schiva o si muove */
         enemy_moves = this.game.getEnemyAI().getDecision();
         if(Player.equals("Player")){
             this.game.BattleTurn("Attacca", enemy_moves);
             HistoryLabel.setText(this.game.getResultsAction());  
         }
+        /* pre lancio del dado da parte del nemico */
+        d20resulst = this.game.Roll_and_getD20Results();
+        this.game.getEnemyAI().setLastD20Results(d20resulst);
         this.game.BattleTurn("Azione Nemico", enemy_moves);
+
         HistoryLabel.setText(HistoryLabel.getText() + this.game.getResultsAction());   
             if( this.game.Are_Enemy_Moving() ){
                 while(current_enemy_speed > 0) {
@@ -369,7 +378,7 @@ public class HomeController {
         this.player = app.getPlayer();
         this.enemy = app.getEnemy();
 
-        this.game = new Game(player, enemy, new EnemyAI());
+        this.game = new Game(player, enemy, new EnemyAI(this.player, this.enemy));
 
         // Add observable list data to the table
         File file = new File("src/main/resources/Assets/Chracters_Icon/"+player.getClassPgClass().getClass_Pg()+".jpg");

@@ -2,6 +2,8 @@ package com.dnd.it.GameSystem;
 
 import java.util.Random;
 
+import com.dnd.it.GameSystem.Model.Characters;
+
 public class EnemyAI {
 
     /* la enemyAi deve prendere decisione di:
@@ -14,13 +16,21 @@ public class EnemyAI {
      * Se il player ha ottenuto un d20 == 1, fallimento critico, voglio che il nemico automaticamente attacchi !
      */
 
+    private Characters player;
+    private Characters enemy;
     private Random rand_num;
+    private int lastd20results;
     private int probability;
     private int decision;
+    private int max_prob_to_dodge;
 
-    public EnemyAI(){
+    public EnemyAI(Characters player, Characters enemy){
+        this.player = player;
+        this.enemy = enemy;
         this.decision = 0;
         this.probability = 0;
+        this.lastd20results = 0;
+        this.max_prob_to_dodge = 70;
     }
 
     private void GenerateRandomProbability(){
@@ -40,7 +50,12 @@ public class EnemyAI {
     private Boolean EnemyDodgeDecision(){
         GenerateRandomProbability();
 
-        if(this.getProbability() >= 70)
+        /* se la vita del nemico cala, aumenta la probabilità di schivare */
+        if(enemy.getClassPgClass().getLife() < 30){
+            this.IncreaseMax_prob_To_Dodge(-20);
+        }
+
+        if(this.getProbability() >= this.getMax_Prob_To_Dodge())
             return true;
         
         return false;
@@ -48,7 +63,9 @@ public class EnemyAI {
 
     public void EnemyAIDecision(int d20PlayerResults){
             /* se il player ha ottenuto un fallimento critico automaticamente il nemico attacca */
-            if (d20PlayerResults == 1){
+            /* se l'ultimo d20 results del nemico è stato >= 15, per 'stupidità umana' deciderà di attaccare nuovamente  */
+            /* obbligo di attacco se la differenza tra la vita del nemico e la vita del player è di 30 (naturalmente se il nemico ha almeno 30 punti vita in più) */
+            if (d20PlayerResults == 1 || this.getLastD20Results() >= enemy.getClassPgClass().getGuard() || (this.enemy.getClassPgClass().getLife() - this.player.getClassPgClass().getLife()) > 30 ){
                 this.setDecision(1);
             }
             /* altirmenti */
@@ -72,11 +89,29 @@ public class EnemyAI {
     private void setDecision(int decision){
         this.decision = decision;
     }
+    public void setLastD20Results(int d20){
+        this.lastd20results = d20;
+    }
+    private void setMax_prob_To_Dodge(int prob){
+        this.max_prob_to_dodge = prob;
+    }
+    private void IncreaseMax_prob_To_Dodge(){
+        this.max_prob_to_dodge++;
+    }
+    private void IncreaseMax_prob_To_Dodge(int value){
+        this.max_prob_to_dodge += value;
+    }
     /* Getter */
     private int getProbability(){
         return this.probability;
     }
     public int getDecision(){
         return this.decision;
+    }
+    private int getLastD20Results(){
+        return this.lastd20results;
+    }
+    private int getMax_Prob_To_Dodge(){
+        return this.max_prob_to_dodge;
     }
 }

@@ -8,12 +8,11 @@ Un gioco ispirato al celebre universo di **Dungeons & Dragons**, sviluppato in J
 
 - ✅ Movimento del personaggio tramite tastiera (WASD)
 - ✅ Combattimento a turni: Attacco (`F`), Schivata (`Q`), Termine turno (`Z`)
-- ✅ Tiri salvezza e colpi basati su meccaniche D20 + bonus
-- ✅ AI del nemico con comportamento pseudo-casuale
+- ✅ Tiri salvezza e colpi basati su meccaniche D20 + bonus + modificatore
+- ✅ AI del nemico con comportamento pseudo-casuale nei movimenti
 - ✅ Gestione di colpi critici e fallimenti critici
 - ✅ Sistema di riavvio partita al termine del combattimento
 - ✅ Mappa con gestione dei bordi e posizionamento intelligente del nemico
-
 ---
 
 ## 🧠 Algoritmi di Combattimento
@@ -39,13 +38,19 @@ Un gioco ispirato al celebre universo di **Dungeons & Dragons**, sviluppato in J
 - Comportamento attuale: pseudo-casuale
 - Si adatta a fallimenti critici del giocatore
 - Sistema booleano per decisioni dinamiche (es. avvicinamento → attacco)
-
+- **Decisione di Attacco**
+     - Se 💥 **D20 Player == 1** obbligo di Attacco  
+     - Se ⭐ **D20 Enemy >= self.guard()** obbligo di Attacco
+     - Se 🗡️ **enemy.life - player.life > 30** obbligo di Attacco
+- **Decisione di Schivata**
+     - Se 💥 **Enemy.life < 30** aumento probabilità di schivata
 ---
 
 ## 🚧 Prossimi Obiettivi
 
 - 🔁 **Miglioramento AI**: 
   - Introduzione di attributi come *intelligenza*, *impulsività*, *strategia*
+  - Muovere il nemico in base alla situazione (ESEMPIO: se ha vita bassa)
   - Decision-making basato sul contesto
 - 🌽 **Attacchi a distanza**
 - 💪 **Sistema Armi**
@@ -58,6 +63,7 @@ Un gioco ispirato al celebre universo di **Dungeons & Dragons**, sviluppato in J
 
 ### 📅 11 Aprile
 - Aggiunte le azioni da tastiera (attacco, schivata, fine turno)
+- Aggiornamento AI Nemico (Attacco, Schivata)
 
 ### 📅 10 Aprile
 - Supporto input tramite frecce direzionali

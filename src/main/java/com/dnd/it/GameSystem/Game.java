@@ -140,14 +140,10 @@ public class Game {
     private Boolean Is_Enemy_Dodge(){
         return this.enemyDodge;
     }
-
-    /* dal momento che mi serve sapere se il player ha avuto come esito un fallimento critico decido di crare un metodo per lanciare il dado d20 prima della decisione del nemico  */
-    private void RollD20(){
-        this.d20.RollD20();
-    }
+    
     /* questo serve al EnemyAi per capire se il risultato dell'attacco o della schivata è stato un Fallimento critico, così automaticamente attacca */
-    public int getD20PlayerResults(){
-        this.RollD20();
+    public int Roll_and_getD20Results(){
+        this.d20.RollD20();
         return this.d20.getResult();
     }
     /* Pre setting Battle Action
@@ -175,7 +171,7 @@ public class Game {
     }
 
     private void PreSetBattleDodge(Characters character){
-        this.RollD20();
+        d20.RollD20();
         character.getRaceClass().setModificatore(character.getRaceClass().getDexterity());
         setAction(d20.getResult() + character.getRaceClass().getmodificatore() + character.getRaceClass().getBonus("Dexterity"));
     }
@@ -348,7 +344,6 @@ public class Game {
 
     /* Enemy Attack */
     private void EnemyAttack(){
-        this.RollD20();
         this.PreSetBattleAction(this.enemy);
         /*
          * If Sum of D20 result + Bonus player + Modifier is greater o equals then enemy guard, hit enemy rolling d10

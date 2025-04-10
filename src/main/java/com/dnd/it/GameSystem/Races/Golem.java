@@ -7,8 +7,8 @@ public class Golem extends Race{
     public Golem(){
         super("Golem");
         this.setSpeed(3);
-        this.setStrength(15);
-        this.setDexterity(2);
+        this.setStrength(14);
+        this.setDexterity(5);
         this.setConstitution(8);
         this.setIntelligence(1);
         this.setWisdom(1);

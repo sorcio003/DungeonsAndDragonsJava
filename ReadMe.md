@@ -1,79 +1,100 @@
-# Dungeons And Dragons Java Game
+# 🐉 Dungeons & Dragons Java Game
 
-# Current Features:
+Un gioco ispirato al celebre universo di **Dungeons & Dragons**, sviluppato in Java con meccaniche di combattimento a turni, movimento su mappa e un sistema di AI dinamico. Progettato per offrire un'esperienza avvincente, fedele alle regole base di D&D, ma con un tocco personale.
 
-Features:
-- Muovere il proprio personaggio all'interno della mappa 
-- Attaccare (D20 esito + bonus competenza (Strength) + modificatore (Strentgh))
-- Schivare (D20 esito + bonus competenza (Dexterity) + modificatore (Dexterity))
-- Il nemico si muove all'interno della mapp in maniera pseudo-casuale
-- Il Nemico Attacca o schiva in base a delle decisioni pseudo-casuali
-- Alla fine del combattimento, si può riavviare la partita
+---
 
-Fix e Bug da sistemare (+ Nuove Features da fare):
-- Migliorare la AI Nemico e i movimenti i scena (dargli una logica)
-- Aggiungere la possibilità di colpire con armi da distanza 
-- Aggiungere le ARMI
-- Inventory System
-- Provare ad aggiungere una nuova razza
+## ⚔️ Funzionalità Attuali
 
-# Algorithms for Battle
+- ✅ Movimento del personaggio tramite tastiera (WASD o frecce direzionali)
+- ✅ Combattimento a turni: Attacco (`F`), Schivata (`Q`), Termine turno (`Z`)
+- ✅ Tiri salvezza e colpi basati su meccaniche D20 + bonus
+- ✅ AI del nemico con comportamento pseudo-casuale
+- ✅ Gestione di colpi critici e fallimenti critici
+- ✅ Sistema di riavvio partita al termine del combattimento
+- ✅ Mappa con gestione dei bordi e posizionamento intelligente del nemico
 
-Il giocatore ha tre opzioni, per iniziare con il codice gli do solo la possibilità di attaccare o schivare o muoversi 
-- Attacco:
-     *  IL giocatore decide di attaccare, quindi tira un dado D20 + bonus_competenza +- modificatore per vedere se il colpo va a segno:
-     *  Se il D20 + bonus_competenza +- modificatore < guard, il colpo non ha effetto, e si passa al turno del nemico
-     *  Se il D20 + bonus_competenza +- modificatore >= guard, allora il giocatore attacca con il calcolo del Danno (d6 + bonus +- modificatore)
-     *  # Casi Eccezionali:
-     *  - Se il D20 = 1, si entra nell'eccezione di Critical Failure, quindi il player non attacca, e da un vantaggio al nemico, che può attaccare due volte
-     *  - Se il D20 == 20, si entra nell'eccezione di Critical Hit, quindi il player può attaccare due volte il nemico
-     * 
-     *  La medesima logica è applicata all'azione del nemico che in base al risultato del D20:
-     *  - Attacca Normalmente ( D20 >= player.guard)
-     *  - Attacca 2 volte     ( D20 == 1)
-     *  - Attacca 0 volte     ( D20 == 20)
-     * 
-     *  Inoltre il Nemico è dotato di una AI (ancora stupida) che gli permette di decidere se attaccare, schivare o muoversi, quindi compiere come 1 di queste tre azioni
-     *  Si gestisce anche il cosa in cui, se decide di muoversi e si avvicina al player, può decidere se attaccare oppure no
-     * 
-- La EnemyAI è gestita come Classe a parte 
-     *  Idee su come migliorarla:
-     *  Aggiungere caratteristiche come:
-     *  - intelligenza
-     *  - Impulsività
-     *  - Stratega
-     *  Cercando di gestire le casistiche su "cosa devo fare se mi ritrovo in una determinata situazione", in sostanza creare una "finta AI programmata" con pattern
-     * 
-     *  Attualmente il Bonus e il Modificatore per ATTACCARE sono calcolati basandosi sull'attributo forza (Strenght) , invece per Schivare sono calcolati su destrezza(Dexterity)
+---
 
-# Report and Update
+## 🧠 Algoritmi di Combattimento
 
-10 Aprile Update and Report:
-- Aggiunta della possibilià di muoversi con frecciette da tastiera
-- Superclasse Dice che gestisce i Dadi (D20, D10, D6)
-- Sistemato il codice (+ elegante)
-- Aggiornata EnemyAI
+### 🗡️ Attacco
 
-9 Aprile Update and Report:
-- Ogni valore calcolato in battaglia è stato diversificato come attributo della classe Game
-- Aggiunta di metodi per il PresettingBattleAction del player e del nemico 
-  ossia pre calcolo dell'esito del lancio (d20+bonus+modificatore), danno potenziale
-- Aggiunta metodo per il calcolo del danno aggiuntivo in caso di Critical Hit
-- Gestione delle schivate da parte del player e del nemico e della decisione di movimento del nemico tramite Boolean
-- Compattamento il risultato da stampare a schermo in un'attributo results_action di tipo String che viene passatta tramite getter (eliminazione della String enemy_decision)
-- Riscritto il codice in maniera più elegante, Object Oriented, e aggiunti più commenti
+- **Tiro di attacco**: `D20 + Bonus Competenze + Modificatore (Forza)`
+  - Se il risultato è **≥ guardia del nemico**, il colpo ha successo.
+  - Se è **< guardia**, il colpo fallisce.
+- **Danno**: `D6 + Bonus + Modificatore`
+- **Eccezioni speciali**:
+  - 🎯 **Critical Hit (D20 = 20)**: doppio attacco
+  - 💥 **Critical Failure (D20 = 1)**: il nemico guadagna un attacco extra
 
-8 Aprile Report:
-- Sistemazione del codice, reso più elegante, ma in alcuni punti da migliorare
+### 🛡️ Schivata
 
-5 Aprile Report:
-- Aggiunta del sistema di riavvio del gioco
-- Gestione della AI del nemico migliorata, capacità di decidere se attaccare schivare o muoversi(non in maniera razionale)
-- Fix problemi della GUI e risoluzione eccezioni in Battle come Critical Hit, Critical Failure e Dodge Miss
+- **Tiro di schivata**: `D20 + Bonus Competenze + Modificatore (Destrezza)`
+- Usata per evitare l’attacco avversario.
 
-3 Aprile Update and Fix:
-- Il player non si accavalla più con il nemico
-- Bordi mappa gestiti
-- Aggiornamento del Game system Battle
-- Aggiunta della AI Enemy per gestire la probabilità di attacco, schivata o movimento in arena
-- Fix dei movimenti in arena e decisione del nemico se attaccare o no
+### 🤖 Enemy AI
+
+- Azioni: Attacco, Schivata o Movimento
+- Comportamento attuale: pseudo-casuale
+- Si adatta a fallimenti critici del giocatore
+- Sistema booleano per decisioni dinamiche (es. avvicinamento → attacco)
+
+---
+
+## 🚧 Prossimi Obiettivi
+
+- 🔁 **Miglioramento AI**: 
+  - Introduzione di attributi come *intelligenza*, *impulsività*, *strategia*
+  - Decision-making basato sul contesto
+- 🌽 **Attacchi a distanza**
+- 💪 **Sistema Armi**
+- 🍜 **Inventory System**
+- 🧕 **Aggiunta di nuove razze**
+
+---
+
+## 📝 Report Aggiornamenti
+
+### 📅 11 Aprile
+- Aggiunte le azioni da tastiera (attacco, schivata, fine turno)
+
+### 📅 10 Aprile
+- Supporto input tramite frecce direzionali
+- Introdotta superclasse `Dice` per gestione dadi (D20, D10, D6)
+- Codice ristrutturato in stile più elegante e OOP
+- Miglioramenti AI: riconoscimento fallimento critico del player
+
+### 📅 9 Aprile
+- Valori di battaglia incapsulati nella classe `Game`
+- Aggiunta logica `PresettingBattleAction` per pre-calcolo esiti
+- Supporto per danni critici e gestione schivata nemico/player
+- Output centralizzato in `results_action`
+
+### 📅 8 Aprile
+- Refactoring codice per maggiore leggibilità e mantenibilità
+
+### 📅 5 Aprile
+- Aggiunto restart del gioco
+- Miglioramenti AI nemico in combattimento
+- Fix bug GUI e gestione eccezioni
+
+### 📅 3 Aprile
+- Blocco sovrapposizione player-nemico
+- Gestione bordi mappa e movimenti intelligenti
+- Prima versione della EnemyAI con pattern decisionali base
+
+---
+
+## 👨‍💻 Tech Stack
+
+- **Java 17+**
+- OOP Principles
+- Console I/O
+- Custom AI Logic
+
+---
+
+## 📌 Note Finali
+
+Questo progetto è in continua evoluzione, con l’obiettivo di simulare un combattimento tattico e coinvolgente in stile D&D, implementato completamente in Java. Feedback, suggerimenti e contributi sono benvenuti!

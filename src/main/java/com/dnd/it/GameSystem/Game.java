@@ -313,12 +313,10 @@ public class Game {
             /* Already Dodge settato indipendentemente se ha esito positivo o negativo */
             this.setAlreadyDodge(true); 
         }
-        System.out.println("Critical hit: " +(d20.getResult() == 20));
         /* Critical hit */
         if( ! this.Is_Enemy_Dodge() ){
             /* Critical Hit */
             if (d20.getResult() == 20){
-                System.out.println("Critical hit: " +(d20.getResult() == 20));
                 this.CalculateAdditionalDamage();
                 enemy.getClassPgClass().DecreaseLife(getDamage()+getAdditionalDamage()); 
                 this.setResultsAction(this.getResultsAction() + "\nCritical Hit !!"+"\nBonus Competenza (Forza): "+ this.getBonus() +"\nModificatore (Forza): "+ this.getModifier() +"\nEsito del tiro: "+ this.getLaunch() +"\nDanno: "+ this.getDamage() +" + "+ this.getAdditionalDamage());
@@ -352,9 +350,6 @@ public class Game {
     private void EnemyAttack(){
         this.RollD20();
         this.PreSetBattleAction(this.enemy);
-
-        System.out.println("Launche enemy: "+getLaunch()+" D20 enemy: "+d20.getResult());
-
         /*
          * If Sum of D20 result + Bonus player + Modifier is greater o equals then enemy guard, hit enemy rolling d10
          * Alltough, attack had no effect

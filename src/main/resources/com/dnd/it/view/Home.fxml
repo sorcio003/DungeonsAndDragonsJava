@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dnd.it.HomeController">
+<AnchorPane fx:id="FatherAnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyPressed="#ActionPlayerWithKey" prefHeight="400.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dnd.it.HomeController">
    <children>
       <SplitPane dividerPositions="0.6" layoutX="32.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <items>
@@ -22,10 +22,10 @@
                   <Button fx:id="InventoryBtn" layoutX="26.0" layoutY="285.0" mnemonicParsing="false" onAction="#SwitchInventory" text="Inventory" />
                   <Button fx:id="AttackBtn" layoutX="100.0" layoutY="298.0" mnemonicParsing="false" onAction="#AttackBtnAction" text="Attack" />
                   <Button fx:id="DodgeBtn" layoutX="157.0" layoutY="298.0" mnemonicParsing="false" onAction="#DodgeBtnAction" text="Dodge" />
-                  <Button fx:id="UpBtn" layoutX="271.0" layoutY="285.0" mnemonicParsing="false" onAction="#UpBtnAction" onKeyPressed="#UpBtnActionKey" text="Up" />
-                  <Button fx:id="RightBtn" layoutX="310.0" layoutY="298.0" mnemonicParsing="false" onAction="#RigthBtnAction" onKeyPressed="#RigthBtnActionKey" text="Right" />
-                  <Button fx:id="LeftBtn" layoutX="225.0" layoutY="298.0" mnemonicParsing="false" onAction="#LeftBtnAction" onKeyPressed="#LeftBtnActionKey" text="Left" />
-                  <Button fx:id="DownBtn" layoutX="263.0" layoutY="311.0" mnemonicParsing="false" onAction="#DownBtnAction" onKeyPressed="#DownBtnActionKey" text="Down" />
+                  <Button fx:id="UpBtn" layoutX="271.0" layoutY="285.0" mnemonicParsing="false" onAction="#UpBtnAction" text="Up" />
+                  <Button fx:id="RightBtn" layoutX="310.0" layoutY="298.0" mnemonicParsing="false" onAction="#RigthBtnAction" text="Right" />
+                  <Button fx:id="LeftBtn" layoutX="225.0" layoutY="298.0" mnemonicParsing="false" onAction="#LeftBtnAction" text="Left" />
+                  <Button fx:id="DownBtn" layoutX="263.0" layoutY="311.0" mnemonicParsing="false" onAction="#DownBtnAction" text="Down" />
                   <TextField fx:id="InputTextField" layoutX="25.0" layoutY="349.0" prefHeight="26.0" prefWidth="286.0" />
                   <Button fx:id="SendBtn" layoutX="324.0" layoutY="349.0" mnemonicParsing="false" text="Send" />
                   <ScrollPane fx:id="ScrollHistory" layoutX="14.0" layoutY="14.0" prefHeight="263.0" prefWidth="362.0">

@@ -17,10 +17,8 @@ public class EnemyAI {
     private Random rand_num;
     private int probability;
     private int decision;
-    private int block_of_movements;
 
     public EnemyAI(){
-        this.block_of_movements = 3;
         this.decision = 0;
         this.probability = 0;
     }
@@ -74,20 +72,11 @@ public class EnemyAI {
     private void setDecision(int decision){
         this.decision = decision;
     }
-    private void setBlock_Of_Movements(int block){
-        this.block_of_movements = block;
-    }
-    private void DecreaseBlock_Of_Movements(){
-        this.block_of_movements --;
-    }
     /* Getter */
     private int getProbability(){
         return this.probability;
     }
     public int getDecision(){
         return this.decision;
-    }
-    private int getBlock_Of_Movements(){
-        return this.block_of_movements;
     }
 }

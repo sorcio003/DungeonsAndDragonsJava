@@ -34,8 +34,7 @@ public class EnemyViewerController {
     private Label WisdomTextLabel;
     @FXML
     private Label CharismTextLabel;
-
-    private App app;
+    
     private Characters enemy;
 
     public void initialize(){
@@ -43,8 +42,6 @@ public class EnemyViewerController {
     }
 
     public void setData(App app){
-        this.app = app;
-
         this.enemy = app.getEnemy();
 
         File file = new File("src/main/resources/Assets/Chracters_Icon/"+enemy.getRaceClass().getRace()+".jpg");

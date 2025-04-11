@@ -2,6 +2,7 @@ package com.dnd.it;
 
 
 import java.io.File;
+import java.io.InputStream;
 
 import com.dnd.it.GameSystem.Model.Characters;
 
@@ -44,8 +45,8 @@ public class EnemyViewerController {
     public void setData(App app){
         this.enemy = app.getEnemy();
 
-        File file = new File("src/main/resources/Assets/Chracters_Icon/"+enemy.getRaceClass().getRace()+".jpg");
-        EnemyImage.setImage(new Image(file.toURI().toString()));
+        InputStream inputStream = getClass().getResourceAsStream("/Assets/Chracters_Icon/" + enemy.getRaceClass().getRace() + ".jpg");
+        EnemyImage.setImage(new Image(inputStream));
         EnemyNameLabel.setText(enemy.getName());
         LifeLabelText.setText("" + enemy.getClassPgClass().getLife());
         GuardLabelText.setText("" + enemy.getClassPgClass().getGuard());

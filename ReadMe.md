@@ -1,11 +1,63 @@
-# 🐉 Dungeons & Dragons Java Game
+# 🐉 Dungeons & Dragons Java Game (Alpha Test 1.0.0)
 
 Un gioco ispirato al celebre universo di **Dungeons & Dragons**, sviluppato in Java con meccaniche di combattimento a turni, movimento su mappa e un sistema di AI dinamico. Progettato per offrire un'esperienza avvincente, fedele alle regole base di D&D, ma con un tocco personale.
 
 ---
 
+## 🚀 Installazione (Attualmente solo Windows)
+- 🔧 File .exe già creato e presenta come `DND Java GAme (Alpha 1.0.0)`
+- 💾 Scaricare la Repository (**Git from Terminale** o **Dowlonad .zip**)
+- Se Scaricato il file .zip:
+  - ✅ Estrai e Gioca
+- Se usato il comando git da terminale (All'interno di una cartella) **Github Account Required**:
+  - ✅ git init
+  - ✅ git config --global user.email "youremail@email.com"
+  - ✅ git config --global user.name "username"
+  - ✅ git remote add dnd "https://github.com/sorcio003/DungeonsAndDragonsJava.git"
+  - ✅ git pull dnd master
+- ⚠️ Il gioco può essere scaricato anche su **Linux** o Ambienti **UNIX**, ma il file .exe non è eseguibile ⚠️
+---
+
+## ⚔️ Classi Attuali
+- ✅ Classi (`Barbaro`), (`Guardiano`), entrambe con vita (`100`)
+- ✅ **Barbaro**: 
+      - CA(`12`) difesa per gli attacchi
+- ✅ **Guardiano**: 
+      - CA(`13`) difesa per gli attacchi
+- ❌ Privilegi Non Utilizzabili
+---
+
+## ⚔️ Razze Attuali
+- ✅ Razze (`Elfo`), (`Golem`), entrambe con 6 Attributi Caratteristica (per i modificatori)
+- ✅ In base alla Razza, se ha ottime abilità in quella caratteristica, guadagna un +2 nel bonus scalato su di essa.
+- ✅ **Elfo**: 
+      - Speed(`9`) blocchi per metro
+      - Strength(`12`) 
+      - Dexterity(`8`) 
+      - Constitution(`8`) 
+      - Intelligence(`8`) 
+      - Wisdom(`8`) 
+      - Charism(`8`) 
+      - Bonus Dexterity(`+2`)
+      - Bonus Intelligence(`+2`)
+      - Bonus Strength(`+2`)
+- ✅ **Golem**: 
+      - Speed(`3`) blocchi per metro
+      - Strength(`14`) 
+      - Dexterity(`5`) 
+      - Constitution(`8`) 
+      - Intelligence(`1`) 
+      - Wisdom(`1`) 
+      - Charism(`1`) 
+      - Bonus Strength(`+2`)
+      - Bonus Constitution(`+2`)
+- ❌ Abilità Non Utilizzabili
+---
+
 ## ⚔️ Funzionalità Attuali
 
+- ✅ Razza e Classe **Player** (`Elfo`), (`Barbaro`)
+- ✅ Razza e Classe **Enemy** (`Golem`),(`Guardiano`)
 - ✅ Movimento del personaggio tramite tastiera (WASD)
 - ✅ Combattimento a turni: Attacco (`F`), Schivata (`Q`), Termine turno (`Z`)
 - ✅ Tiri salvezza e colpi basati su meccaniche D20 + bonus + modificatore
@@ -56,6 +108,8 @@ Un gioco ispirato al celebre universo di **Dungeons & Dragons**, sviluppato in J
 - 💪 **Sistema Armi**
 - 🍜 **Inventory System**
 - 🧕 **Aggiunta di nuove razze**
+- ⚡ **Possibilità di Utilizzare le Abilità**
+- 🌿 **Item per curarsi (Esclusiva Player x2)**
 
 ---
 
@@ -64,6 +118,12 @@ Un gioco ispirato al celebre universo di **Dungeons & Dragons**, sviluppato in J
 ### 📅 11 Aprile
 - Aggiunte le azioni da tastiera (attacco, schivata, fine turno)
 - Aggiornamento AI Nemico (Attacco, Schivata)
+- Test del gioco (valutazione tasso vittoria e sconfitta) **Gioco Moderato**
+- Creazione del file .exe e .jar
+- Fix bug dell'immagini non visibili nel file .jar con InpustStream
+- per la creazione del file .exe, creato senza visualizzazione console e con comando
+  pyinstaller launcher.py --onefile --noconsole (nella cartella Launcher)
+- Mini-Bilanciamento del Gioco (guarda statistiche player, enemy)
 
 ### 📅 10 Aprile
 - Supporto input tramite frecce direzionali

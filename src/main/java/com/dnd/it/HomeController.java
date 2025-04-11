@@ -2,6 +2,7 @@ package com.dnd.it;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Random;
 
 import com.dnd.it.GameSystem.EnemyAI;
@@ -381,8 +382,8 @@ public class HomeController {
         this.game = new Game(player, enemy, new EnemyAI(this.player, this.enemy));
 
         // Add observable list data to the table
-        File file = new File("src/main/resources/Assets/Chracters_Icon/"+player.getClassPgClass().getClass_Pg()+".jpg");
-        PhotoPG.setImage(new Image(file.toURI().toString()));
+        InputStream inputStream = getClass().getResourceAsStream("/Assets/Chracters_Icon/" + player.getClassPgClass().getClass_Pg() + ".jpg");
+        PhotoPG.setImage(new Image(inputStream));
         PlayerNameLabel.setText(player.getName());
         /* Base Attribute */
         LifeLabelText.setText("" + player.getClassPgClass().getLife());

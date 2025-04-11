@@ -1,6 +1,7 @@
 package com.dnd.it;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -190,10 +191,10 @@ public class MapController implements Initializable{
         n_rows = gridMap.getRowCount();
         n_columns = gridMap.getColumnCount();
         
-        File playerPixelImage = new File("src/main/resources/Assets/Characters_Map_icon/"+app.getPlayer().getClassPgClass().getClass_Pg()+"_top_view.png");
-        File enemyPixelImage = new File("src/main/resources/Assets/Characters_Map_icon/"+app.getEnemy().getRaceClass().getRace()+"_top_view.png");
-        this.playerPixel = new ImageView(new Image(playerPixelImage.toURI().toString()));
-        this.enemyPixel = new ImageView(new Image(enemyPixelImage.toURI().toString()));
+        InputStream playerPixelImage = getClass().getResourceAsStream("/Assets/Characters_Map_icon/" +app.getPlayer().getClassPgClass().getClass_Pg()+"_top_view.png");
+        InputStream enemyPixelImage = getClass().getResourceAsStream("/Assets/Characters_Map_icon/"+app.getEnemy().getRaceClass().getRace()+"_top_view.png");
+        this.playerPixel = new ImageView(new Image(playerPixelImage));
+        this.enemyPixel = new ImageView(new Image(enemyPixelImage));
 
         current_x_player = 0;
         current_y_player = n_rows/2;

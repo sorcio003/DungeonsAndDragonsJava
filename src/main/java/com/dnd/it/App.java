@@ -2,6 +2,7 @@ package com.dnd.it;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import com.dnd.it.GameSystem.Classes.*;
 import com.dnd.it.GameSystem.Model.Characters;
@@ -38,8 +39,6 @@ public class App extends Application {
 
     private void setCharacters(){
         player = new Characters("Drake", 256, new Elf(), new Barbaro());
-        player.getRaceClass().setStrength(14);
-        player.getRaceClass().setBonus("Strength", 2);
         enemy = new Characters("Golem", 1098, new Golem(), new Guardian());
         player.setDescription("Tutorials Point originated from the idea that there exists a class of readers who respond better to online content and prefer to learn new skills at their own pace from the comforts of their drawing rooms.");
         player.setMoneyValue(100);
@@ -100,8 +99,8 @@ public class App extends Application {
             // Show the scene containing the root layout.
             Scene scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
-            File file = new File("src/main/resources/Assets/Icon/D20.png");
-            primaryStage.getIcons().add(new Image(file.toURI().toString()));
+            InputStream inputStream = getClass().getResourceAsStream("/Assets/Icon/D20.png");
+            primaryStage.getIcons().add(new Image(inputStream));
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -148,8 +147,8 @@ public class App extends Application {
             enemyViewer = new Stage();
             enemyViewer.setTitle("D&D Java Game - Enemy");
             enemyViewer.setScene(scene);
-            File file = new File("src/main/resources/Assets/Icon/D20.png");
-            enemyViewer.getIcons().add(new Image(file.toURI().toString()));
+            InputStream inputStream = getClass().getResourceAsStream("/Assets/Icon/D20.png");
+            enemyViewer.getIcons().add(new Image(inputStream));
             enemyViewer.show();
 
             enemyViewer.setResizable(false);
@@ -180,8 +179,8 @@ public class App extends Application {
             mapViewer = new Stage();
             mapViewer.setTitle("D&D Java Game - Battle Map");
             mapViewer.setScene(scene);
-            File file = new File("src/main/resources/Assets/Icon/Map.png");
-            mapViewer.getIcons().add(new Image(file.toURI().toString()));
+            InputStream inputStream = getClass().getResourceAsStream("/Assets/Icon/Map.png");
+            mapViewer.getIcons().add(new Image(inputStream));
             mapViewer.show();
 
             mapViewer.setResizable(false);

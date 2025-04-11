@@ -105,10 +105,6 @@ Un gioco ispirato al celebre universo di **Dungeons & Dragons**, sviluppato in J
 
 Questo progetto è in continua evoluzione, con l’obiettivo di simulare un combattimento tattico e coinvolgente in stile D&D, implementato completamente in Java. Feedback, suggerimenti e contributi sono benvenuti!
 
-📌 Note Finali
-
-Questo progetto è in continua evoluzione, con l’obiettivo di simulare un combattimento tattico e coinvolgente in stile D&D, implementato completamente in Java. Feedback, suggerimenti e contributi sono benvenuti!
-
-📄 Recensione da parte dello sviluppatore
+## 📄 Recensione da parte dello sviluppatore
 
 Ho testato più di 3/4 partite consecutive e il tasso di vincita si aggira intorno ai 2 su 4. Molto dipende dalla strategia adottata dal giocatore: agire impulsivamente o ignorare le potenzialità della schivata spesso porta alla sconfitta!

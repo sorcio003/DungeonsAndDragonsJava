@@ -122,15 +122,14 @@ public class HomeController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("view/Equipment.fxml"));
         root = loader.load();
 
-        EquipmentController controller = loader.getController();
-        controller.setTableClass(app);
-
         stage = new Stage();
         scene = new Scene(root);
         stage.setTitle("D&D Java Game - Equipment");
         InputStream inputStream = getClass().getResourceAsStream("/Assets/Icon/Map.png");
         stage.getIcons().add(new Image(inputStream));
         stage.setScene(scene);
+        EquipmentController controller = loader.getController();
+        controller.setTableClass(app, stage);
         stage.show();
 
     }

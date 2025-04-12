@@ -19,6 +19,7 @@ public class Characters {
     private FloatProperty money; 
     private StringProperty Description;
     private StringProperty HystoryOfPg;
+    private Boolean already_holding_weapon;
 
     public Characters(String name, int eta, Race race, ClassPg classPg){
         this.name = new SimpleStringProperty(name);
@@ -29,6 +30,7 @@ public class Characters {
         this.money = new SimpleFloatProperty(0);
         this.Description = new SimpleStringProperty("Description");
         this.HystoryOfPg = new SimpleStringProperty("History");
+        this.already_holding_weapon = false;
     }
 
     /* Setter */
@@ -54,6 +56,10 @@ public class Characters {
 
     public void setMoneyValue(float value){
         this.money.set(value);
+    }
+
+    public void setAlready_Holding_weapon(Boolean bool){
+        this.already_holding_weapon = bool;
     }
 
     /* Level */
@@ -120,6 +126,10 @@ public class Characters {
 
     public float getMoney(){
         return this.money.get();
+    }
+
+    public Boolean Are_Already_Holding_Weapon(){
+        return this.already_holding_weapon;
     }
 
     /* Getter Property */

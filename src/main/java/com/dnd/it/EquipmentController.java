@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
@@ -35,6 +36,7 @@ public class EquipmentController {
 
     private Characters player;
     private Stage stage;
+    private Label diceLabel;
 
     public void initialize(){
         nameColumn.setCellValueFactory(cellData -> cellData.getValue().getWeaponDescriptionByIdStringProperty(0));
@@ -47,6 +49,8 @@ public class EquipmentController {
         int index = WeaponsTable.getSelectionModel().getSelectedIndex();
         if(! player.Are_Already_Holding_Weapon() && ! WeaponsTable.getItems().get(index).Is_Holding_a_Weapon()){
             WeaponsTable.getItems().get(index).set_Holding_Weapon(true);
+            diceLabel.setText(WeaponsTable.getItems().get(index).getWeaponDescriptionById(1));
+            player.setDiceForDamage(WeaponsTable.getItems().get(index).getDice());
             player.setAlready_Holding_weapon(true);
             this.RefreshTableView(index);
         }
@@ -66,6 +70,8 @@ public class EquipmentController {
         if(player.Are_Already_Holding_Weapon() && WeaponsTable.getItems().get(index).Is_Holding_a_Weapon()){
             WeaponsTable.getItems().get(index).set_Holding_Weapon(false);
             player.setAlready_Holding_weapon(false);
+            player.ResetDiceForDamage();
+            diceLabel.setText("1d"+player.getDiceForDamage().getDiceMaxValue());
             this.RefreshTableView(index);
         }
         else{
@@ -84,8 +90,9 @@ public class EquipmentController {
         WeaponsTable.refresh();
     }
 
-    public void setTableClass(App app, Stage stage){
+    public void setTableClass(App app, Stage stage, Label diceLabel){
         this.stage = stage;
+        this.diceLabel = diceLabel;
         this.player = app.getPlayer();
         ObservableList<Armi> list = FXCollections.observableArrayList();
         List<Armi> temp = app.getPlayer().getClassPgClass().getWeaponList();

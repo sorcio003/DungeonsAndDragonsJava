@@ -81,6 +81,8 @@ public class HomeController {
     @FXML
     private Label DescriptionLabel;
     @FXML
+    private Label DiceforDamageLabel;
+    @FXML
     private ImageView PhotoPG;
 
     private int current_player_speed;
@@ -129,7 +131,7 @@ public class HomeController {
         stage.getIcons().add(new Image(inputStream));
         stage.setScene(scene);
         EquipmentController controller = loader.getController();
-        controller.setTableClass(app, stage);
+        controller.setTableClass(app, stage, DiceforDamageLabel);
         stage.show();
 
     }
@@ -416,7 +418,7 @@ public class HomeController {
         WisdomLabelText.setText("" + player.getRaceClass().getWisdom());
         CharismLabelText.setText("" + player.getRaceClass().getCharism());
         MoneyLabelText.setText("" + player.getMoney());
-
+        DiceforDamageLabel.setText("1d" + player.getDiceForDamage().getDiceMaxValue());
         HistoryLabel.setText("");
     }
 

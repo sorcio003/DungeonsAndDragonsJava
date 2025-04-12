@@ -22,7 +22,7 @@ public class Game {
     private int dodge_action; // diversa da action e already_dodge pk serve al player per gestire il cirtical failure della schivata o il successo o insuccesso della schivata
     private int action;
     private D20 d20;
-    private D10 d10;
+    private D4 d4;
     private D6 d6;
 
     public Game(Characters player, Characters enemy, EnemyAI enemyAI){
@@ -44,7 +44,7 @@ public class Game {
         this.enemyDodge = false;
         this.enemyMoving = false;
         this.d20 = new D20();
-        this.d10 = new D10();
+        this.d4 = new D4();
         this.d6 = new D6();
     }
 
@@ -177,8 +177,8 @@ public class Game {
     }
 
     private void CalculateAdditionalDamage(){
-        d6.RollD6();
-        setAdditionDamage(d6.getResult() + getBonus() + getModifier());
+        d4.RollD4();
+        setAdditionDamage(d4.getResult() + getBonus() + getModifier());
     }
     
     /* Algorithms for Battle */
@@ -291,8 +291,9 @@ public class Game {
 
         this.setResultsAction(this.getResultsAction() + "Tiro su Forza\nD20: "+d20.getResult());
         
-        d10.RollD10();
-        this.setDamage(d10.getResult() + getBonus() + getModifier());
+        d4.RollD4();
+        this.setDamage(d4.getResult() + getBonus() + getModifier());
+        //System.out.println("Player\nD"+player.getDiceForDamage().getDiceMaxValue()+" results: "+d4.getResult()+"\nBonus Competenza: "+getBonus()+"\nModificatore: "+getModifier()+"\nDanno totale: "+ getDamage());
 
         if(enemy_status == 2){
             this.setAlreadyDodge(true);
@@ -324,7 +325,7 @@ public class Game {
                 this.setResultsAction(this.getResultsAction() +"\nCritical Failure !!\nIl nemico può attaccare due volte per vantaggio!\nEsito del tiro: "+ getLaunch()); 
             }
             /*
-            * If Sum of D20 result + Bonus player + Modifier is greater o equals then enemy guard, hit enemy rolling d10
+            * If Sum of D20 result + Bonus player + Modifier is greater o equals then enemy guard, hit enemy rolling D4
             * Alltough, attack had no effect
             */
             /* Normale Damage */
@@ -346,13 +347,13 @@ public class Game {
     private void EnemyAttack(){
         this.PreSetBattleAction(this.enemy);
         /*
-         * If Sum of D20 result + Bonus player + Modifier is greater o equals then enemy guard, hit enemy rolling d10
+         * If Sum of D20 result + Bonus player + Modifier is greater o equals then enemy guard, hit enemy rolling D4
          * Alltough, attack had no effect
          */
         if ( this.getLaunch() >= player.getClassPgClass().getGuard() ){
-            d10.RollD10();
-
-            this.setDamage(d10.getResult() + this.getBonus() + this.getModifier());
+            d4.RollD4();
+            this.setDamage(d4.getResult() + this.getBonus() + this.getModifier());
+            //System.out.println("Enemy\nD"+enemy.getDiceForDamage().getDiceMaxValue()+" results: "+d4.getResult()+"\nBonus Competenza: "+getBonus()+"\nModificatore: "+getModifier()+"\nDanno totale: "+ getDamage());
             player.getClassPgClass().DecreaseLife(this.getDamage());
         }
         else{

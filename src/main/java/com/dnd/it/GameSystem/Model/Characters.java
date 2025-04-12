@@ -1,6 +1,8 @@
 package com.dnd.it.GameSystem.Model;
 
 import com.dnd.it.GameSystem.Classes.ClassPg;
+import com.dnd.it.GameSystem.Dice.D4;
+import com.dnd.it.GameSystem.Dice.Dice;
 import com.dnd.it.GameSystem.Races.Race;
 
 import javafx.beans.property.FloatProperty;
@@ -20,7 +22,9 @@ public class Characters {
     private StringProperty Description;
     private StringProperty HystoryOfPg;
     private Boolean already_holding_weapon;
+    private Dice diceforDamage;
 
+    /* di base, ogni personaggio quando attacca a mani nude usa 1d4 per il danno */
     public Characters(String name, int eta, Race race, ClassPg classPg){
         this.name = new SimpleStringProperty(name);
         this.race = race;
@@ -31,6 +35,7 @@ public class Characters {
         this.Description = new SimpleStringProperty("Description");
         this.HystoryOfPg = new SimpleStringProperty("History");
         this.already_holding_weapon = false;
+        this.diceforDamage = new D4();
     }
 
     /* Setter */
@@ -60,6 +65,14 @@ public class Characters {
 
     public void setAlready_Holding_weapon(Boolean bool){
         this.already_holding_weapon = bool;
+    }
+
+    public void setDiceForDamage(Dice dice){
+        this.diceforDamage = dice;
+    }
+
+    public void ResetDiceForDamage(){
+        this.diceforDamage = new D4();
     }
 
     /* Level */
@@ -130,6 +143,10 @@ public class Characters {
 
     public Boolean Are_Already_Holding_Weapon(){
         return this.already_holding_weapon;
+    }
+
+    public Dice getDiceForDamage(){
+        return this.diceforDamage;
     }
 
     /* Getter Property */

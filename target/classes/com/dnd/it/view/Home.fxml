@@ -19,13 +19,13 @@
          <items>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="InventoryBtn" layoutX="26.0" layoutY="285.0" mnemonicParsing="false" onAction="#SwitchInventory" text="Inventory" />
-                  <Button fx:id="AttackBtn" layoutX="100.0" layoutY="298.0" mnemonicParsing="false" onAction="#AttackBtnAction" text="Attack" />
-                  <Button fx:id="DodgeBtn" layoutX="157.0" layoutY="298.0" mnemonicParsing="false" onAction="#DodgeBtnAction" text="Dodge" />
-                  <Button fx:id="UpBtn" layoutX="271.0" layoutY="285.0" mnemonicParsing="false" onAction="#UpBtnAction" text="Up" />
-                  <Button fx:id="RightBtn" layoutX="310.0" layoutY="298.0" mnemonicParsing="false" onAction="#RigthBtnAction" text="Right" />
-                  <Button fx:id="LeftBtn" layoutX="225.0" layoutY="298.0" mnemonicParsing="false" onAction="#LeftBtnAction" text="Left" />
-                  <Button fx:id="DownBtn" layoutX="263.0" layoutY="311.0" mnemonicParsing="false" onAction="#DownBtnAction" text="Down" />
+                  <Button fx:id="InventoryBtn" layoutX="26.0" layoutY="286.0" mnemonicParsing="false" onAction="#SwitchInventory" text="Inventory" />
+                  <Button fx:id="AttackBtn" layoutX="170.0" layoutY="286.0" mnemonicParsing="false" onAction="#AttackBtnAction" text="Attack" />
+                  <Button fx:id="DodgeBtn" layoutX="169.0" layoutY="317.0" mnemonicParsing="false" onAction="#DodgeBtnAction" text="Dodge" />
+                  <Button fx:id="UpBtn" layoutX="279.0" layoutY="286.0" mnemonicParsing="false" onAction="#UpBtnAction" text="Up" />
+                  <Button fx:id="RightBtn" layoutX="323.0" layoutY="298.0" mnemonicParsing="false" onAction="#RigthBtnAction" text="Right" />
+                  <Button fx:id="LeftBtn" layoutX="229.0" layoutY="298.0" mnemonicParsing="false" onAction="#LeftBtnAction" text="Left" />
+                  <Button fx:id="DownBtn" layoutX="271.0" layoutY="311.0" mnemonicParsing="false" onAction="#DownBtnAction" text="Down" />
                   <TextField fx:id="InputTextField" layoutX="25.0" layoutY="349.0" prefHeight="26.0" prefWidth="286.0" />
                   <Button fx:id="SendBtn" layoutX="324.0" layoutY="349.0" mnemonicParsing="false" text="Send" />
                   <ScrollPane fx:id="ScrollHistory" layoutX="14.0" layoutY="14.0" prefHeight="263.0" prefWidth="362.0">
@@ -34,6 +34,7 @@
                      </content>
                   </ScrollPane>
                   <Button fx:id="InventoryBtn1" layoutX="27.0" layoutY="317.0" mnemonicParsing="false" onAction="#EndTurn" text="End Turn" />
+                  <Button fx:id="AttackBtn1" layoutX="102.0" layoutY="299.0" mnemonicParsing="false" onAction="#SwitchEquipment" text="Weapon" />
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="398.0" prefWidth="370.0">

@@ -31,7 +31,6 @@ public class Characters {
         this.HystoryOfPg = new SimpleStringProperty("History");
     }
 
-
     /* Setter */
     public void setName(String name){
         this.name.set(name);

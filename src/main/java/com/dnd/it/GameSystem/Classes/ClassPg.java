@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.dnd.it.GameSystem.Weapon.Armi;
+
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -14,15 +16,25 @@ public class ClassPg {
     private IntegerProperty life;
     private IntegerProperty guard;
     private List<StringProperty> Privilegi;
+    private List<Armi> Weapons;
 
     public ClassPg(String class_pg){
         this.class_pg = new SimpleStringProperty(class_pg);
         this.life = new SimpleIntegerProperty(0);
         this.guard = new SimpleIntegerProperty(0);
         this.Privilegi = new ArrayList<StringProperty>();
+        this.Weapons = new ArrayList<Armi>();
     }
 
     /* Setter */
+
+    public void addonWeaponList(Armi weapon){
+        this.Weapons.add(weapon);
+    }
+
+    public void removeFromWeaponList(Armi weapon){
+        this.Weapons.remove(weapon);
+    }
 
     public void setClassPg(String class_pg){
         this.class_pg.set(class_pg);
@@ -101,6 +113,10 @@ public class ClassPg {
 
     public String getPrivilegiByID(int id){
         return this.Privilegi.get(id).get();
+    }
+
+    public List<Armi> getWeaponList(){
+        return this.Weapons;
     }
 
     /* Getter Property */

@@ -118,6 +118,23 @@ public class HomeController {
 
     }
 
+    public void SwitchEquipment(ActionEvent event) throws IOException{
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("view/Equipment.fxml"));
+        root = loader.load();
+
+        EquipmentController controller = loader.getController();
+        controller.setTableClass(app);
+
+        stage = new Stage();
+        scene = new Scene(root);
+        stage.setTitle("D&D Java Game - Equipment");
+        InputStream inputStream = getClass().getResourceAsStream("/Assets/Icon/Map.png");
+        stage.getIcons().add(new Image(inputStream));
+        stage.setScene(scene);
+        stage.show();
+
+    }
+
     public void BattleResultsScreen() throws IOException{
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Battle Results");

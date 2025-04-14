@@ -5,7 +5,6 @@ import java.util.Random;
 
 import com.dnd.it.GameSystem.EnemyAI;
 import com.dnd.it.GameSystem.Game;
-import com.dnd.it.GameSystem.Dice.D4;
 import com.dnd.it.GameSystem.Model.Characters;
 
 import javafx.event.ActionEvent;

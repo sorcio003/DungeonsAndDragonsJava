@@ -22,8 +22,6 @@ public class Game {
     private int dodge_action; // diversa da action e already_dodge pk serve al player per gestire il cirtical failure della schivata o il successo o insuccesso della schivata
     private int action;
     private D20 d20;
-    private D4 d4;
-    private D6 d6;
 
     public Game(Characters player, Characters enemy, EnemyAI enemyAI){
         this.player = player;
@@ -44,8 +42,6 @@ public class Game {
         this.enemyDodge = false;
         this.enemyMoving = false;
         this.d20 = new D20();
-        this.d4 = new D4();
-        this.d6 = new D6();
     }
 
     /* Setter */
@@ -131,7 +127,7 @@ public class Game {
     private Boolean Are_Double_Hit(){
         return this.double_hit;
     }
-    private Boolean Are_Player_Triyed_To_Dodge(){
+    public Boolean Are_Player_Triyed_To_Dodge(){
         return this.player_tried_to_dodge;
     }
     public Boolean Are_Enemy_Moving(){

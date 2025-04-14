@@ -62,13 +62,6 @@ public class Armi {
      * Lancio il dado
      * incremento il danno del risultato del Dice roll + bonus + modifier
      */
-    private void CalculateDamage(int bonus, int modifier){
-        for (int i = 0; i < this.number_of_dices; i++) {
-            this.dice.RollDice();
-            this.IncreaseDamage(this.dice.getResult() + bonus + modifier);
-        }
-        
-    }
 
     /* Setter */
     public void setLife_Of_Weapon(int life){

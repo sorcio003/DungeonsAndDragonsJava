@@ -17,6 +17,7 @@ Un gioco ispirato al celebre universo di **Dungeons & Dragons**, sviluppato in J
 - Modalità di avvio alternative:
   - 🐍 **Via Python**: eseguire `launcher.py` presente nella cartella `Launcher/`
   - 💡 **Via VSCode o Terminale**: con `JavaFX` configurato correttamente e (opzionalmente) `Maven`
+- Il file `.jar` si trova nella cartella `target/dnd-1.0-SNAPSHOT.jar`
 
 ### ☕ Requisiti Java
 È richiesta l’installazione di una **JVM compatibile con Java 21**, ad esempio:
@@ -47,14 +48,16 @@ OpenJDK 64-Bit Server VM OpenLogic-OpenJDK (build 21.0.4+7-adhoc.Administrator.j
 
 ## 🗡️ Armi Disponibili
 
-| Arma      | Tipo                  | Danno  | Note aggiuntive                                |
-|-----------|-----------------------|--------|------------------------------------------------|
-| Ascia     | Mischia Semplice      | 1d6    | Buon danno base                                |
-| Pugnale   | Mischia Semplice      | 1d4    | Più veloce ma meno dannoso                     |
-| Mani Nude| Nessuna arma           | 1d4    | Default quando nessuna arma è equipaggiata     |
+| Arma      | Tipo                  | Danno  | Robustezza | Utilizzo (turni) | Ricarica (turni) | Note aggiuntive                                 |
+|-----------|-----------------------|--------|-------------|------------------|------------------|-------------------------------------------------|
+| Ascia     | Mischia Semplice      | 1d6    | 12          | 3                | 5                | Buon danno base, arma del Barbaro               |
+| Pugnale   | Mischia Semplice      | 2d4    | 8           | 2                | 3                | Più veloce ma con usura rapida                  |
+| Mani Nude| Nessuna arma           | 1d4    | ∞           | ∞                | ∞                | Default quando nessuna arma è equipaggiata      |
 
-- Il player può decidere in qualunque momento della partita di **equipaggiare o rimuovere un’arma**.
-- L’arma attiva influenza il tipo di danno inflitto.
+- Ogni arma ha una **vita utile (robustezza)**: quando raggiunge 0, l’arma è **rotta** (`broken`) e non potrà più essere utilizzata.
+- Ogni turno (attacco, movimento, schivata o mani nude) influisce sul tempo di utilizzo/ricarica dell’arma.
+- Quando un'arma termina il tempo di utilizzo, il sistema effettua automaticamente lo **switch su mani nude**.
+- Una volta terminato il tempo di ricarica, l’arma può essere nuovamente impugnata se non è rotta.
 
 ---
 
@@ -69,7 +72,8 @@ OpenJDK 64-Bit Server VM OpenLogic-OpenJDK (build 21.0.4+7-adhoc.Administrator.j
 - ✅ Gestione di colpi critici e fallimenti critici
 - ✅ Sistema di riavvio partita al termine del combattimento
 - ✅ Mappa con gestione dei bordi e posizionamento intelligente del nemico
-- ✅ Sistema Armi con danni variabili a seconda dell’arma equipaggiata
+- ✅ Sistema Armi con danni variabili, robustezza, tempi di utilizzo e ricarica
+- ✅ Calcolo corretto di danni multipli (es. 2d4)
 
 ---
 
@@ -126,14 +130,26 @@ Il sistema di combattimento si ispira alle regole classiche di D&D, ma semplific
 - ⚡ **Possibilità di Utilizzare le Abilità**
 - 🌿 **Item per curarsi (Esclusiva Player x2)**
 - 💪 Migliorare il **Sistema Armi**
-  - Implementazione Countdown Utility della'arma (quanti turni può essere giocata)
-  - Implementazione Countdown Attesa Recharge Utility (quanti turni devono passare prima di usare di nuovo l'arma)
-  - Gestire le Armi con 2+ dadi per il danno
   - Gestire Armi anche per il nemico
 
 ---
 
 ## 📝 Report Aggiornamenti
+
+### 📅 14 Aprile
+- 🔧 **Aggiornamento Sistema Armi**:
+  - Ogni arma ha ora:
+    - **Robustezza (vita)** → n° massimo di attacchi eseguibili prima della rottura
+    - **Tempo di utilizzo** → turni consecutivi in cui può essere usata
+    - **Tempo di ricarica** → turni necessari prima che possa essere riutilizzata
+  - Azioni come attacco, movimento, schivata, mani nude → contano come **turni**
+  - Introduzione flag per switch automatico su mani nude a fine utilizzo
+  - Flag `broken` per armi che non possono più essere usate
+- 🎲 Supporto a danni con **più dadi** (es. `2d4`, `3d6`)
+- 🛡️ Aggiornamento equipaggiamento del Barbaro:
+  - **Ascia**: 1d6, vita 12, 3 turni utilizzo, 5 turni ricarica
+  - **Pugnale**: 2d4, vita 8, 2 turni utilizzo, 3 turni ricarica
+
 
 ### 📅 12 Aprile
 - Aggiunta sistema di Armi per il solo **Player**

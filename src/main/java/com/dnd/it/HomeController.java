@@ -5,6 +5,7 @@ import java.util.Random;
 
 import com.dnd.it.GameSystem.EnemyAI;
 import com.dnd.it.GameSystem.Game;
+import com.dnd.it.GameSystem.Dice.D4;
 import com.dnd.it.GameSystem.Model.Characters;
 
 import javafx.event.ActionEvent;
@@ -92,6 +93,7 @@ public class HomeController {
     
     private App app;
     private Stage stage;
+    private Stage Equipstage;
     private Scene scene;
     private Parent root;
 
@@ -100,9 +102,10 @@ public class HomeController {
     private Characters enemy;
     private EnemyViewerController Enemycontroller;
     private MapController mapController;
+    private EquipmentController equipmentController;
 
     public void initialize(){
-
+        this.equipmentController = null;
     }
 
     /* Scene Manager */
@@ -124,15 +127,15 @@ public class HomeController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("view/Equipment.fxml"));
         root = loader.load();
 
-        stage = new Stage();
+        Equipstage = new Stage();
         scene = new Scene(root);
-        stage.setTitle("D&D Java Game - Equipment");
+        Equipstage.setTitle("D&D Java Game - Equipment");
         InputStream inputStream = getClass().getResourceAsStream("/Assets/Icon/Map.png");
-        stage.getIcons().add(new Image(inputStream));
-        stage.setScene(scene);
-        EquipmentController controller = loader.getController();
-        controller.setTableClass(app, stage, DiceforDamageLabel);
-        stage.show();
+        Equipstage.getIcons().add(new Image(inputStream));
+        Equipstage.setScene(scene);
+        this.equipmentController = loader.getController();
+        equipmentController.setTableClass(app, Equipstage, DiceforDamageLabel, HistoryLabel);
+        Equipstage.show();
 
     }
 
@@ -149,16 +152,39 @@ public class HomeController {
             System.exit(0);
         } else {
             app.restartGame();
+            if(equipmentController != null){
+                this.equipmentController.setTableClass(app, Equipstage, DiceforDamageLabel, HistoryLabel);
+                this.equipmentController.RefreshTableView(-1);
+            }
         }
     }
 
     public void AttackBtnAction(ActionEvent event) throws IOException{
         if (mapController.check()){
             /* Pre decisione della mossa del nemico, viene creato qui la decisione di attaccare, schivare o muoversi */
+
+            /* se sto indossando un arma, allora */
             this.Battle("Player");
+            if(player.getCurrent_Holding_Weapon() != null){
+                if(player.Are_Already_Holding_Weapon() && player.getCurrent_Holding_Weapon().Check_Weapon_Still_enable_to_Figth() && !player.getCurrent_Holding_Weapon().CheckStartCooldown()){
+                    player.getCurrent_Holding_Weapon().DecreaseLife_Of_Weapon();
+                }
+                else if(! player.getCurrent_Holding_Weapon().Check_Weapon_Still_enable_to_Figth()){
+                    HistoryLabel.setText(HistoryLabel.getText()+" '"+player.getCurrent_Holding_Weapon().getName()+"' Rotta");
+                    player.setAlready_Holding_weapon(false);
+                    player.getCurrent_Holding_Weapon().setHoldingBrokenProperty();
+                    player.ResetCurrent_Holding_Weapon();
+                    player.ResetDiceForDamage();
+                    player.ResetNumber_Of_Dice_For_Dmg();
+                    DiceforDamageLabel.setText(player.getNumber_Of_Dice_For_Dmg()+"d"+player.getDiceForDamage().getDiceMaxValue());
+                }
+            }
+            this.equipmentController.RefreshTableView(-1);
+            this.CheckStatusWeapon();
+            
         }
         else{
-            HistoryLabel.setText("Non puoi attaccare finchè non sei vicino al nemico");  
+            HistoryLabel.setText("Non puoi attaccare finchè non sei vicino al nemico\n");  
         }
         this.RechargeSpeed();
     }
@@ -188,11 +214,12 @@ public class HomeController {
             }
             this.Enemycontroller.text("" + app.getEnemy().getClassPgClass().getLife());
             LifeLabelText.setText("" + app.getPlayer().getClassPgClass().getLife());
+            RechargeSpeed();
+            this.CheckStatusWeapon();
         }
         else{
-            HistoryLabel.setText("Non puoi schivare finchè non sei vicino al nemico");  
+            HistoryLabel.setText("Non puoi schivare finchè non sei vicino al nemico\n");  
         }
-        RechargeSpeed();
     }
 
     public void UpBtnAction(ActionEvent event) throws IOException{
@@ -200,13 +227,13 @@ public class HomeController {
             int moves = this.mapController.Up();
             if(moves == 1){
                current_player_speed -= mapController.getMeterForCell();
-                HistoryLabel.setText("Player Moves - Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti"); 
+                HistoryLabel.setText("Player Moves - Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti\n"); 
             }
             else if(moves == 0){
-                HistoryLabel.setText("Player Moves - Movimento in alto non possibile, Bordo mappa");
+                HistoryLabel.setText("Player Moves - Movimento in alto non possibile, Bordo mappa\n");
             }
             else if(moves == -1){
-                HistoryLabel.setText("Player Moves - Movimento in alto non possibile, Presenza Nemico");
+                HistoryLabel.setText("Player Moves - Movimento in alto non possibile, Presenza Nemico\n");
             }
         }
         else{
@@ -220,13 +247,13 @@ public class HomeController {
             int moves = this.mapController.Down();
             if(moves == 1){
                current_player_speed -= mapController.getMeterForCell();
-                HistoryLabel.setText("Player Moves - Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti"); 
+                HistoryLabel.setText("Player Moves - Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti\n"); 
             }
             else if(moves == 0){
-                HistoryLabel.setText("Player Moves - Movimento in basso non possibile, Bordo mappa");
+                HistoryLabel.setText("Player Moves - Movimento in basso non possibile, Bordo mappa\n");
             }
             else if(moves == -1){
-                HistoryLabel.setText("Player Moves - Movimento in basso non possibile, Presenza Nemico");
+                HistoryLabel.setText("Player Moves - Movimento in basso non possibile, Presenza Nemico\n");
             }
         }
         else{
@@ -240,13 +267,13 @@ public class HomeController {
             int moves = this.mapController.Left();
             if(moves == 1){
                current_player_speed -= mapController.getMeterForCell();
-                HistoryLabel.setText("Player Moves - Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti"); 
+                HistoryLabel.setText("Player Moves - Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti\n"); 
             }
             else if(moves == 0){
-                HistoryLabel.setText("Player Moves - Movimento a sinistra non possibile, Bordo mappa");
+                HistoryLabel.setText("Player Moves - Movimento a sinistra non possibile, Bordo mappa\n");
             }
             else if(moves == -1){
-                HistoryLabel.setText("Player Moves - Movimento a sinistra non possibile, Presenza Nemico");
+                HistoryLabel.setText("Player Moves - Movimento a sinistra non possibile, Presenza Nemico\n");
             }
         }
         else{
@@ -260,13 +287,13 @@ public class HomeController {
                 int moves = this.mapController.Right();
                 if(moves == 1){
                 current_player_speed -= mapController.getMeterForCell();
-                HistoryLabel.setText("Player Moves - Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti"); 
+                HistoryLabel.setText("Player Moves - Ancora max: "+current_player_speed/mapController.getMeterForCell()+" movimenti\n"); 
                 }
                 else if(moves == 0){
-                    HistoryLabel.setText("Player Moves - Movimento a destra non possibile, Bordo mappa");
+                    HistoryLabel.setText("Player Moves - Movimento a destra non possibile, Bordo mappa\n");
                 }
                 else if(moves == -1){
-                    HistoryLabel.setText("Player Moves - Movimento a destra non possibile, Presenza Nemico");
+                    HistoryLabel.setText("Player Moves - Movimento a destra non possibile, Presenza Nemico\n");
                 }
             }
             else{
@@ -297,6 +324,9 @@ public class HomeController {
         }
         else if(keyEvent.getCode().equals(KeyCode.Z)){
             this.EndTurn();
+        }
+        else if(keyEvent.getCode().equals(KeyCode.R)){
+            this.SwitchEquipment(null);
         }
     }
 
@@ -341,6 +371,11 @@ public class HomeController {
             }
         }
         RechargeSpeed();
+        if(equipmentController != null){
+            this.equipmentController.RefreshTableView(-1);
+            this.CheckStatusWeapon();
+        }
+        
     }
 
     /* per muoversi nella mappa */
@@ -353,7 +388,7 @@ public class HomeController {
             moves = this.mapController.UpEnemy();
             if (moves == 1){
                 current_enemy_speed -= mapController.getMeterForCell();
-                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento in Alto"); 
+                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento in Alto\n"); 
             }
         }
         /* Movimento in Basso */
@@ -361,7 +396,7 @@ public class HomeController {
             moves = this.mapController.DownEnemy();
             if (moves == 1){
                 current_enemy_speed -= mapController.getMeterForCell();
-                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento in Basso"); 
+                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento in Basso\n"); 
             }
         }
         /* Movimento A Sinistra */
@@ -369,7 +404,7 @@ public class HomeController {
             moves = this.mapController.LeftEnemy();
             if (moves == 1){
                 current_enemy_speed -= mapController.getMeterForCell();
-                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento a Sinistra"); 
+                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento a Sinistra\n"); 
             }
         }
         /* Movimento a Destra */
@@ -377,10 +412,53 @@ public class HomeController {
             moves = this.mapController.RightEnemy();
             if (moves == 1){
                 current_enemy_speed -= mapController.getMeterForCell();
-                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento a Destra"); 
+                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento a Destra\n"); 
             }
         }
     }
+
+    private void CheckStatusWeapon(){
+        if(player.Are_Already_Holding_Weapon() ){
+            /* se non ho terminato il tempo o runi di attacco con l'arma, increment il contatore */
+            /* se sto indossando un arma ed la prima volta che riavvio il codice, risetto il dado*/
+            if(! player.getCurrent_Holding_Weapon().Check_Time_Of_Usbility_Terminated()){
+                player.getCurrent_Holding_Weapon().IncreaseTime_Of_Usability();
+                HistoryLabel.setText(HistoryLabel.getText() +"Turni di utilizzo restanti per '"+player.getCurrent_Holding_Weapon().getName()+"': "+ player.getCurrent_Holding_Weapon().getRemainTime_Of_Usability()+"\n");
+            }
+        }
+        else{
+            
+        }
+        if(player.getCurrent_Holding_Weapon() != null && player.getCurrent_Holding_Weapon().Check_Time_Of_Usbility_Terminated() && player.getCurrent_Holding_Weapon().Check_Weapon_Still_enable_to_Figth()){
+            
+            if(! player.getCurrent_Holding_Weapon().CheckStartCooldown()){
+                player.ResetDiceForDamage();
+                player.ResetNumber_Of_Dice_For_Dmg();
+                DiceforDamageLabel.setText(player.getNumber_Of_Dice_For_Dmg()+"d"+player.getDiceForDamage().getDiceMaxValue());
+                player.getCurrent_Holding_Weapon().setStart_Cooldown(true);
+                HistoryLabel.setText(HistoryLabel.getText() + "Non puoi usare '"+player.getCurrent_Holding_Weapon().getName()+"' per i prossimi "+player.getCurrent_Holding_Weapon().getCooldown_Usability()+" turni\nCombatterai a Mani Nude (1d4)\n");
+            }
+
+            if(! player.getCurrent_Holding_Weapon().Check_CoolDown_Terminated() ){
+                player.getCurrent_Holding_Weapon().DecreaseCooldown_Usability();
+            }
+            else{
+                HistoryLabel.setText(HistoryLabel.getText() + "Arma '"+player.getCurrent_Holding_Weapon().getName()+"' pronta per l'attacco\n");
+                player.getCurrent_Holding_Weapon().ResetCounter_time_of_Usability();
+                player.getCurrent_Holding_Weapon().ResetCounter_Cooldown_Usability();
+                player.getCurrent_Holding_Weapon().setReset(true);
+                player.getCurrent_Holding_Weapon().setStart_Cooldown(false);
+                /* questo deve avvenire solo quando il player sta indossando l'arma*/
+                if(player.Are_Already_Holding_Weapon()){
+                    player.setDiceForDamage(player.getCurrent_Holding_Weapon().getDice());
+                    player.setNumber_Of_Dice_For_DMG(player.getCurrent_Holding_Weapon().getNumberofDice());
+                    DiceforDamageLabel.setText(player.getNumber_Of_Dice_For_Dmg()+"d"+player.getDiceForDamage().getDiceMaxValue());
+
+                }
+            }
+        }
+    }
+
     /* Recharge Speed */
     private void RechargeSpeed(){
         current_enemy_speed = app.getEnemy().getRaceClass().getSpeed();

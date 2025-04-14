@@ -16,6 +16,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 public class EquipmentController {
@@ -30,6 +32,10 @@ public class EquipmentController {
     @FXML
     private TableColumn<Armi, String> holdingColumn;
     @FXML
+    private TableColumn<Armi, String> LIFEColumn;
+    @FXML
+    private TableColumn<Armi, String> MAXlifeColumn;
+    @FXML
     private Button SuitWeaponBTN;
     @FXML
     private Button UndressWeaponBTN;
@@ -37,22 +43,39 @@ public class EquipmentController {
     private Characters player;
     private Stage stage;
     private Label diceLabel;
+    private Label historyLabel;
 
     public void initialize(){
         nameColumn.setCellValueFactory(cellData -> cellData.getValue().getWeaponDescriptionByIdStringProperty(0));
         diceColumn.setCellValueFactory(cellData -> cellData.getValue().getWeaponDescriptionByIdStringProperty(1));
         PropertyColumn.setCellValueFactory(cellData -> cellData.getValue().getWeaponDescriptionByIdStringProperty(2));
         holdingColumn.setCellValueFactory(cellData -> cellData.getValue().getHoldingProperty());
+        LIFEColumn.setCellValueFactory(cellData -> cellData.getValue().getLife_Of_WeaponProperty());
+        MAXlifeColumn.setCellValueFactory(cellData -> cellData.getValue().getMax_Life_Of_WeaponProperty());
     }
 
     public void SuittingWeapon(ActionEvent event) throws IOException{
         int index = WeaponsTable.getSelectionModel().getSelectedIndex();
-        if(! player.Are_Already_Holding_Weapon() && ! WeaponsTable.getItems().get(index).Is_Holding_a_Weapon()){
+        Armi arma = WeaponsTable.getItems().get(index);
+        if(! player.Are_Already_Holding_Weapon() && ! arma.Is_Holding_a_Weapon() && arma.Check_Weapon_Still_enable_to_Figth()){
             WeaponsTable.getItems().get(index).set_Holding_Weapon(true);
-            diceLabel.setText(WeaponsTable.getItems().get(index).getWeaponDescriptionById(1));
-            player.setDiceForDamage(WeaponsTable.getItems().get(index).getDice());
+            diceLabel.setText(arma.getWeaponDescriptionById(1));
+            historyLabel.setText("Ti sei equipaggiato con '"+arma.getName()+"'\nOra la puoi usare per "+arma.getRemainTime_Of_Usability()+" turni");
+            player.setCurrent_Holding_Weapon(arma);
+            player.setDiceForDamage(arma.getDice());
+            player.setNumber_Of_Dice_For_DMG(arma.getNumberofDice());
             player.setAlready_Holding_weapon(true);
             this.RefreshTableView(index);
+        }
+        else if(!arma.Check_Weapon_Still_enable_to_Figth()){
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Weapon Broken");
+            alert.initOwner(this.stage);
+            alert.setHeaderText("You Cannot Suit this weapon anymore, it's Broken");
+            alert.setContentText("Click Ok Bottun to close this view");
+            alert.show();
+            if(event != null)
+                event.consume();
         }
         else{
             Alert alert = new Alert(AlertType.WARNING);
@@ -61,16 +84,24 @@ public class EquipmentController {
             alert.setHeaderText("You Cannot Suit more than 1 weapon at same time");
             alert.setContentText("Click Ok Bottun to close this view");
             alert.show();
-            event.consume();
+            if(event != null)
+                event.consume();
         }
     }
 
     public void UndressWeapon(ActionEvent event) throws IOException{
         int index = WeaponsTable.getSelectionModel().getSelectedIndex();
-        if(player.Are_Already_Holding_Weapon() && WeaponsTable.getItems().get(index).Is_Holding_a_Weapon()){
+        Armi arma = WeaponsTable.getItems().get(index);
+        if(player.Are_Already_Holding_Weapon() && arma.Is_Holding_a_Weapon()){
             WeaponsTable.getItems().get(index).set_Holding_Weapon(false);
+            historyLabel.setText("Hai rimosso l'equipaggiamento '"+arma.getName()+"'\nOra combatteria a mani nude");
             player.setAlready_Holding_weapon(false);
+            /* se il cooldown non è terminato, il user avrà la sensazione di taccare a mani nude, ma la current weapon sarà != null */
+            if(! player.getCurrent_Holding_Weapon().Check_Time_Of_Usbility_Terminated() || player.getCurrent_Holding_Weapon().Check_CoolDown_Terminated()){
+                player.ResetCurrent_Holding_Weapon();
+            }
             player.ResetDiceForDamage();
+            player.ResetNumber_Of_Dice_For_Dmg();
             diceLabel.setText("1d"+player.getDiceForDamage().getDiceMaxValue());
             this.RefreshTableView(index);
         }
@@ -81,18 +112,31 @@ public class EquipmentController {
             alert.setHeaderText("You are already not wearing weapon");
             alert.setContentText("Click Ok Bottun to close this view");
             alert.show();
-            event.consume();
+            if(event != null)
+                event.consume();
         }
     }
 
-    private void RefreshTableView(int index) throws IOException{
-        WeaponsTable.getItems().get(index).setHoldingProperty();
+    public void RefreshTableView(int index) throws IOException{
+        if(index >= 0)
+            WeaponsTable.getItems().get(index).setHoldingProperty();
         WeaponsTable.refresh();
     }
 
-    public void setTableClass(App app, Stage stage, Label diceLabel){
+        /* Getsione della tastiera */
+    public void ActionPlayerWithKey(KeyEvent keyEvent) throws IOException{
+        if(keyEvent.getCode().equals(KeyCode.E)){
+            this.SuittingWeapon(null);
+        }
+        else if(keyEvent.getCode().equals(KeyCode.U)){
+            this.UndressWeapon(null);
+        }
+    }
+
+    public void setTableClass(App app, Stage stage, Label diceLabel, Label historyLabel){
         this.stage = stage;
         this.diceLabel = diceLabel;
+        this.historyLabel = historyLabel;
         this.player = app.getPlayer();
         ObservableList<Armi> list = FXCollections.observableArrayList();
         List<Armi> temp = app.getPlayer().getClassPgClass().getWeaponList();

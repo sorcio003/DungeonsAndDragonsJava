@@ -5,20 +5,22 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dnd.it.EquipmentController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#ActionPlayerWithKey" prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dnd.it.EquipmentController">
    <children>
-      <TableView fx:id="WeaponsTable" layoutX="134.0" layoutY="100.0" prefHeight="358.0" prefWidth="600.0" AnchorPane.bottomAnchor="42.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <TableView fx:id="WeaponsTable" layoutX="134.0" layoutY="100.0" prefHeight="358.0" prefWidth="600.0" styleClass=".tableEquipments" AnchorPane.bottomAnchor="42.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columns>
           <TableColumn fx:id="nameColumn" prefWidth="70.0" text="NAME" />
           <TableColumn fx:id="diceColumn" prefWidth="59.0" text="DICE" />
             <TableColumn fx:id="PropertyColumn" prefWidth="75.0" text="PROPERTY" />
-            <TableColumn fx:id="holdingColumn" prefWidth="95.0" text="IS HOLDING" />
+            <TableColumn fx:id="holdingColumn" prefWidth="88.0" text="IS HOLDING" />
+            <TableColumn fx:id="LIFEColumn" prefWidth="56.0" text="LIFE" />
+            <TableColumn fx:id="MAXlifeColumn" prefWidth="67.20001220703125" text="MAX LIFE" />
         </columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
-      <Button fx:id="SuitWeaponBTN" layoutX="528.0" layoutY="361.0" mnemonicParsing="false" onAction="#SuittingWeapon" text="Suit" AnchorPane.rightAnchor="35.0" />
-      <Button fx:id="UndressWeaponBTN" layoutX="183.0" layoutY="361.0" mnemonicParsing="false" onAction="#UndressWeapon" text="Undress" AnchorPane.rightAnchor="80.0" />
+      <Button fx:id="SuitWeaponBTN" layoutX="332.0" layoutY="260.0" mnemonicParsing="false" onAction="#SuittingWeapon" text="Suit" AnchorPane.rightAnchor="31.19999999999999" />
+      <Button fx:id="UndressWeaponBTN" layoutX="259.0" layoutY="260.0" mnemonicParsing="false" onAction="#UndressWeapon" text="Undress" AnchorPane.rightAnchor="81.80000000000001" />
    </children>
 </AnchorPane>

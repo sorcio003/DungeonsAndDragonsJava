@@ -176,9 +176,23 @@ public class Game {
         setAction(d20.getResult() + character.getRaceClass().getmodificatore() + character.getRaceClass().getBonus("Dexterity"));
     }
 
-    private void CalculateAdditionalDamage(){
-        d4.RollD4();
-        setAdditionDamage(d4.getResult() + getBonus() + getModifier());
+    private void CalculateDamage(Characters characters){
+        this.setDamage(this.getBonus() + this.getModifier());
+        System.out.println("Danno (senza il dado): "+getDamage());
+        for (int i = 0; i < characters.getNumber_Of_Dice_For_Dmg(); i++) {
+            characters.getDiceForDamage().RollDice();
+            
+            System.out.println("D"+player.getDiceForDamage().getDiceMaxValue()+" results: "+player.getDiceForDamage().getResult()+"Danno Aggiornato: "+getDamage()+" + "+characters.getDiceForDamage().getResult());
+            this.setDamage(this.getDamage() + characters.getDiceForDamage().getResult());
+        }
+    }
+
+    private void CalculateAdditionalDamage(Characters characters){
+        this.setAdditionDamage(this.getBonus() + this.getModifier());
+        for (int i = 0; i < characters.getNumber_Of_Dice_For_Dmg(); i++) {
+            characters.getDiceForDamage().RollDice();
+            this.setAdditionDamage(this.getAdditionalDamage() + characters.getDiceForDamage().getResult());
+        }
     }
     
     /* Algorithms for Battle */
@@ -290,10 +304,14 @@ public class Game {
         this.PreSetBattleAction(this.player);
 
         this.setResultsAction(this.getResultsAction() + "Tiro su Forza\nD20: "+d20.getResult());
-        
-        d4.RollD4();
-        this.setDamage(d4.getResult() + getBonus() + getModifier());
-        //System.out.println("Player\nD"+player.getDiceForDamage().getDiceMaxValue()+" results: "+d4.getResult()+"\nBonus Competenza: "+getBonus()+"\nModificatore: "+getModifier()+"\nDanno totale: "+ getDamage());
+        /* il danno è calcolato dal dado per attacare del player */
+
+        /* il danno viene calcolato in questo modo
+         * - prima setto immediatamnte il danno come bonus + modificatore
+         * - poi aggiungo i risultati del o dei dadi per il danno lanciati
+         */
+        this.CalculateDamage(player);
+        System.out.println("Player\n"+"Numero di volte lanciato il dado D"+player.getDiceForDamage().getDiceMaxValue()+": "+ player.getNumber_Of_Dice_For_Dmg()+"\nBonus Competenza: "+getBonus()+"\nModificatore: "+getModifier()+"\nDanno totale: "+ getDamage());
 
         if(enemy_status == 2){
             this.setAlreadyDodge(true);
@@ -314,7 +332,7 @@ public class Game {
         if( ! this.Is_Enemy_Dodge() ){
             /* Critical Hit */
             if (d20.getResult() == 20){
-                this.CalculateAdditionalDamage();
+                this.CalculateAdditionalDamage(player);
                 enemy.getClassPgClass().DecreaseLife(getDamage()+getAdditionalDamage()); 
                 this.setResultsAction(this.getResultsAction() + "\nCritical Hit !!"+"\nBonus Competenza (Forza): "+ this.getBonus() +"\nModificatore (Forza): "+ this.getModifier() +"\nEsito del tiro: "+ this.getLaunch() +"\nDanno: "+ this.getDamage() +" + "+ this.getAdditionalDamage());
             }
@@ -351,8 +369,7 @@ public class Game {
          * Alltough, attack had no effect
          */
         if ( this.getLaunch() >= player.getClassPgClass().getGuard() ){
-            d4.RollD4();
-            this.setDamage(d4.getResult() + this.getBonus() + this.getModifier());
+            this.CalculateDamage(enemy);
             //System.out.println("Enemy\nD"+enemy.getDiceForDamage().getDiceMaxValue()+" results: "+d4.getResult()+"\nBonus Competenza: "+getBonus()+"\nModificatore: "+getModifier()+"\nDanno totale: "+ getDamage());
             player.getClassPgClass().DecreaseLife(this.getDamage());
         }

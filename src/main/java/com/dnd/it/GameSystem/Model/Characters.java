@@ -4,6 +4,7 @@ import com.dnd.it.GameSystem.Classes.ClassPg;
 import com.dnd.it.GameSystem.Dice.D4;
 import com.dnd.it.GameSystem.Dice.Dice;
 import com.dnd.it.GameSystem.Races.Race;
+import com.dnd.it.GameSystem.Weapon.Armi;
 
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.IntegerProperty;
@@ -23,6 +24,8 @@ public class Characters {
     private StringProperty HystoryOfPg;
     private Boolean already_holding_weapon;
     private Dice diceforDamage;
+    private int number_of_dice_for_dmg;
+    private Armi current_holding_weapon;
 
     /* di base, ogni personaggio quando attacca a mani nude usa 1d4 per il danno */
     public Characters(String name, int eta, Race race, ClassPg classPg){
@@ -36,6 +39,8 @@ public class Characters {
         this.HystoryOfPg = new SimpleStringProperty("History");
         this.already_holding_weapon = false;
         this.diceforDamage = new D4();
+        this.number_of_dice_for_dmg = 1;
+        this.current_holding_weapon = null;
     }
 
     /* Setter */
@@ -71,8 +76,23 @@ public class Characters {
         this.diceforDamage = dice;
     }
 
+    public void setNumber_Of_Dice_For_DMG(int number){
+        this.number_of_dice_for_dmg = number;
+    }
+
     public void ResetDiceForDamage(){
         this.diceforDamage = new D4();
+    }
+    public void ResetNumber_Of_Dice_For_Dmg(){
+        this.number_of_dice_for_dmg = 1;
+    }
+
+    public void setCurrent_Holding_Weapon(Armi arma){
+        this.current_holding_weapon = arma;
+    }
+
+    public void ResetCurrent_Holding_Weapon(){
+        this.current_holding_weapon = null;
     }
 
     /* Level */
@@ -147,6 +167,14 @@ public class Characters {
 
     public Dice getDiceForDamage(){
         return this.diceforDamage;
+    }
+
+    public int getNumber_Of_Dice_For_Dmg(){
+        return this.number_of_dice_for_dmg;
+    }
+
+    public Armi getCurrent_Holding_Weapon(){
+        return this.current_holding_weapon;
     }
 
     /* Getter Property */

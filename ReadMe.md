@@ -6,30 +6,46 @@ Un gioco ispirato al celebre universo di **Dungeons & Dragons**, sviluppato in J
 
 ## 📦 Requisiti di Sistema
 
-> Per garantire l’avvio corretto del gioco, è necessario disporre di una **Java Virtual Machine compatibile con Java 21**.
+> Per garantire l’avvio corretto del gioco, è necessario disporre dei seguenti strumenti installati nel sistema. Il gioco è ora compatibile sia con Windows che con sistemi Unix-based (Linux/macOS) attraverso uno script universale.
 
-### ✅ Windows (Consigliato)
-- Il gioco può essere avviato direttamente tramite file `.exe` senza necessità di installazione aggiuntiva.
-- Il file `.exe` è stato testato e generato per Windows 10/11 a **64 bit**.
+---
 
-### 💻 Altri Sistemi Operativi (Linux / UNIX / macOS)
-- Il gioco è completamente compatibile anche su ambienti *non-Windows*, ma richiede l’avvio manuale del file `.jar`.
-- Modalità di avvio alternative:
-  - 🐍 **Via Python**: eseguire `launcher.py` presente nella cartella `Launcher/`
-  - 💡 **Via VSCode o Terminale**: con `JavaFX` configurato correttamente e (opzionalmente) `Maven`
-- Il file `.jar` si trova nella cartella `target/dnd-1.0-SNAPSHOT.jar`
+### ✅ Avvio del Gioco (Tutti i Sistemi Operativi)
 
-### ☕ Requisiti Java
-È richiesta l’installazione di una **JVM compatibile con Java 21**, ad esempio:
+Il gioco può essere eseguito tramite uno **script di lancio universale** (`launcher.sh`), funzionante su:
 
-```
-openjdk 21.0.4 2024-07-16
-OpenJDK Runtime Environment OpenLogic-OpenJDK (build 21.0.4+7-adhoc.Administrator.jdk21u)
-OpenJDK 64-Bit Server VM OpenLogic-OpenJDK (build 21.0.4+7-adhoc.Administrator.jdk21u, mixed mode, sharing)
-```
+- 🪟 Windows (tramite PowerShell)
+- 🐧 Linux
+- 🍎 macOS
 
-> 🛠️ **Maven** non è obbligatorio, ma è consigliato per compilazioni manuali o esecuzione tramite IDE come VSCode/IntelliJ.
+#### ▶️ Istruzioni per l’Avvio
 
+1. **Apri il terminale**
+   - Su **Windows**: apri **PowerShell**
+   - Su **macOS/Linux**: apri il **Terminale**
+
+2. **Posizionati nella cartella del launcher**
+   - Usa il comando `cd` per entrare nella directory dove si trova `launcher.sh`:
+     ```bash
+     cd Scrivania/dnd
+     ```
+
+3. **Esegui il comando di lancio**
+   ```bash
+   sh launcher.sh
+
+---
+
+### ☕ Requisiti Software (OBBLIGATORI)
+
+|  Software | Versione Richiesta | Note                                                    |
+|-----------|--------------------|---------------------------------------------------------|
+|Java (JDK) | 17 o superiore     | Deve essere configurato nel PATH                        |
+|Maven      | 3.8.7 o 3.8.9      | Necessario per la gestione delle dipendenze e del build |
+
+Puoi verificare le versioni con i comandi:
+- # java -version
+- # mvn -version
 ---
 
 ## ⚔️ Caratteristiche dei Personaggi

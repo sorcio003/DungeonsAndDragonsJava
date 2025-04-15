@@ -1,10 +1,7 @@
 package com.dnd.it;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import com.dnd.it.GameSystem.Weapon.Armi;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -36,7 +33,7 @@ public class MapController implements Initializable{
     private Stage stage;
     private Scene scene;
     private Parent root;
-    private Armi arma;
+    private String name_of_weapon;
 
     public void initialize(URL arg0, ResourceBundle arg1){
         meters_for_cell = 3;
@@ -216,28 +213,27 @@ public class MapController implements Initializable{
         gridMap.getChildren().remove(enemyPixel);
     }
 
-    public void Draw_On_Ground_Weapon(@SuppressWarnings("exports") Armi arma){
-        this.arma = arma;
-        InputStream weaponPixelImage = getClass().getResourceAsStream("/Assets/Weapons/"+app.getEnemy().getCurrent_Holding_Weapon().getName()+".png");
+    public void Draw_On_Ground_Weapon(String name){
+        this.name_of_weapon = name;
+        InputStream weaponPixelImage = getClass().getResourceAsStream("/Assets/Weapons/"+name+".png");
         this.weaponPixel = new ImageView(new Image(weaponPixelImage));
         current_x_weapon = current_x_enemy;
         current_y_weapon = current_y_enemy-1;
         gridMap.add(weaponPixel, current_x_weapon, current_y_weapon);
     }
 
-    public void Draw_On_Ground_Weapon_Broken(@SuppressWarnings("exports") Armi arma){
-        this.arma = arma;
-        InputStream weaponPixelImage = getClass().getResourceAsStream("/Assets/Weapons/"+app.getEnemy().getCurrent_Holding_Weapon().getName()+"_Broken.png");
+    public void Draw_On_Ground_Weapon_Broken(String name){
+        this.name_of_weapon = name;
+        InputStream weaponPixelImage = getClass().getResourceAsStream("/Assets/Weapons/"+name+"_Broken.png");
         this.weaponPixel = new ImageView(new Image(weaponPixelImage));
         current_x_weapon = current_x_enemy;
         current_y_weapon = current_y_enemy-1;
         gridMap.add(weaponPixel, current_x_weapon, current_y_weapon);
     }
 
-    @SuppressWarnings("exports")
-    public Armi Remove_On_Ground_Weapon(){
+    public String Remove_On_Ground_Weapon(){
         gridMap.getChildren().remove(weaponPixel);
-        return this.arma;
+        return this.name_of_weapon;
     }
 
     public void setMap(App app) {

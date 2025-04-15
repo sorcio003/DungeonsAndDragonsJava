@@ -119,6 +119,12 @@ public class ClassPg {
         return this.Weapons;
     }
 
+    public Armi getWeaponByName(String name){
+        /* mi aspetto che il nome dell'arma sia univoco e che sia il primo della lista dopop il fetch */
+        List<Armi> armi = this.Weapons.stream().filter(weapon -> weapon.getName().equals(name)).collect(Collectors.toList());
+        return armi.getFirst();
+    }
+
     /* Getter Property */
 
     public IntegerProperty getLifeProperty(){

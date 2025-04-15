@@ -7,6 +7,7 @@ import com.dnd.it.GameSystem.EnemyAI;
 import com.dnd.it.GameSystem.Game;
 import com.dnd.it.GameSystem.Model.Characters;
 import com.dnd.it.GameSystem.Weapon.Armi;
+import com.dnd.it.GameSystem.Weapon.Semplice.Ascia;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -165,7 +166,7 @@ public class HomeController {
 
             /* se sto indossando un arma, allora */
             this.Battle("Player");
-            this.AfterBattleActionUsingWeapon(null);
+            this.AfterBattleActionUsingWeapon("");
             
         }
         else{
@@ -208,7 +209,8 @@ public class HomeController {
     }
 
     public void HoldBackWeapon() throws IOException{
-        Armi arma = this.mapController.Remove_On_Ground_Weapon();
+        String name_of_weapon = this.mapController.Remove_On_Ground_Weapon();
+        Armi arma = player.getClassPgClass().getWeaponByName(name_of_weapon);
         if(arma.Check_Weapon_Still_enable_to_Figth()){
             HistoryLabel.setText("Hai raccolta l'arma '"+arma.getName()+"'\nTurni di utilizzo restanti: "+ arma.getRemainTime_Of_Usability()+"\n");
             player.setCurrent_Holding_Weapon(arma);
@@ -332,6 +334,10 @@ public class HomeController {
         else if(keyEvent.getCode().equals(KeyCode.E) && this.mapController.checkWeapon_Around()){
             this.HoldBackWeapon();
         }
+        else if(keyEvent.getCode().equals(KeyCode.ENTER)){
+            this.ActionPlayerwithInputText(null);
+        }
+        
     }
 
     /* Gestione inputDaTastiera */
@@ -340,7 +346,7 @@ public class HomeController {
             if(player.Are_Already_Holding_Weapon()&& ! player.getCurrent_Holding_Weapon().CheckStartCooldown() ){
                 System.out.println("Range max: "+player.getCurrent_Holding_Weapon().getMaxRangeOFLaunchWeapon()+" Range min: "+player.getCurrent_Holding_Weapon().getMinRangeOFLaucnhWeapon());
                 if(this.mapController.check_Distance_For_Launch(player.getCurrent_Holding_Weapon().getMaxRangeOFLaunchWeapon(), player.getCurrent_Holding_Weapon().getMinRangeOFLaucnhWeapon())){
-                   if((InputTextField.getText().contains("Lancia") || InputTextField.getText().contains("Lancio")) ){
+                   if((InputTextField.getText().toUpperCase().contains("LANCIA") || InputTextField.getText().toUpperCase().contains("LANCIO")) ){
                         HistoryLabel.setText("Lanci l'arma '"+player.getCurrent_Holding_Weapon().getName()+"' Contro il nemico\n");
                         this.Battle("Lancio Arma Player");
                         this.AfterBattleActionUsingWeapon("Lancio");
@@ -352,7 +358,7 @@ public class HomeController {
                 
             }
             else{
-                HistoryLabel.setText("Azione non concessa, arma scarica o rotta o non stai indossando nessuna arma\n");
+                HistoryLabel.setText("Azione non concessa\nArma scarica o Rotta o Non stai indossando nessuna arma\n");
             }
             
         }
@@ -421,9 +427,9 @@ public class HomeController {
                     HistoryLabel.setText(HistoryLabel.getText() +" Lanciata !\nFinchè non la raccogli giocherai a mani nude\n");
                     /* disegna l'arma sulla mappa di gioco */
                     if(player.getCurrent_Holding_Weapon().Check_Weapon_Still_enable_to_Figth())
-                        this.mapController.Draw_On_Ground_Weapon(player.getCurrent_Holding_Weapon());
+                        this.mapController.Draw_On_Ground_Weapon(player.getCurrent_Holding_Weapon().getName());
                     else{
-                        this.mapController.Draw_On_Ground_Weapon_Broken(player.getCurrent_Holding_Weapon());
+                        this.mapController.Draw_On_Ground_Weapon_Broken(player.getCurrent_Holding_Weapon().getName());
                     }
                     player.getCurrent_Holding_Weapon().setHoldingThrowedProperty();
                 }

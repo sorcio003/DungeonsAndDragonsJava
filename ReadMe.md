@@ -136,6 +136,12 @@ Il sistema di combattimento si ispira alle regole classiche di D&D, ma semplific
 
 ## 📝 Report Aggiornamenti
 
+### 📅 15 Aprile
+- 🔧 **Aggiornamento Sistema Armi**:
+  - Implementazione del sistema di lancio dell'arma se l'arma ha proprietà (`Lancio`) e gestione dell'accuratezza se l'arma ha (`Accuratezza`)
+  - Sistema ancora **BUGGATO**, sto lavorando per sistemare questi bug
+  - Se non si prova a lanciare l'arma, il gioco va senza intoppi
+
 ### 📅 14 Aprile
 - 🔧 **Aggiornamento Sistema Armi**:
   - Ogni arma ha ora:

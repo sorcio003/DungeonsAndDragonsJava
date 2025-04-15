@@ -77,6 +77,16 @@ public class EquipmentController {
             if(event != null)
                 event.consume();
         }
+        else if(arma.Check_Weapon_Was_Launched()){
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Weapon Throwed");
+            alert.initOwner(this.stage);
+            alert.setHeaderText("You Cannot Suit or use it until it's dropped on ground");
+            alert.setContentText("Click Ok Bottun to close this view");
+            alert.show();
+            if(event != null)
+                event.consume();
+        }
         else{
             Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Weapon Suitable");

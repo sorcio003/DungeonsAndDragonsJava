@@ -16,8 +16,22 @@ public class Armi {
     //private int weight; 
     /* è la proprietà dell'arma, come ad esempio se è accurata, aumenterà la pssobilità di colpire il bersaglio */
     private String property;
+    // accuracy è un'attributo che identifica quanto la'rma è accurata, quindi quanto è precisa nel colpo
+    // se l'arma ha 'Accurata' come proprietà, viene settato quseto modficatore che inciderà sul risultato del lancio del d20 in attacco, di base è 0
+    // se l'arma è 'Imprecisa' come proprietà, oppure come bilanciamento, infligge molti danni ma è molto pesate, il modificatore è negativo
+    // -- Arma semplici mischia: +1
+    // -- Armi semplici distanza: +2
+    // -- Armi da guerra mischia: +2
+    // -- Armi da guerra distanza: +3
+    private int accuracy; 
     private int damage;
-    private int distance;
+    private int distance;   // la distanza è intesa come distanza minima che il player deve tenere per poter attaccare con quell'arma
+    private int[] range;      
+    // il range invece è inteso come range o distanza minima e massima dalla quela il player più eventualmente lanciare l'arma (default 0)
+    // range[0] == distanza massima, ossia la distanza più lontana che il player deve tenre per eventualmente lanciare l'arma, 
+    //              esempio range[0] = 3, il player se distata al massimo 3 blocchi dal nemico, può effettuare il lancio
+    // range[1] == distanza minima, ossia la distanza più piccola che il player deve tenere per eventualmente lanciare l'arma
+    //              esempio range[1] = 1, il player se distata almeno 1 blocco dal nemico, può effettuare il lancio
     private int time_of_usability;
     private int count_time_of_usability;
     private int cooldown_usability;
@@ -38,9 +52,14 @@ public class Armi {
         this.dice = dice;
         this.property = "";
         this.damage = 0;
+        this.accuracy = 0;
         this.distance = 0;
         this.life_of_weapon = 10;   // di default decido che ogni arma ha vita massima 10, quindi puoi eseguire 10 attacchi
         this.max_life = this.life_of_weapon;
+        this.range = new int[2];
+        this.range[0] = 0;
+        this.range[0] = 0;
+        // di default sono [0,0] perchè se l'arma non può essere lanciata, non si considerano i valori
         /* questi due parametri sono sostanzialmente */
         this.time_of_usability = 0; // per quanti turni puoi utilizzare l'arma, di seguito o non
         this.count_time_of_usability = 0;
@@ -64,9 +83,18 @@ public class Armi {
      */
 
     /* Setter */
+    private void setAccuracy(int accuracy){
+        this.accuracy = accuracy;
+    }
     public void setLife_Of_Weapon(int life){
         this.life_of_weapon = life;
         this.setMax_Life(life);
+    }
+    public void setMaxRangeOFLaunchWeapon(int max){
+        this.range[0] = max;
+    }
+    public void setMinRangeOFLaucnhWeapon(int min){
+        this.range[1] = min;
     }
     private void setMax_Life(int life){
         this.max_life = life;
@@ -107,9 +135,34 @@ public class Armi {
     public void setDice(Dice dice){
         this.dice = dice;
     }
+    /* ogni volta che viene inserita la proprietà 'Lancio' dell'arma
+     * Automaticamente viene settato di default il maxrange = 3 e il minrange = 1
+     */
     public void setProperty(String property){
         this.property = property;
         this.setPropertyinWeaponsDescription(this.property);
+        if(this.property.equals("Lancio")){
+            this.setMaxRangeOFLaunchWeapon(3);
+            this.setMinRangeOFLaucnhWeapon(1);
+        }
+        if(this.property.equals("Accurata")){
+            if(this.getFirstType().equals("Mischia")){
+                if(this.getSecondType().equals("Semplice")){
+                    this.setAccuracy(1);
+                }
+                else if(this.getSecondType().equals("Da Guerra")){
+                    this.setAccuracy(2);
+                }
+            }
+            else if(this.getFirstType().equals("Distanza")){
+                if(this.getSecondType().equals("Semplice")){
+                    this.setAccuracy(2);
+                }
+                else if(this.getSecondType().equals("Da Guerra")){
+                    this.setAccuracy(3);
+                }
+            }
+        }
     }
     public void setDistance(int distance){
         this.distance = distance;
@@ -150,6 +203,10 @@ public class Armi {
         this.holding_Property = new SimpleStringProperty("Broken");
     }
 
+    public void setHoldingThrowedProperty(){
+        this.holding_Property = new SimpleStringProperty("Throwed");
+    }
+
     public StringProperty getHoldingProperty(){
         return this.holding_Property;
     }
@@ -181,6 +238,24 @@ public class Armi {
         }
         return true;
     }
+    public Boolean Check_Weapon_Was_Launched(){
+        return this.getHoldingPropertyasString().equals("Throwed");
+    }
+
+    /* Range Check and getter */
+    /* se entrambi i valori di massimo o minimo sono [0,0] l'arma non può essere lanciata */
+    public Boolean Is_Weapon_Throwable(){
+        if (this.range[0] != 0 && this.range[1] != 0)
+            return true;
+        else   
+            return false;
+    }
+    public int getMaxRangeOFLaunchWeapon(){
+        return this.range[0];
+    }
+    public int getMinRangeOFLaucnhWeapon(){
+        return this.range[1];
+    }
 
     /* Is Holding */
     public String getHoldingPropertyasString(){
@@ -211,6 +286,9 @@ public class Armi {
     /* Getter */
     private int getMax_life(){
         return this.max_life;
+    }
+    public int getAccuracy(){
+        return this.accuracy;
     }
     public int getLife_Of_Weapon(){
         return this.life_of_weapon;

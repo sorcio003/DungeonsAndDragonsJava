@@ -164,12 +164,19 @@ public class Game {
         /* il lancio è gia avvenuto pre-pre calcolo per la decisione del nemico */
         /* pre set del risultato del lancio d20 results + bonus + modificatore, anche se negativo */
         setLaunch(d20.getResult() + bonus + modifier);
+        /* se il personaggio, solo per ora poichè il nemico ancora non ha armi, in questo caso il player sta indossando l'arma e non è ancora partito il cooldown
+         * aggiungo al risultato del d20+bonus+modificatore l'accuratezza
+         * verifico anche sl'arma sia Accurata, quindi che abbia 'Accurata' come proprietà (solo per adesso perchè hanno una sola proprietà per ora !) 
+          */
+        if(character.Are_Already_Holding_Weapon() && ! character.getCurrent_Holding_Weapon().CheckStartCooldown()){
+            this.setLaunch(this.getLaunch() + character.getCurrent_Holding_Weapon().getAccuracy());
+        }
     }
 
     private void PreSetBattleDodge(Characters character){
         d20.RollD20();
         character.getRaceClass().setModificatore(character.getRaceClass().getDexterity());
-        setAction(d20.getResult() + character.getRaceClass().getmodificatore() + character.getRaceClass().getBonus("Dexterity"));
+        setAction(d20.getResult() + character.getRaceClass().getmodificatore() + character.getRaceClass().getBonus("Dexterity"));        
     }
 
     private void CalculateDamage(Characters characters){
@@ -230,6 +237,11 @@ public class Game {
         if (input.equals("Attacca")){
             this.Attack(enemy_moves);
             this.setResultsAction("Hai deciso di Attaccare...\n"+ this.getResultsAction() +"\n");
+            this.setUntouchable(false);
+        }
+        if (input.equals("Lancio Arma Player")){
+            this.Attack(enemy_moves);
+            this.setResultsAction(this.getResultsAction() +"\n");
             this.setUntouchable(false);
         }
         /* Schivata Player */

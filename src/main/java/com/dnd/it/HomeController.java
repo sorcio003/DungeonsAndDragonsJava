@@ -6,6 +6,7 @@ import java.util.Random;
 import com.dnd.it.GameSystem.EnemyAI;
 import com.dnd.it.GameSystem.Game;
 import com.dnd.it.GameSystem.Model.Characters;
+import com.dnd.it.GameSystem.Weapon.Armi;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -164,22 +165,7 @@ public class HomeController {
 
             /* se sto indossando un arma, allora */
             this.Battle("Player");
-            if(player.getCurrent_Holding_Weapon() != null){
-                if(player.Are_Already_Holding_Weapon() && player.getCurrent_Holding_Weapon().Check_Weapon_Still_enable_to_Figth() && !player.getCurrent_Holding_Weapon().CheckStartCooldown()){
-                    player.getCurrent_Holding_Weapon().DecreaseLife_Of_Weapon();
-                }
-                else if(! player.getCurrent_Holding_Weapon().Check_Weapon_Still_enable_to_Figth()){
-                    HistoryLabel.setText(HistoryLabel.getText()+" '"+player.getCurrent_Holding_Weapon().getName()+"' Rotta");
-                    player.setAlready_Holding_weapon(false);
-                    player.getCurrent_Holding_Weapon().setHoldingBrokenProperty();
-                    player.ResetCurrent_Holding_Weapon();
-                    player.ResetDiceForDamage();
-                    player.ResetNumber_Of_Dice_For_Dmg();
-                    DiceforDamageLabel.setText(player.getNumber_Of_Dice_For_Dmg()+"d"+player.getDiceForDamage().getDiceMaxValue());
-                }
-            }
-            this.equipmentController.RefreshTableView(-1);
-            this.CheckStatusWeapon();
+            this.AfterBattleActionUsingWeapon(null);
             
         }
         else{
@@ -218,6 +204,22 @@ public class HomeController {
         }
         else{
             HistoryLabel.setText("Non puoi schivare finchè non sei vicino al nemico\n");  
+        }
+    }
+
+    public void HoldBackWeapon() throws IOException{
+        Armi arma = this.mapController.Remove_On_Ground_Weapon();
+        if(arma.Check_Weapon_Still_enable_to_Figth()){
+            HistoryLabel.setText("Hai raccolta l'arma '"+arma.getName()+"'\nTurni di utilizzo restanti: "+ arma.getRemainTime_Of_Usability()+"\n");
+            player.setCurrent_Holding_Weapon(arma);
+            player.setAlready_Holding_weapon(true);
+            player.setDiceForDamage(arma.getDice());
+            player.setNumber_Of_Dice_For_DMG(arma.getNumberofDice());
+            player.setAlready_Holding_weapon(true);
+            this.equipmentController.RefreshTableView(-1);
+        }
+        else{
+            HistoryLabel.setText("Non puoi raccogliere l'arma '"+arma.getName()+"'perché è Rotta!");
         }
     }
 
@@ -327,8 +329,34 @@ public class HomeController {
         else if(keyEvent.getCode().equals(KeyCode.R)){
             this.SwitchEquipment(null);
         }
+        else if(keyEvent.getCode().equals(KeyCode.E) && this.mapController.checkWeapon_Around()){
+            this.HoldBackWeapon();
+        }
     }
 
+    /* Gestione inputDaTastiera */
+    public void ActionPlayerwithInputText(ActionEvent event) throws IOException{
+        if(InputTextField.getText() != null || InputTextField.getText() != ""){
+            if(player.Are_Already_Holding_Weapon()&& ! player.getCurrent_Holding_Weapon().CheckStartCooldown() ){
+                System.out.println("Range max: "+player.getCurrent_Holding_Weapon().getMaxRangeOFLaunchWeapon()+" Range min: "+player.getCurrent_Holding_Weapon().getMinRangeOFLaucnhWeapon());
+                if(this.mapController.check_Distance_For_Launch(player.getCurrent_Holding_Weapon().getMaxRangeOFLaunchWeapon(), player.getCurrent_Holding_Weapon().getMinRangeOFLaucnhWeapon())){
+                   if((InputTextField.getText().contains("Lancia") || InputTextField.getText().contains("Lancio")) ){
+                        HistoryLabel.setText("Lanci l'arma '"+player.getCurrent_Holding_Weapon().getName()+"' Contro il nemico\n");
+                        this.Battle("Lancio Arma Player");
+                        this.AfterBattleActionUsingWeapon("Lancio");
+                    } 
+                }
+                else{
+                    HistoryLabel.setText("Non puoi lanciare l'arma, sei fuori range\n");
+                }
+                
+            }
+            else{
+                HistoryLabel.setText("Azione non concessa, arma scarica o rotta o non stai indossando nessuna arma\n");
+            }
+            
+        }
+    }
     /* Battle System */
     private void Battle(String Player) throws IOException{
         /* pre lancio del dado da parte del player */
@@ -339,6 +367,10 @@ public class HomeController {
         if(Player.equals("Player")){
             this.game.BattleTurn("Attacca", enemy_moves);
             HistoryLabel.setText(this.game.getResultsAction());  
+        }
+        else if(Player.equals("Lancio Arma Player")){
+            this.game.BattleTurn("Lancio Arma Player", enemy_moves);
+            HistoryLabel.setText(HistoryLabel.getText() + this.game.getResultsAction()); 
         }
         /* pre lancio del dado da parte del nemico */
         d20resulst = this.game.Roll_and_getD20Results();
@@ -377,6 +409,39 @@ public class HomeController {
         
     }
 
+    public void AfterBattleActionUsingWeapon(String type_of_action) throws IOException{
+        if(player.getCurrent_Holding_Weapon() != null){
+            if(player.Are_Already_Holding_Weapon() && player.getCurrent_Holding_Weapon().Check_Weapon_Still_enable_to_Figth() && !player.getCurrent_Holding_Weapon().CheckStartCooldown()){
+                player.getCurrent_Holding_Weapon().DecreaseLife_Of_Weapon();
+            }
+            if((! player.getCurrent_Holding_Weapon().Check_Weapon_Still_enable_to_Figth()) || type_of_action.equals("Lancio")){
+                //System.out.println("Sono dentro all'else if");
+                HistoryLabel.setText(HistoryLabel.getText()+" '"+player.getCurrent_Holding_Weapon().getName()+"' ");
+                if(type_of_action.equals("Lancio")){
+                    HistoryLabel.setText(HistoryLabel.getText() +" Lanciata !\nFinchè non la raccogli giocherai a mani nude\n");
+                    /* disegna l'arma sulla mappa di gioco */
+                    if(player.getCurrent_Holding_Weapon().Check_Weapon_Still_enable_to_Figth())
+                        this.mapController.Draw_On_Ground_Weapon(player.getCurrent_Holding_Weapon());
+                    else{
+                        this.mapController.Draw_On_Ground_Weapon_Broken(player.getCurrent_Holding_Weapon());
+                    }
+                    player.getCurrent_Holding_Weapon().setHoldingThrowedProperty();
+                }
+                else{
+                    HistoryLabel.setText((HistoryLabel.getText()+" Rotta!\n"));
+                    player.getCurrent_Holding_Weapon().setHoldingBrokenProperty();
+                }
+                player.setAlready_Holding_weapon(false);
+                //player.getCurrent_Holding_Weapon().setHoldingBrokenProperty();
+                player.ResetCurrent_Holding_Weapon();
+                player.ResetDiceForDamage();
+                player.ResetNumber_Of_Dice_For_Dmg();
+                DiceforDamageLabel.setText(player.getNumber_Of_Dice_For_Dmg()+"d"+player.getDiceForDamage().getDiceMaxValue());
+            }
+        }
+        this.equipmentController.RefreshTableView(-1);
+        this.CheckStatusWeapon();
+    }
     /* per muoversi nella mappa */
     private void EnemyMovements(){
         Random rand_num = new Random();

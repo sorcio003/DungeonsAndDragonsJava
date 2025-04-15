@@ -8,6 +8,7 @@ public class Pugnale extends Armi_Mischia{
         super(new D4());
         super.setName("Pugnale");
         super.setLife_Of_Weapon(8);
+        super.setDistance(0);
         super.setNumberofDice(2);
         super.setSecondType("Semplice");
         super.setProperty("Accurata");

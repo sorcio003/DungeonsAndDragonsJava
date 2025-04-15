@@ -1,7 +1,11 @@
 package com.dnd.it;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import com.dnd.it.GameSystem.Weapon.Armi;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -10,6 +14,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import java.lang.Math;
 
 public class MapController implements Initializable{
     private int n_rows;
@@ -19,6 +24,9 @@ public class MapController implements Initializable{
     private int current_y_player;
     private int current_x_enemy;
     private int current_y_enemy;
+    private int current_x_weapon;
+    private int current_y_weapon;
+    private ImageView weaponPixel;
     private ImageView playerPixel;
     private ImageView enemyPixel;
     @FXML
@@ -28,6 +36,7 @@ public class MapController implements Initializable{
     private Stage stage;
     private Scene scene;
     private Parent root;
+    private Armi arma;
 
     public void initialize(URL arg0, ResourceBundle arg1){
         meters_for_cell = 3;
@@ -173,6 +182,31 @@ public class MapController implements Initializable{
         return false;
     }
 
+    public Boolean checkWeapon_Around(){
+        /* Per effeturae questa verifica io verifico se la distanza tra le x e le y dei due player è 1 o -1 o 0 */
+        //System.out.println("X: "+(current_x_player - current_x_enemy)+" Y: "+(current_y_player - current_y_enemy));
+        if(((current_x_player - current_x_weapon) == 1) || ((current_x_player - current_x_weapon) == -1) || ((current_x_player - current_x_weapon) == 0)){
+            if(((current_y_player - current_y_weapon) == 1) || ((current_y_player - current_y_weapon) == -1) || ((current_y_player - current_y_weapon) == 0)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /* metodo che serve per verificare se la distanza per il lancio è accettabile */
+    public Boolean check_Distance_For_Launch(int max, int min){
+        double double_current_x_player = current_x_player;
+        double double_current_y_player = current_y_player;
+        double double_current_x_enemy = current_x_enemy;
+        double double_current_y_enemy = current_y_enemy;
+        int pitagora = (int) Math.sqrt( Math.pow(Math.abs( double_current_x_player - double_current_x_enemy), 2) + Math.pow(Math.abs( double_current_y_player - double_current_y_enemy), 2));
+        System.out.println("Pitagora: "+pitagora);
+        if(pitagora <= max && pitagora >= min){
+            return true;
+        }
+        return false;
+    }
+
     public int getMeterForCell(){
         return this.meters_for_cell;
     }
@@ -180,6 +214,30 @@ public class MapController implements Initializable{
     public void clearMap(){
         gridMap.getChildren().remove(playerPixel);
         gridMap.getChildren().remove(enemyPixel);
+    }
+
+    public void Draw_On_Ground_Weapon(@SuppressWarnings("exports") Armi arma){
+        this.arma = arma;
+        InputStream weaponPixelImage = getClass().getResourceAsStream("/Assets/Weapons/"+app.getEnemy().getCurrent_Holding_Weapon().getName()+".png");
+        this.weaponPixel = new ImageView(new Image(weaponPixelImage));
+        current_x_weapon = current_x_enemy;
+        current_y_weapon = current_y_enemy-1;
+        gridMap.add(weaponPixel, current_x_weapon, current_y_weapon);
+    }
+
+    public void Draw_On_Ground_Weapon_Broken(@SuppressWarnings("exports") Armi arma){
+        this.arma = arma;
+        InputStream weaponPixelImage = getClass().getResourceAsStream("/Assets/Weapons/"+app.getEnemy().getCurrent_Holding_Weapon().getName()+"_Broken.png");
+        this.weaponPixel = new ImageView(new Image(weaponPixelImage));
+        current_x_weapon = current_x_enemy;
+        current_y_weapon = current_y_enemy-1;
+        gridMap.add(weaponPixel, current_x_weapon, current_y_weapon);
+    }
+
+    @SuppressWarnings("exports")
+    public Armi Remove_On_Ground_Weapon(){
+        gridMap.getChildren().remove(weaponPixel);
+        return this.arma;
     }
 
     public void setMap(App app) {

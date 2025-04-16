@@ -61,7 +61,7 @@ Il gioco può essere eseguito tramite uno **script di lancio universale** (`laun
 |Maven      | 3.8.7 o 3.9.9      | Necessario per la gestione delle dipendenze e del build |
 |Git Bash   | 2.49.0             | Necessario per Windows OS per avviare il gioco          |
 
-> Puoi verificare le versioni con i comandi:
+Puoi verificare le versioni con i comandi:
      ```bash
         java --version
         mvn --version 

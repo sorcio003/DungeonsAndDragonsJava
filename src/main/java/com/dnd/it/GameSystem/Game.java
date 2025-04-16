@@ -311,6 +311,8 @@ public class Game {
     private void Attack(int enemy_status){
         this.PreSetBattleAction(this.player);
 
+        System.out.println("Enemy status: "+enemy_status);
+
         this.setResultsAction(this.getResultsAction() + "Tiro su Forza\nD20: "+d20.getResult());
         /* il danno è calcolato dal dado per attacare del player */
 

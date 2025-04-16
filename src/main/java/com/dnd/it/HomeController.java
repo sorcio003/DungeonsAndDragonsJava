@@ -7,7 +7,6 @@ import com.dnd.it.GameSystem.EnemyAI;
 import com.dnd.it.GameSystem.Game;
 import com.dnd.it.GameSystem.Model.Characters;
 import com.dnd.it.GameSystem.Weapon.Armi;
-import com.dnd.it.GameSystem.Weapon.Semplice.Ascia;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -211,13 +210,17 @@ public class HomeController {
     public void HoldBackWeapon() throws IOException{
         String name_of_weapon = this.mapController.Remove_On_Ground_Weapon();
         Armi arma = player.getClassPgClass().getWeaponByName(name_of_weapon);
+        System.out.println("Nome arma: "+arma.getName());
         if(arma.Check_Weapon_Still_enable_to_Figth()){
             HistoryLabel.setText("Hai raccolta l'arma '"+arma.getName()+"'\nTurni di utilizzo restanti: "+ arma.getRemainTime_Of_Usability()+"\n");
+            arma.set_Holding_Weapon(true);
+            arma.setHoldingProperty();
             player.setCurrent_Holding_Weapon(arma);
             player.setAlready_Holding_weapon(true);
             player.setDiceForDamage(arma.getDice());
             player.setNumber_Of_Dice_For_DMG(arma.getNumberofDice());
             player.setAlready_Holding_weapon(true);
+            DiceforDamageLabel.setText(player.getNumber_Of_Dice_For_Dmg()+"d"+player.getDiceForDamage().getDiceMaxValue());
             this.equipmentController.RefreshTableView(-1);
         }
         else{
@@ -367,21 +370,28 @@ public class HomeController {
     private void Battle(String Player) throws IOException{
         /* pre lancio del dado da parte del player */
         d20resulst = this.game.Roll_and_getD20Results();
-        this.game.getEnemyAI().EnemyAIDecision(d20resulst);
+        if (Player.equals("Lancio Arma Player")){
+            System.out.println("Nemico obbligato o as chivare o a muoversi");
+            this.game.getEnemyAI().EnemyAIDecision(0);
+        }
+        else{
+            this.game.getEnemyAI().EnemyAIDecision(d20resulst);
+        }
         /* valore tra 1 , 2 e 3 che decide se il nemico attacca, schiva o si muove */
         enemy_moves = this.game.getEnemyAI().getDecision();
+        System.out.println("Enemy moves: "+enemy_moves);
+        /* il nemico può decidere di attaccare solo se il player attacca da vicino, ma se lancia l'arma, non puo attaccare, ma solo schivare o muoversi */
         if(Player.equals("Player")){
             this.game.BattleTurn("Attacca", enemy_moves);
-            HistoryLabel.setText(this.game.getResultsAction());  
         }
         else if(Player.equals("Lancio Arma Player")){
             this.game.BattleTurn("Lancio Arma Player", enemy_moves);
-            HistoryLabel.setText(HistoryLabel.getText() + this.game.getResultsAction()); 
         }
-        /* pre lancio del dado da parte del nemico */
+        HistoryLabel.setText(this.game.getResultsAction());  
         d20resulst = this.game.Roll_and_getD20Results();
         this.game.getEnemyAI().setLastD20Results(d20resulst);
         this.game.BattleTurn("Azione Nemico", enemy_moves);
+        /* pre lancio del dado da parte del nemico */
 
         HistoryLabel.setText(HistoryLabel.getText() + this.game.getResultsAction());   
             if( this.game.Are_Enemy_Moving() ){
@@ -426,9 +436,12 @@ public class HomeController {
                 if(type_of_action.equals("Lancio")){
                     HistoryLabel.setText(HistoryLabel.getText() +" Lanciata !\nFinchè non la raccogli giocherai a mani nude\n");
                     /* disegna l'arma sulla mappa di gioco */
-                    if(player.getCurrent_Holding_Weapon().Check_Weapon_Still_enable_to_Figth())
+                    if(player.getCurrent_Holding_Weapon().Check_Weapon_Still_enable_to_Figth()){
+                        this.player.getCurrent_Holding_Weapon().set_Holding_Weapon(false);
                         this.mapController.Draw_On_Ground_Weapon(player.getCurrent_Holding_Weapon().getName());
+                    }
                     else{
+                        this.player.getCurrent_Holding_Weapon().set_Holding_Weapon(false);
                         this.mapController.Draw_On_Ground_Weapon_Broken(player.getCurrent_Holding_Weapon().getName());
                     }
                     player.getCurrent_Holding_Weapon().setHoldingThrowedProperty();

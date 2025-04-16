@@ -14,25 +14,42 @@ Un gioco ispirato al celebre universo di **Dungeons & Dragons**, sviluppato in J
 
 Il gioco può essere eseguito tramite uno **script di lancio universale** (`launcher.sh`), funzionante su:
 
-- 🪟 Windows (tramite PowerShell)
+- 🪟 Windows (tramite `Git Bash Terminal`)
 - 🐧 Linux
 - 🍎 macOS
 
 #### ▶️ Istruzioni per l’Avvio
 
-1. **Apri il terminale**
-   - Su **Windows**: apri **PowerShell**
-   - Su **macOS/Linux**: apri il **Terminale**
+0. **Per tutti i Sistemi Operativi**
+   - Scaricare Java Version 17+ da Oracle
+   - Scaricare Maven da Apache version 3.8.7 o 3.9.9 --> https://maven.apache.org/download.cgi
 
-2. **Posizionati nella cartella del launcher**
-   - Usa il comando `cd` per entrare nella directory dove si trova `launcher.sh`:
+1. **Windows 10/11**
+   - Scarica Git Bash (Versione consigliata 2.49.0) --> https://gitforwindows.org
+   - Installa Git Bash 
+   - Scarica il file .zip/.rar oppure scaricato il gioco tramite `git pull dnd master`
+   - Entrare nella cartella dove risiede il file (`launcher.sh`) tramite comando
      ```bash
-     cd Scrivania/dnd
+     cd Desktop/nome_cartella
+     ```
+   - Eseguire comando per avviare il gioco:
+    ```bash
+     sh launcher.sh
      ```
 
-3. **Esegui il comando di lancio**
-   ```bash
-   sh launcher.sh
+
+2. **Linux/MacOS**
+   - Scarica il file .zip/.rar oppure scaricato il gioco tramite `git pull dnd master`
+   - Entrare nella cartella dove risiede il file (`launcher.sh`) tramite comando
+     ```bash
+     cd Scrivania/nome_cartella
+     ```
+   - Eseguire comando per avviare il gioco:
+    ```bash
+     sh launcher.sh
+     ```
+
+3. **Rolla il D20 per sconfiggere il nemico**
 
 ---
 
@@ -41,11 +58,16 @@ Il gioco può essere eseguito tramite uno **script di lancio universale** (`laun
 |  Software | Versione Richiesta | Note                                                    |
 |-----------|--------------------|---------------------------------------------------------|
 |Java (JDK) | 17 o superiore     | Deve essere configurato nel PATH                        |
-|Maven      | 3.8.7 o 3.8.9      | Necessario per la gestione delle dipendenze e del build |
+|Maven      | 3.8.7 o 3.9.9      | Necessario per la gestione delle dipendenze e del build |
+|Git Bash   | 2.49.0             | Necessario per Windows OS per avviare il gioco          |
 
-Puoi verificare le versioni con i comandi:
-- # java -version
-- # mvn -version
+> Puoi verificare le versioni con i comandi:
+     ```bash
+        java --version
+        mvn --version 
+        mvn --v
+        git -v
+     ```
 ---
 
 ## ⚔️ Caratteristiche dei Personaggi
@@ -62,18 +84,34 @@ Puoi verificare le versioni con i comandi:
 
 ---
 
-## 🗡️ Armi Disponibili
+## 🗺️ Mappa di Gioco
 
-| Arma      | Tipo                  | Danno  | Robustezza | Utilizzo (turni) | Ricarica (turni) | Note aggiuntive                                 |
-|-----------|-----------------------|--------|-------------|------------------|------------------|-------------------------------------------------|
-| Ascia     | Mischia Semplice      | 1d6    | 12          | 3                | 5                | Buon danno base, arma del Barbaro               |
-| Pugnale   | Mischia Semplice      | 2d4    | 8           | 2                | 3                | Più veloce ma con usura rapida                  |
-| Mani Nude| Nessuna arma           | 1d4    | ∞           | ∞                | ∞                | Default quando nessuna arma è equipaggiata      |
+- La mappa è composta da **blocchi**, ognuno rappresentante **9 mq** (3 metri x 3 metri).
+- La **velocità dei personaggi** è misurata in **metri**, ma convertita in **blocchi** per il movimento:
+  - Es. Il **Barbaro** si muove di **9 metri** → può avanzare di **3 blocchi** per turno.
+  - Il **Golem** si muove di **3 metri** → avanza di **1 blocco** per turno.
 
-- Ogni arma ha una **vita utile (robustezza)**: quando raggiunge 0, l’arma è **rotta** (`broken`) e non potrà più essere utilizzata.
-- Ogni turno (attacco, movimento, schivata o mani nude) influisce sul tempo di utilizzo/ricarica dell’arma.
-- Quando un'arma termina il tempo di utilizzo, il sistema effettua automaticamente lo **switch su mani nude**.
-- Una volta terminato il tempo di ricarica, l’arma può essere nuovamente impugnata se non è rotta.
+---
+
+## 🗡️ Armi Disponibili (Aggiornata)
+
+| Arma      | Tipo                  | Danno  | Robustezza  | Utilizzo (turni) | Ricarica (turni) | Proprietà                          | Note aggiuntive                                 |
+|-----------|-----------------------|--------|-------------|------------------|------------------|------------------------------------|-------------------------------------------------|
+| Ascia     | Mischia Semplice      | 1d6    | 12          | 3                | 5                | `Lancio (3-4)`                     | Buon danno base, arma del Barbaro               |
+| Pugnale   | Mischia Semplice      | 2d4    | 8           | 2                | 3                | `Accuratezza (+1)`                 | Più veloce ma con usura rapida                  |
+| Mani Nude| Nessuna arma           | 1d4    | ∞           | ∞                | ∞                | -                                  | Default quando nessuna arma è equipaggiata      |
+
+---
+
+### 🧬 Proprietà delle Armi
+
+Alcune armi possiedono **Proprietà speciali** che influenzano il comportamento durante il combattimento:
+
+| Proprietà     | Descrizione                                                                                                                                         |
+|---------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Accuratezza` | Aumenta il **tiro d'attacco** (`1d20`) con un **bonus al colpo** in base al tipo di arma:                                                           |
+|               | - **Mischia Semplice** → `+1`<br>- **Mischia Distanza** → `+2`<br>- **Da Guerra (Mischia)** → `+2`<br>- **Da Guerra (Distanza)** → `+3`              |
+| `Lancio`      | Permette di **lanciare l’arma** se la distanza dal nemico è compresa tra:<br>📏 **Minima**: `3 blocco`<br>📏 **Massima**: `4 blocchi`<br>⚠️ Dopo il lancio, l’arma **cade vicino al nemico** e deve essere **raccolta manualmente** prima di poter essere riutilizzata. I parametri di distanza possono essere personalizzati. |
 
 ---
 
@@ -151,6 +189,10 @@ Il sistema di combattimento si ispira alle regole classiche di D&D, ma semplific
 ---
 
 ## 📝 Report Aggiornamenti
+
+### 📅 16 Aprile
+- 🚀 Il sistema di **lancio delle armi** è ora **funzionante**, ma ancora in fase di test (può risultare instabile in alcuni casi).
+- ✅ Aggiunta completa della **gestione delle proprietà** delle armi (`Accuratezza`, `Lancio`) con effetti in battaglia.
 
 ### 📅 15 Aprile
 - 🔧 **Aggiornamento Sistema Armi**:

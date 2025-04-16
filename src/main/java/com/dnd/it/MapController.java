@@ -217,8 +217,11 @@ public class MapController implements Initializable{
         this.name_of_weapon = name;
         InputStream weaponPixelImage = getClass().getResourceAsStream("/Assets/Weapons/"+name+".png");
         this.weaponPixel = new ImageView(new Image(weaponPixelImage));
-        current_x_weapon = current_x_enemy;
-        current_y_weapon = current_y_enemy-1;
+        if(current_x_enemy < 9 && current_x_enemy >= 4)
+            current_x_weapon = current_x_enemy-1;
+        else if(current_x_enemy >= 0 && current_x_enemy < 4)
+            current_x_weapon = current_x_enemy+1;
+        current_y_weapon = current_y_enemy;
         gridMap.add(weaponPixel, current_x_weapon, current_y_weapon);
     }
 
@@ -226,8 +229,11 @@ public class MapController implements Initializable{
         this.name_of_weapon = name;
         InputStream weaponPixelImage = getClass().getResourceAsStream("/Assets/Weapons/"+name+"_Broken.png");
         this.weaponPixel = new ImageView(new Image(weaponPixelImage));
-        current_x_weapon = current_x_enemy;
-        current_y_weapon = current_y_enemy-1;
+        if(current_x_enemy < 9 && current_x_enemy >= 4)
+            current_x_weapon = current_x_enemy-1;
+        else if(current_x_enemy >= 0 && current_x_enemy < 4)
+            current_x_weapon = current_x_enemy+1;
+        current_y_weapon = current_y_enemy;
         gridMap.add(weaponPixel, current_x_weapon, current_y_weapon);
     }
 
@@ -251,10 +257,16 @@ public class MapController implements Initializable{
         current_x_player = 0;
         current_y_player = n_rows/2;
         current_x_enemy = n_columns-1;
-        current_y_enemy = n_rows/2;        
+        current_y_enemy = n_rows/2;    
+        
+        //InputStream weaponPixelImage = getClass().getResourceAsStream("/Assets/Weapons/Ascia.png");
+        //this.weaponPixel = new ImageView(new Image(weaponPixelImage));
+        //current_x_weapon = 4;
+        //current_y_weapon = 4;
 
         gridMap.add(playerPixel, current_x_player, current_y_player);
         gridMap.add(enemyPixel, current_x_enemy, current_y_enemy);
+        //gridMap.add(weaponPixel, current_x_weapon, current_y_weapon);
         
     }
 

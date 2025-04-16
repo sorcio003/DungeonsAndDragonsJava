@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dnd.it.EnemyViewerController">
+   <children>
+      <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="500.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="246.0" prefWidth="298.0">
+                     <children>
+                        <ImageView fx:id="EnemyImage" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                     </children>
+                  </HBox>
+                  <Label fx:id="EnemyNameLabel" alignment="TOP_CENTER" contentDisplay="TOP" layoutX="103.0" layoutY="211.0" prefHeight="19.0" prefWidth="94.0" styleClass="enemylabel" stylesheets="@../../../../style.css" text="EnemyName" />
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <GridPane alignment="TOP_CENTER" layoutX="60.0" layoutY="74.0" prefHeight="257.0" prefWidth="298.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <columnConstraints>
+                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label text="LIFE" />
+                        <Label text="CA" GridPane.rowIndex="1" />
+                        <Label text="SPEED x meters" GridPane.rowIndex="2" />
+                        <Label fx:id="LifeLabelText" text="LABEL" GridPane.columnIndex="1" />
+                        <Label fx:id="GuardLabelText" text="LABEL" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="SpeedLabelText" text="LABEL" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label text="STRENGTH" GridPane.rowIndex="3" />
+                        <Label text="DEXTERITY" GridPane.rowIndex="4" />
+                        <Label text="CONSTITUTION" GridPane.rowIndex="5" />
+                        <Label text="INTELLIGENCE" GridPane.rowIndex="6" />
+                        <Label text="WISDOM" GridPane.rowIndex="7" />
+                        <Label text="CHARISM" GridPane.rowIndex="8" />
+                        <Label fx:id="StrengthTextLabel" text="LABEL" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label fx:id="DexterityTextLabel" text="LABEL" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <Label fx:id="ConstitutionTextLabel" text="LABEL" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <Label fx:id="IntelligenceTextLabel" text="LABEL" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <Label fx:id="WisdomTextLabel" text="LABEL" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                        <Label fx:id="CharismTextLabel" text="LABEL" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                     </children>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

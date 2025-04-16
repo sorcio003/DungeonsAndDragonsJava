@@ -65,6 +65,7 @@ public class EquipmentController {
             player.setDiceForDamage(arma.getDice());
             player.setNumber_Of_Dice_For_DMG(arma.getNumberofDice());
             player.setAlready_Holding_weapon(true);
+            player.getCurrent_Holding_Weapon().setHolding_Active_Property();
             this.RefreshTableView(index);
         }
         else if(!arma.Check_Weapon_Still_enable_to_Figth()){
@@ -106,6 +107,7 @@ public class EquipmentController {
             WeaponsTable.getItems().get(index).set_Holding_Weapon(false);
             historyLabel.setText("Hai rimosso l'equipaggiamento '"+arma.getName()+"'\nOra combatteria a mani nude");
             player.setAlready_Holding_weapon(false);
+            player.getCurrent_Holding_Weapon().setHolding_Not_Active_Property();
             /* se il cooldown non è terminato, il user avrà la sensazione di taccare a mani nude, ma la current weapon sarà != null */
             if(! player.getCurrent_Holding_Weapon().Check_Time_Of_Usbility_Terminated() || player.getCurrent_Holding_Weapon().Check_CoolDown_Terminated()){
                 player.ResetCurrent_Holding_Weapon();

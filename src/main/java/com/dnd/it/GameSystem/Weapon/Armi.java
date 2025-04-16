@@ -73,7 +73,7 @@ public class Armi {
         this.weaponDescription[1] = new SimpleStringProperty(new String(this.number_of_dices+"d"+this.dice.getDiceMaxValue()));
         this.weaponDescription[2] = new SimpleStringProperty(this.property);
         this.is_Holding_a_Weapon = false;
-        this.holding_Property = new SimpleStringProperty(is_Holding_a_Weapon.toString());
+        this.holding_Property = new SimpleStringProperty("Not Holding");
     }
 
     /* Methods */
@@ -142,8 +142,8 @@ public class Armi {
         this.property = property;
         this.setPropertyinWeaponsDescription(this.property);
         if(this.property.equals("Lancio")){
-            this.setMaxRangeOFLaunchWeapon(3);
-            this.setMinRangeOFLaucnhWeapon(1);
+            this.setMaxRangeOFLaunchWeapon(4);
+            this.setMinRangeOFLaucnhWeapon(3);
         }
         if(this.property.equals("Accurata")){
             if(this.getFirstType().equals("Mischia")){
@@ -196,7 +196,7 @@ public class Armi {
     }
 
     public void setHoldingProperty(){
-        this.holding_Property = new SimpleStringProperty(this.is_Holding_a_Weapon.toString());
+        this.holding_Property = new SimpleStringProperty(this.holding_Property.get());
     }
 
     public void setHoldingBrokenProperty(){
@@ -205,6 +205,14 @@ public class Armi {
 
     public void setHoldingThrowedProperty(){
         this.holding_Property = new SimpleStringProperty("Throwed");
+    }
+
+    public void setHolding_Active_Property(){
+        this.holding_Property = new SimpleStringProperty("Holding");
+    }
+
+    public void setHolding_Not_Active_Property(){
+        this.holding_Property = new SimpleStringProperty("Not Holding");
     }
 
     public StringProperty getHoldingProperty(){

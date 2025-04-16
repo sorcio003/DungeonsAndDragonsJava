@@ -7,7 +7,7 @@ public class Ascia extends Armi_Mischia{
     public Ascia(){
         super(new D6());
         super.setName("Ascia");
-        super.setLife_Of_Weapon(3);
+        super.setLife_Of_Weapon(12);
         super.setNumberofDice(1);
         super.setSecondType("Semplice");
         super.setProperty("Lancio");

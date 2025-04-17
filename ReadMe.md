@@ -79,8 +79,8 @@ Puoi verificare le versioni con i comandi:
 
 | Razza  | Velocità | Forza | Des | Cos | Int | Sag | Car | Bonus               |
 |--------|-----------|--------|------|------|------|------|------|-----------------------|
-| Elfo   | 9 blocchi | 12     | 8    | 8    | 8    | 8    | 8    | +2 Des, Int, Forza    |
-| Golem  | 3 blocchi | 14     | 5    | 8    | 1    | 1    | 1    | +2 Forza, Costituzione |
+| Elfo   | 9 metri | 12     | 8    | 8    | 8    | 8    | 8    | +2 Des, Int, Forza    |
+| Golem  | 3 metri | 14     | 5    | 8    | 1    | 1    | 1    | +2 Forza, Costituzione |
 
 ---
 
@@ -95,11 +95,11 @@ Puoi verificare le versioni con i comandi:
 
 ## 🗡️ Armi Disponibili (Aggiornata)
 
-| Arma      | Tipo                  | Danno  | Robustezza  | Utilizzo (turni) | Ricarica (turni) | Proprietà                          | Note aggiuntive                                 |
-|-----------|-----------------------|--------|-------------|------------------|------------------|------------------------------------|-------------------------------------------------|
-| Ascia     | Mischia Semplice      | 1d6    | 12          | 3                | 5                | `Lancio (3-4)`                     | Buon danno base, arma del Barbaro               |
-| Pugnale   | Mischia Semplice      | 2d4    | 8           | 2                | 3                | `Accuratezza (+1)`                 | Più veloce ma con usura rapida                  |
-| Mani Nude| Nessuna arma           | 1d4    | ∞           | ∞                | ∞                | -                                  | Default quando nessuna arma è equipaggiata      |
+| Arma      | Tipo                  | Danno  | Robustezza  | Proprietà                          | Note aggiuntive                                 |
+|-----------|-----------------------|--------|-------------|------------------------------------|-------------------------------------------------|
+| Ascia     | Mischia Semplice      | 1d6    | 12          | `Lancio (3-4)`                     | Buon danno base, arma del Barbaro               |
+| Pugnale   | Mischia Semplice      | 2d4    | 8           | `Accuratezza (+1)`                 | Più veloce ma con usura rapida                  |
+| Mani Nude| Nessuna arma           | 1d4    | ∞           | -                                  | Default quando nessuna arma è equipaggiata      |
 
 ---
 
@@ -204,15 +204,14 @@ Il sistema di combattimento si ispira alle regole classiche di D&D, ma semplific
 - 🔧 **Aggiornamento Sistema Armi**:
   - Ogni arma ha ora:
     - **Robustezza (vita)** → n° massimo di attacchi eseguibili prima della rottura
-    - **Tempo di utilizzo** → turni consecutivi in cui può essere usata
-    - **Tempo di ricarica** → turni necessari prima che possa essere riutilizzata
+    - **Proprietà** tra Lancio o Accuratezza
   - Azioni come attacco, movimento, schivata, mani nude → contano come **turni**
   - Introduzione flag per switch automatico su mani nude a fine utilizzo
   - Flag `broken` per armi che non possono più essere usate
 - 🎲 Supporto a danni con **più dadi** (es. `2d4`, `3d6`)
 - 🛡️ Aggiornamento equipaggiamento del Barbaro:
-  - **Ascia**: 1d6, vita 12, 3 turni utilizzo, 5 turni ricarica
-  - **Pugnale**: 2d4, vita 8, 2 turni utilizzo, 3 turni ricarica
+  - **Ascia**: 1d6, vita 12, Lancio
+  - **Pugnale**: 2d4, vita 8, Accuratezza
 
 
 ### 📅 12 Aprile

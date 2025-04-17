@@ -168,7 +168,7 @@ public class Game {
          * aggiungo al risultato del d20+bonus+modificatore l'accuratezza
          * verifico anche sl'arma sia Accurata, quindi che abbia 'Accurata' come proprietà (solo per adesso perchè hanno una sola proprietà per ora !) 
           */
-        if(character.Are_Already_Holding_Weapon() && ! character.getCurrent_Holding_Weapon().CheckStartCooldown()){
+        if(character.Are_Already_Holding_Weapon() && character.getCurrent_Holding_Weapon().Check_Weapon_Still_enable_to_Figth()){
             this.setLaunch(this.getLaunch() + character.getCurrent_Holding_Weapon().getAccuracy());
         }
     }

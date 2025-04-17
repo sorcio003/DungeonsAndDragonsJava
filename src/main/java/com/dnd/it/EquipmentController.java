@@ -60,7 +60,7 @@ public class EquipmentController {
         if(! player.Are_Already_Holding_Weapon() && ! arma.Is_Holding_a_Weapon() && arma.Check_Weapon_Still_enable_to_Figth()){
             WeaponsTable.getItems().get(index).set_Holding_Weapon(true);
             diceLabel.setText(arma.getWeaponDescriptionById(1));
-            historyLabel.setText("Ti sei equipaggiato con '"+arma.getName()+"'\nOra la puoi usare per "+arma.getRemainTime_Of_Usability()+" turni");
+            historyLabel.setText("Ti sei equipaggiato con '"+arma.getName()+"'\n");
             player.setCurrent_Holding_Weapon(arma);
             player.setDiceForDamage(arma.getDice());
             player.setNumber_Of_Dice_For_DMG(arma.getNumberofDice());
@@ -109,9 +109,7 @@ public class EquipmentController {
             player.setAlready_Holding_weapon(false);
             player.getCurrent_Holding_Weapon().setHolding_Not_Active_Property();
             /* se il cooldown non è terminato, il user avrà la sensazione di taccare a mani nude, ma la current weapon sarà != null */
-            if(! player.getCurrent_Holding_Weapon().Check_Time_Of_Usbility_Terminated() || player.getCurrent_Holding_Weapon().Check_CoolDown_Terminated()){
-                player.ResetCurrent_Holding_Weapon();
-            }
+            player.ResetCurrent_Holding_Weapon();
             player.ResetDiceForDamage();
             player.ResetNumber_Of_Dice_For_Dmg();
             diceLabel.setText("1d"+player.getDiceForDamage().getDiceMaxValue());

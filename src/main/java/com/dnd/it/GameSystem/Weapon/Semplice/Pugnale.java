@@ -12,9 +12,5 @@ public class Pugnale extends Armi_Mischia{
         super.setNumberofDice(2);
         super.setSecondType("Semplice");
         super.setProperty("Accurata");
-        super.setCoolDown_Usability(2);
-        super.setTime_Of_Usability(2);
-        super.ResetCounter_Cooldown_Usability();
-        super.ResetCounter_time_of_Usability();
     }
 }

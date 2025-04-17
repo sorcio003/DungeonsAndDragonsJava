@@ -212,8 +212,9 @@ public class HomeController {
         Armi arma = player.getClassPgClass().getWeaponByName(name_of_weapon);
         System.out.println("Nome arma: "+arma.getName());
         if(arma.Check_Weapon_Still_enable_to_Figth()){
-            HistoryLabel.setText("Hai raccolta l'arma '"+arma.getName()+"'\nTurni di utilizzo restanti: "+ arma.getRemainTime_Of_Usability()+"\n");
+            HistoryLabel.setText("Hai raccolta l'arma '"+arma.getName()+"'\n");
             arma.set_Holding_Weapon(true);
+            arma.setHolding_Active_Property();
             arma.setHoldingProperty();
             player.setCurrent_Holding_Weapon(arma);
             player.setAlready_Holding_weapon(true);
@@ -346,7 +347,7 @@ public class HomeController {
     /* Gestione inputDaTastiera */
     public void ActionPlayerwithInputText(ActionEvent event) throws IOException{
         if(InputTextField.getText() != null || InputTextField.getText() != ""){
-            if(player.Are_Already_Holding_Weapon()&& ! player.getCurrent_Holding_Weapon().CheckStartCooldown() ){
+            if(player.Are_Already_Holding_Weapon() && player.getCurrent_Holding_Weapon().Check_Weapon_Still_enable_to_Figth()){
                 System.out.println("Range max: "+player.getCurrent_Holding_Weapon().getMaxRangeOFLaunchWeapon()+" Range min: "+player.getCurrent_Holding_Weapon().getMinRangeOFLaucnhWeapon());
                 if(this.mapController.check_Distance_For_Launch(player.getCurrent_Holding_Weapon().getMaxRangeOFLaunchWeapon(), player.getCurrent_Holding_Weapon().getMinRangeOFLaucnhWeapon())){
                    if((InputTextField.getText().toUpperCase().contains("LANCIA") || InputTextField.getText().toUpperCase().contains("LANCIO")) ){
@@ -427,7 +428,7 @@ public class HomeController {
 
     public void AfterBattleActionUsingWeapon(String type_of_action) throws IOException{
         if(player.getCurrent_Holding_Weapon() != null){
-            if(player.Are_Already_Holding_Weapon() && player.getCurrent_Holding_Weapon().Check_Weapon_Still_enable_to_Figth() && !player.getCurrent_Holding_Weapon().CheckStartCooldown()){
+            if(player.Are_Already_Holding_Weapon() && player.getCurrent_Holding_Weapon().Check_Weapon_Still_enable_to_Figth()){
                 player.getCurrent_Holding_Weapon().DecreaseLife_Of_Weapon();
             }
             if((! player.getCurrent_Holding_Weapon().Check_Weapon_Still_enable_to_Figth()) || type_of_action.equals("Lancio")){
@@ -435,6 +436,9 @@ public class HomeController {
                 HistoryLabel.setText(HistoryLabel.getText()+" '"+player.getCurrent_Holding_Weapon().getName()+"' ");
                 if(type_of_action.equals("Lancio")){
                     HistoryLabel.setText(HistoryLabel.getText() +" Lanciata !\nFinchè non la raccogli giocherai a mani nude\n");
+                    player.ResetDiceForDamage();
+                    player.ResetNumber_Of_Dice_For_Dmg();
+                    DiceforDamageLabel.setText(player.getNumber_Of_Dice_For_Dmg()+"d"+player.getDiceForDamage().getDiceMaxValue());
                     /* disegna l'arma sulla mappa di gioco */
                     if(player.getCurrent_Holding_Weapon().Check_Weapon_Still_enable_to_Figth()){
                         this.player.getCurrent_Holding_Weapon().set_Holding_Weapon(false);
@@ -450,12 +454,6 @@ public class HomeController {
                     HistoryLabel.setText((HistoryLabel.getText()+" Rotta!\n"));
                     player.getCurrent_Holding_Weapon().setHoldingBrokenProperty();
                 }
-                player.setAlready_Holding_weapon(false);
-                //player.getCurrent_Holding_Weapon().setHoldingBrokenProperty();
-                player.ResetCurrent_Holding_Weapon();
-                player.ResetDiceForDamage();
-                player.ResetNumber_Of_Dice_For_Dmg();
-                DiceforDamageLabel.setText(player.getNumber_Of_Dice_For_Dmg()+"d"+player.getDiceForDamage().getDiceMaxValue());
             }
         }
         this.equipmentController.RefreshTableView(-1);
@@ -501,44 +499,15 @@ public class HomeController {
     }
 
     private void CheckStatusWeapon(){
-        if(player.Are_Already_Holding_Weapon() ){
-            /* se non ho terminato il tempo o runi di attacco con l'arma, increment il contatore */
-            /* se sto indossando un arma ed la prima volta che riavvio il codice, risetto il dado*/
-            if(! player.getCurrent_Holding_Weapon().Check_Time_Of_Usbility_Terminated()){
-                player.getCurrent_Holding_Weapon().IncreaseTime_Of_Usability();
-                HistoryLabel.setText(HistoryLabel.getText() +"Turni di utilizzo restanti per '"+player.getCurrent_Holding_Weapon().getName()+"': "+ player.getCurrent_Holding_Weapon().getRemainTime_Of_Usability()+"\n");
-            }
-        }
-        else{
-            
-        }
-        if(player.getCurrent_Holding_Weapon() != null && player.getCurrent_Holding_Weapon().Check_Time_Of_Usbility_Terminated() && player.getCurrent_Holding_Weapon().Check_Weapon_Still_enable_to_Figth()){
-            
-            if(! player.getCurrent_Holding_Weapon().CheckStartCooldown()){
-                player.ResetDiceForDamage();
-                player.ResetNumber_Of_Dice_For_Dmg();
-                DiceforDamageLabel.setText(player.getNumber_Of_Dice_For_Dmg()+"d"+player.getDiceForDamage().getDiceMaxValue());
-                player.getCurrent_Holding_Weapon().setStart_Cooldown(true);
-                HistoryLabel.setText(HistoryLabel.getText() + "Non puoi usare '"+player.getCurrent_Holding_Weapon().getName()+"' per i prossimi "+player.getCurrent_Holding_Weapon().getCooldown_Usability()+" turni\nCombatterai a Mani Nude (1d4)\n");
-            }
-
-            if(! player.getCurrent_Holding_Weapon().Check_CoolDown_Terminated() ){
-                player.getCurrent_Holding_Weapon().DecreaseCooldown_Usability();
-            }
-            else{
-                HistoryLabel.setText(HistoryLabel.getText() + "Arma '"+player.getCurrent_Holding_Weapon().getName()+"' pronta per l'attacco\n");
-                player.getCurrent_Holding_Weapon().ResetCounter_time_of_Usability();
-                player.getCurrent_Holding_Weapon().ResetCounter_Cooldown_Usability();
-                player.getCurrent_Holding_Weapon().setReset(true);
-                player.getCurrent_Holding_Weapon().setStart_Cooldown(false);
-                /* questo deve avvenire solo quando il player sta indossando l'arma*/
-                if(player.Are_Already_Holding_Weapon()){
-                    player.setDiceForDamage(player.getCurrent_Holding_Weapon().getDice());
-                    player.setNumber_Of_Dice_For_DMG(player.getCurrent_Holding_Weapon().getNumberofDice());
-                    DiceforDamageLabel.setText(player.getNumber_Of_Dice_For_Dmg()+"d"+player.getDiceForDamage().getDiceMaxValue());
-
-                }
-            }
+        /* tolgo il cooldown dell'arma e ad ogni fine combattimento o azione verifico che l'arma sia ancora in grado di combattere */
+        if(player.getCurrent_Holding_Weapon() != null && ! player.getCurrent_Holding_Weapon().Check_Weapon_Still_enable_to_Figth()){
+            player.ResetDiceForDamage();
+            player.ResetNumber_Of_Dice_For_Dmg();
+            DiceforDamageLabel.setText(player.getNumber_Of_Dice_For_Dmg()+"d"+player.getDiceForDamage().getDiceMaxValue());
+            player.getCurrent_Holding_Weapon().setHoldingBrokenProperty();
+            HistoryLabel.setText(HistoryLabel.getText() + "Non puoi usare '"+player.getCurrent_Holding_Weapon().getName()+"'\nArma rotta !\nCombatterai a Mani Nude (1d4)\n");
+            player.setAlready_Holding_weapon(false);
+            player.ResetCurrent_Holding_Weapon();
         }
     }
 

@@ -32,17 +32,12 @@ public class Armi {
     //              esempio range[0] = 3, il player se distata al massimo 3 blocchi dal nemico, può effettuare il lancio
     // range[1] == distanza minima, ossia la distanza più piccola che il player deve tenere per eventualmente lanciare l'arma
     //              esempio range[1] = 1, il player se distata almeno 1 blocco dal nemico, può effettuare il lancio
-    private int time_of_usability;
-    private int count_time_of_usability;
-    private int cooldown_usability;
-    private int count_colldown;
     private int life_of_weapon;
     private int max_life;
     /* Conterrà */
     private StringProperty[] weaponDescription;
     private Boolean is_Holding_a_Weapon;
     private Boolean reset;
-    private Boolean start_cooldown;
     private StringProperty holding_Property;
 
     public Armi(Dice dice){
@@ -60,13 +55,7 @@ public class Armi {
         this.range[0] = 0;
         this.range[0] = 0;
         // di default sono [0,0] perchè se l'arma non può essere lanciata, non si considerano i valori
-        /* questi due parametri sono sostanzialmente */
-        this.time_of_usability = 0; // per quanti turni puoi utilizzare l'arma, di seguito o non
-        this.count_time_of_usability = 0;
-        this.cooldown_usability = 0;    // turni neccessari per ricaricare il tempo di utilizzo
-        this.count_colldown = 0;     // questo èparametro serve per calcolare il cooldwon rimante, è qeullo che viene aggiornato fino a quando non ritorna 0, poi viene risettato a colldown
         this.reset = false;
-        this.start_cooldown = false;
         /*Array di 3 elmenti che conterrà <name, no_dice/dice (1d6), property> nella table ci sarà anche il btn is_hoding or suit per indossare l'arma */
         this.weaponDescription = new StringProperty[3];
         this.weaponDescription[0] = new SimpleStringProperty(this.name);
@@ -99,24 +88,8 @@ public class Armi {
     private void setMax_Life(int life){
         this.max_life = life;
     }
-    public void setTime_Of_Usability(int time){
-        this.time_of_usability = time;
-    }
-    public void setCoolDown_Usability(int cooldown){
-        this.cooldown_usability = cooldown;
-    }
     public void setReset(Boolean bool){
         this.reset = bool;
-    }
-    public void setStart_Cooldown(Boolean bool){
-        this.start_cooldown = bool;
-    }
-    /* i due metodi sottostanti resettano i contatori, il primo lo risetta a 0 l'altro al valore massimo del cooldown */
-    public void ResetCounter_time_of_Usability(){
-        this.count_time_of_usability = 0;
-    }
-    public void ResetCounter_Cooldown_Usability(){
-        this.count_colldown = this.cooldown_usability;
     }
     public void setFirstType(String type){
         this.types[0] = type;
@@ -274,23 +247,6 @@ public class Armi {
         return this.is_Holding_a_Weapon;
     }
 
-    /* Time of Usability Attributes */
-    // questo metodo incrementa un'attributo che infdica il tempo o turni di utilizzo effettuati dell'arma
-    public void IncreaseTime_Of_Usability(){
-        this.count_time_of_usability ++;
-    }
-    /* questo metodo ti dice se hai esaurito il tempo o turni per l'usabilità */
-    /* se il contatore temporaneo è == al tempo do utilizzo massimo, ritrono True */
-    public Boolean Check_Time_Of_Usbility_Terminated(){
-        return this.count_time_of_usability == (this.time_of_usability );
-    }
-    public void DecreaseCooldown_Usability(){
-        this.count_colldown --;
-    }
-    public Boolean Check_CoolDown_Terminated(){
-        return this.count_colldown == 0;
-    }
-
     /* Getter */
     private int getMax_life(){
         return this.max_life;
@@ -301,20 +257,8 @@ public class Armi {
     public int getLife_Of_Weapon(){
         return this.life_of_weapon;
     }
-    public int getTime_Of_Usability(){
-        return this.time_of_usability;
-    }
-    public int getCooldown_Usability(){
-        return this.cooldown_usability;
-    }
-    public int getRemainTime_Of_Usability(){
-        return this.time_of_usability - this.count_time_of_usability;
-    }
     public Boolean CheckReset(){
         return this.reset;
-    }
-    public Boolean CheckStartCooldown(){
-        return this.start_cooldown;
     }
     public String getFirstType(){
         return this.types[0];

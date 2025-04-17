@@ -208,7 +208,7 @@ public class HomeController {
     }
 
     public void HoldBackWeapon() throws IOException{
-        String name_of_weapon = this.mapController.Remove_On_Ground_Weapon();
+        String name_of_weapon = this.mapController.getNameOf_On_Ground_Weapon();
         Armi arma = player.getClassPgClass().getWeaponByName(name_of_weapon);
         System.out.println("Nome arma: "+arma.getName());
         if(arma.Check_Weapon_Still_enable_to_Figth()){
@@ -222,6 +222,7 @@ public class HomeController {
             player.setNumber_Of_Dice_For_DMG(arma.getNumberofDice());
             player.setAlready_Holding_weapon(true);
             DiceforDamageLabel.setText(player.getNumber_Of_Dice_For_Dmg()+"d"+player.getDiceForDamage().getDiceMaxValue());
+            this.mapController.Remove_On_Ground_Weapon();
             this.equipmentController.RefreshTableView(-1);
         }
         else{

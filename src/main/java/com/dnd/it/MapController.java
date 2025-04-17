@@ -237,8 +237,11 @@ public class MapController implements Initializable{
         gridMap.add(weaponPixel, current_x_weapon, current_y_weapon);
     }
 
-    public String Remove_On_Ground_Weapon(){
+    public void Remove_On_Ground_Weapon(){
         gridMap.getChildren().remove(weaponPixel);
+    }
+
+    public String getNameOf_On_Ground_Weapon(){
         return this.name_of_weapon;
     }
 

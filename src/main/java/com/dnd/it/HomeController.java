@@ -8,6 +8,7 @@ import com.dnd.it.GameSystem.Game;
 import com.dnd.it.GameSystem.Model.Characters;
 import com.dnd.it.GameSystem.Weapon.Armi;
 
+import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,6 +28,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class HomeController {
     @FXML
@@ -103,9 +105,11 @@ public class HomeController {
     private EnemyViewerController Enemycontroller;
     private MapController mapController;
     private EquipmentController equipmentController;
+    private boolean isEnemyMoving;
 
     public void initialize(){
         this.equipmentController = null;
+        this.isEnemyMoving = false;
     }
 
     /* Scene Manager */
@@ -165,7 +169,8 @@ public class HomeController {
 
             /* se sto indossando un arma, allora */
             this.Battle("Player");
-            this.AfterBattleActionUsingWeapon("");
+            if(player.Are_Already_Holding_Weapon())
+                this.AfterBattleActionUsingWeapon("");
             
         }
         else{
@@ -193,9 +198,9 @@ public class HomeController {
 
             HistoryLabel.setText(HistoryLabel.getText() +"\n"+ this.game.getResultsAction());  
             if( this.game.Are_Enemy_Moving() ){
-                while(current_enemy_speed > 0) {
-                    this.EnemyMovements();
-                }
+                EnemyMovementsStep(() -> {
+                    current_enemy_speed = enemy.getRaceClass().getSpeed();
+                });
             }
             this.Enemycontroller.text("" + app.getEnemy().getClassPgClass().getLife());
             LifeLabelText.setText("" + app.getPlayer().getClassPgClass().getLife());
@@ -312,6 +317,8 @@ public class HomeController {
     
     /* Getsione della tastiera */
     public void ActionPlayerWithKey(KeyEvent keyEvent) throws IOException{
+        if (isEnemyMoving) return;
+
         if(keyEvent.getCode().equals(KeyCode.W)){
             this.UpBtnAction(null);
         }
@@ -396,11 +403,11 @@ public class HomeController {
         /* pre lancio del dado da parte del nemico */
 
         HistoryLabel.setText(HistoryLabel.getText() + this.game.getResultsAction());   
-            if( this.game.Are_Enemy_Moving() ){
-                while(current_enemy_speed > 0) {
-                    this.EnemyMovements();
-                }
-            }  
+        if (this.game.Are_Enemy_Moving()) {
+            EnemyMovementsStep(() -> {
+                current_enemy_speed = enemy.getRaceClass().getSpeed();
+            });
+        }         
         this.Enemycontroller.text("" + app.getEnemy().getClassPgClass().getLife());
         LifeLabelText.setText("" + app.getPlayer().getClassPgClass().getLife());
         /* Check Who is the Winner */
@@ -408,24 +415,34 @@ public class HomeController {
             BattleResultsScreen();
     }
 
-    public void EndTurn() throws IOException{
+    public void EndTurn() throws IOException {
         HistoryLabel.setText("Turno del Nemico");
-        if(mapController.check()){
-            HistoryLabel.setText(HistoryLabel.getText() +  "\n");
+        if (mapController.check()) {
+            HistoryLabel.setText(HistoryLabel.getText() + "\n");
             this.Battle("Enemy");
+        } else {
+            EnemyMovementsStep(() -> {
+                current_enemy_speed = enemy.getRaceClass().getSpeed(); // ← ora lo resetti SOLO quando ha finito!
+                RechargeSpeed();
+                if (equipmentController != null) {
+                    try {
+                        this.equipmentController.RefreshTableView(-1);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    this.CheckStatusWeapon();
+                }
+            });
+            return; // aspetta che finisca EnemyMovementsStep prima di andare avanti
         }
-        else{
-            while(current_enemy_speed > 0) {
-                this.EnemyMovements();
-            }
-        }
+    
         RechargeSpeed();
-        if(equipmentController != null){
+        if (equipmentController != null) {
             this.equipmentController.RefreshTableView(-1);
             this.CheckStatusWeapon();
         }
-        
     }
+    
 
     public void AfterBattleActionUsingWeapon(String type_of_action) throws IOException{
         if(player.getCurrent_Holding_Weapon() != null){
@@ -461,44 +478,42 @@ public class HomeController {
         this.CheckStatusWeapon();
     }
     /* per muoversi nella mappa */
-    private void EnemyMovements(){
-        Random rand_num = new Random();
-        int moves = 1 + rand_num.nextInt(3);
-
-        /* Movimento in Alto */
-        if(moves == 1){
-            moves = this.mapController.UpEnemy();
-            if (moves == 1){
-                current_enemy_speed -= mapController.getMeterForCell();
-                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento in Alto\n"); 
-            }
+    private void EnemyMovementsStep(Runnable onFinish) {
+        this.isEnemyMoving = true;
+        if (current_enemy_speed <= 0) {
+            onFinish.run(); // chiama il callback quando finito
+            return;
         }
-        /* Movimento in Basso */
-        else if(moves == 2){            
-            moves = this.mapController.DownEnemy();
-            if (moves == 1){
+    
+        PauseTransition pause = new PauseTransition(Duration.seconds(1));
+    
+        pause.setOnFinished(e -> {
+            Random rand_num = new Random();
+            int moves = 1 + rand_num.nextInt(4);
+    
+            if (moves == 1 && mapController.UpEnemy() == 1) {
                 current_enemy_speed -= mapController.getMeterForCell();
-                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento in Basso\n"); 
-            }
-        }
-        /* Movimento A Sinistra */
-        else if(moves == 3){
-            moves = this.mapController.LeftEnemy();
-            if (moves == 1){
+                HistoryLabel.setText(HistoryLabel.getText() + "\nEnemy Moves - Movimento in Alto");
+            } else if (moves == 2 && mapController.DownEnemy() == 1) {
                 current_enemy_speed -= mapController.getMeterForCell();
-                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento a Sinistra\n"); 
-            }
-        }
-        /* Movimento a Destra */
-        else if(moves == 4){
-            moves = this.mapController.RightEnemy();
-            if (moves == 1){
+                HistoryLabel.setText(HistoryLabel.getText() + "\nEnemy Moves - Movimento in Basso");
+            } else if (moves == 3 && mapController.LeftEnemy() == 1) {
                 current_enemy_speed -= mapController.getMeterForCell();
-                HistoryLabel.setText(HistoryLabel.getText()+"\nEnemy Moves - Movimento a Destra\n"); 
+                HistoryLabel.setText(HistoryLabel.getText() + "\nEnemy Moves - Movimento a Sinistra");
+            } else if (moves == 4 && mapController.RightEnemy() == 1) {
+                current_enemy_speed -= mapController.getMeterForCell();
+                HistoryLabel.setText(HistoryLabel.getText() + "\nEnemy Moves - Movimento a Destra");
             }
-        }
+    
+            this.EnemyMovementsStep(() -> {
+                isEnemyMoving = false; // sblocca input
+                onFinish.run();        // termina eventuali operazioni
+            });
+        });
+    
+        pause.play();
     }
-
+    
     private void CheckStatusWeapon(){
         /* tolgo il cooldown dell'arma e ad ogni fine combattimento o azione verifico che l'arma sia ancora in grado di combattere */
         if(player.getCurrent_Holding_Weapon() != null && ! player.getCurrent_Holding_Weapon().Check_Weapon_Still_enable_to_Figth()){

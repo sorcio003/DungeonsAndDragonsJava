@@ -36,7 +36,7 @@ public class MapController implements Initializable{
     private String name_of_weapon;
 
     public void initialize(URL arg0, ResourceBundle arg1){
-        meters_for_cell = 3;
+        meters_for_cell = 1;
     }
     /*
      * Per ogni movimento (Up, Down, Left, Rigth), prima di 'spostare' l'immagine o il personaggio, esso viene

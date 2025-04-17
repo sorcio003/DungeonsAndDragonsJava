@@ -6,7 +6,7 @@ public class Elf extends Race{
     
     public Elf(){
         super("Elf");
-        this.setSpeed(9);
+        this.setSpeed(3);
         this.setStrength(12);
         this.setDexterity(14);
         this.setConstitution(6);

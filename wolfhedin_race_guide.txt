@@ -1,0 +1,15 @@
+🐺 Razza Custom: 
+    Discendenti del Sangue dei Guerrieri Lupo (o "Wolfhedin")
+📜 Lore
+    I Wolfhedin sono discendenti di antichi amori proibiti tra semidee del Nord e divinità primordiali. 
+    Nati dal sangue dei lupi sacri e dai poteri divini, 
+    portano nelle vene l’eredità dei grandi cacciatori celesti. 
+    La loro vera forma, legata al sangue, si manifesta non con la luna, ma con la volontà e l’emozione.
+    Tuttavia padroneggiare questo immenso potere richiede abilità, allenamento e forza mentale estrema
+    per contenere il potere del Lupo primordiale che Tenterà di soggiogare la mente del Wolfhedin.
+
+🧬 Tratti Razziali:
+    🧠 Aumento dei punteggi di caratteristica
+    +2 Destrezza (velocità e agilità del lupo)
+
+    +1 Saggezza (sensi acuti e istinti)

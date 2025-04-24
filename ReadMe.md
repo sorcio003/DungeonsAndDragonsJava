@@ -1,6 +1,7 @@
-# 🐉 Dungeons & Dragons Java Game (Alpha Test 1.0.0)
+# 🐉 Simulatore Battaglie Dungeons And Dragons (Alpha 1.0.1)
 
-Un gioco ispirato al celebre universo di **Dungeons & Dragons**, sviluppato in Java con meccaniche di combattimento a turni, movimento su mappa e un sistema di AI dinamico. Progettato per offrire un'esperienza avvincente, fedele alle regole base di D&D, ma con un tocco personale.
+Un simulatore di battaglie tra il proprio personaggio e 1 o più nemici ispirato all'universo di **Dungeons & Dragons**, sviluppato in Java con meccaniche di combattimento a turni, movimento su mappa e un sistema dinamico di "Intelligenza del nemico". Progettato come supporto per lo sviluppo e il bilanciamento di nuovi personaggi, razze, abilità, armi etc..
+Sistema principalmente utilizzato per lo sviluppo di un videogioco Rougelike/rpg.
 
 ---
 

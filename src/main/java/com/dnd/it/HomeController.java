@@ -544,7 +544,7 @@ public class HomeController {
         this.game = new Game(player, enemy, new EnemyAI(this.player, this.enemy));
 
         // Add observable list data to the table
-        InputStream inputStream = getClass().getResourceAsStream("/Assets/Chracters_Icon/" + player.getClassPgClass().getClass_Pg() + ".jpg");
+        InputStream inputStream = getClass().getResourceAsStream("/Assets/Chracters_Icon/" + player.getName() + ".jpg");
         PhotoPG.setImage(new Image(inputStream));
         PlayerNameLabel.setText(player.getName());
         /* Base Attribute */

@@ -23,6 +23,7 @@ com\dnd\it\GameSystem\EnemyAI.class
 com\dnd\it\MapController.class
 com\dnd\it\GameSystem\Classes\ClassPg.class
 com\dnd\it\HomeController.class
+com\dnd\it\GameSystem\Races\Wolfhedin.class
 com\dnd\it\GameSystem\Model\Characters.class
 com\dnd\it\GameSystem\Classes\Barbaro.class
 com\dnd\it\InventoryController.class

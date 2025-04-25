@@ -1,15 +1,58 @@
-🐺 Razza Custom: 
-    Discendenti del Sangue dei Guerrieri Lupo (o "Wolfhedin")
-📜 Lore
-    I Wolfhedin sono discendenti di antichi amori proibiti tra semidee del Nord e divinità primordiali. 
-    Nati dal sangue dei lupi sacri e dai poteri divini, 
-    portano nelle vene l’eredità dei grandi cacciatori celesti. 
-    La loro vera forma, legata al sangue, si manifesta non con la luna, ma con la volontà e l’emozione.
-    Tuttavia padroneggiare questo immenso potere richiede abilità, allenamento e forza mentale estrema
-    per contenere il potere del Lupo primordiale che Tenterà di soggiogare la mente del Wolfhedin.
+**RAZZA GIOCABILE: WOLFHEDIN**
 
-🧬 Tratti Razziali:
-    🧠 Aumento dei punteggi di caratteristica
-    +2 Destrezza (velocità e agilità del lupo)
+*Discendenti rari del sangue degli dei e del lupo primordiale, i Wolfhedin incarnano la potenza e la maledizione della stirpe divina unita alla bestia eterna. Sono i cacciatori del crepuscolo, i figli del fato e del sangue selvaggio.*
 
-    +1 Saggezza (sensi acuti e istinti)
+---
+
+### Tratti della Razza Base: **Wolfhedin**
+
+- **Aumento dei Punteggi di Caratteristica:** +2 Destrezza
+- **Età:** Maturano come gli umani ma vivono fino a 170 anni. Longevi e robusti.
+- **Taglia:** Media. Altezza: 1,89 - 2,10 m. Peso (forma umana): 80 - 120 kg
+- **Velocità:**
+  - Forma umana: 7,5 m (25 ft)
+  - Forma lupina: 12 m (39 ft)
+- **Scurovisione:** 18 m (60 ft)
+- **Competenze Abilità:** Furtività, Acrobazia
+- **Sensi Affinati:** Vantaggio alle prove di Percezione basate su udito e olfatto
+- **Forma del Sangue Antico:** Dal 3° livello, puoi trasformarti per 1 minuto in una forma semi-lupina: ottieni artigli (1d6 danni), +3 m alla velocità, vantaggio su Percezione. 1 uso per riposo lungo.
+- **Lingue:** Comune e Lupoedino (antico idioma runico)
+
+---
+
+### Sottorazze: Cammini del Sangue
+
+#### Cammino della Zanna Rossa *(Forza)*
+- **+1 Forza**
+- **Abilità:** Atletica, Intimidazione
+- **Tratto:** *Furia Lupina* – quando scendi sotto la metà dei PF, ottieni vantaggio agli attacchi corpo a corpo per 1 minuto (1 uso per riposo breve)
+- **Forma del Sangue Antico (potenziata):** Artigli 1d8, morso bonus 1d4 + For
+
+#### Cammino del Branco Silente *(Saggezza)*
+- **+1 Saggezza**
+- **Abilità:** Sopravvivenza, Intuizione
+- **Tratto:** *Presagio del Branco* – puoi dare vantaggio a un alleato entro 9 m su un TS una volta per riposo lungo (reazione)
+- **Forma del Sangue Antico:** percepisci creature nascoste/invisibili entro 3 m
+
+#### Cammino dell'Ululato Celeste *(Carisma)*
+- **+1 Carisma**
+- **Abilità:** Persuasione, Inganno
+- **Tratto:** *Ululato Inquietante* – azione: i nemici entro 6 m devono superare TS Sag (CD 8 + Car + proficiency) o subire svantaggio al prossimo attacco (1 uso per riposo lungo)
+- **Forma del Sangue Antico:** vantaggio a prove di Carisma basate su paura o intimidazione
+
+---
+
+### Lore e Origini:
+
+I Wolfhedin sono una razza **rarissima**, che nasce **una sola volta ogni mille anni** nel vasto albero genealogico delle divinità nordiche. Essi sono legati nel sangue al **Lupo Primordiale Fenrir**, creatura delle Tenebre che si cela oltre il tempo e lo spazio, e la cui potenza può essere trasmessa attraverso il sangue. Solo coloro che nascono con questa linea divina attiva possono manifestarne il potere.
+
+Questa connessione, però, è una **maledizione quanto un dono**: se il potere di Fenrir prende il sopravvento sulla mente dell'ospite, la sua anima viene divorata, e la creatura che ne risulta diventa uno strumento oscuro nelle mani dell'essere primordiale, rafforzandolo ulteriormente.
+
+Nel gioco, **Sigurd**, il protagonista, è un Wolfhedin nato da una **semidea** e da **Bylestr**, fratello dimenticato di Loki e leggendario guerriero di Asgard. Sebbene Bylestr non abbia mai manifestato la linea del lupo, essa sopravvive in lui in forma dormiente, e si attiva nel sangue del figlio. Questo rende Sigurd **un ibrido di sangue divino e bestiale**, segnato dal destino.
+
+Nella mitologia del tuo mondo, esiste anche **Fenrir**, figlio di Loki, che porta lo stesso nome del lupo primordiale. Fenrir è considerato l'unico Wolfhedin di **sangue puro**, la "prima incarnazione" consapevole della stirpe, mentre Sigurd ne rappresenta la rinascita, fragile ma imprevedibile, in equilibrio tra luce e oscurità.
+
+---
+
+Vuoi inserire un albero genealogico schematico? O una legenda runica per i Wolfhedin?
+

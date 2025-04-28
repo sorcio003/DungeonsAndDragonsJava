@@ -22,13 +22,17 @@ public class Race {
     private IntegerProperty charism;
     private IntegerProperty modificatore;
     private Map<String, IntegerProperty> bonus_competenza;
+    // le abilità sono quelle che scalano sui punti caratteristica
     private List<StringProperty> Ability;
+    // i Traits invece sono le "abilità" che la razza puo sfrittare come sangue antico(trasformazione) per i wolfhedin
+    private List<StringProperty> Traits;
 
     public Race(String race){
         this.race = new SimpleStringProperty(race);
         this.speed = new SimpleIntegerProperty(0);
         this.modificatore = new SimpleIntegerProperty(0);
         this.Ability = new ArrayList<StringProperty>();
+        this.Traits = new ArrayList<StringProperty>();
         /* Base Attribute */
         this.strength = new SimpleIntegerProperty(0);
         this.dexterity = new SimpleIntegerProperty(0);
@@ -112,6 +116,13 @@ public class Race {
 
     public int getSpeed(){
         return this.speed.get();
+    }
+
+    public void IncreaseSpeed(){
+        this.speed.set(this.getSpeed() + 1);
+    }
+    public void IncreaseSpeed(int value){
+        this.speed.set(this.getSpeed() + value);
     }
 
     public String getRace(){
@@ -206,6 +217,28 @@ public class Race {
         }
     }
 
+    /* Traits */
+
+    public void AddTraits(String trait){
+        this.Traits.add(new SimpleStringProperty(trait));
+    }
+
+    public void AddTraits(List<String> Traits){
+        for (String trait : Traits) {
+            this.Traits.add(new SimpleStringProperty(trait));
+        }
+    }
+
+    public void RemoveTraitsByName(String Traits){
+        this.Traits.remove(new SimpleStringProperty(Traits));
+    }
+
+    public void RemoveTraitsByID(int id){
+        if (id >= 0){
+            this.Traits.remove(id);
+        }
+    }
+
     /* Getter Property */
 
     public List<String> getAbilityList(){
@@ -219,6 +252,23 @@ public class Race {
 
     public StringProperty getAbilityPropertyByID(int id){
         return this.Ability.get(id);
+    }
+
+    public String getTraitsByID(int id){
+        return this.Traits.get(id).get();
+    }
+
+    public List<String> getTraitsList(){
+        return this.Traits.stream().map((Traits) -> Traits.get()).collect(Collectors.toList());
+    }
+
+    public List<StringProperty> getTraitsListProperty(){
+        return this.Traits;
+    }
+    
+
+    public StringProperty getTraitsPropertyByID(int id){
+        return this.Traits.get(id);
     }
 
     public String getAbilityByID(int id){

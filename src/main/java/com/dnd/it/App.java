@@ -36,7 +36,7 @@ public class App extends Application {
     }
 
     private void setCharacters(){
-        player = new Characters("Barbaro", 24, new Elf(), new Barbaro());
+        player = new Characters("Sigurd", 24, new Wolfhedin(), new Barbaro());
         enemy = new Characters("Golem", 1098, new Golem(), new Guardian());
         player.setDescription("Tutorials Point originated from the idea that there exists a class of readers who respond better to online content and prefer to learn new skills at their own pace from the comforts of their drawing rooms.");
         player.setMoneyValue(100);

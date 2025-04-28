@@ -6,6 +6,9 @@ import java.util.Random;
 import com.dnd.it.GameSystem.EnemyAI;
 import com.dnd.it.GameSystem.Game;
 import com.dnd.it.GameSystem.Model.Characters;
+import com.dnd.it.GameSystem.Model.Saver;
+import com.dnd.it.GameSystem.Races.Race;
+import com.dnd.it.GameSystem.Races.Wolfhedin;
 import com.dnd.it.GameSystem.Weapon.Armi;
 
 import javafx.animation.PauseTransition;
@@ -213,25 +216,29 @@ public class HomeController {
     }
 
     public void HoldBackWeapon() throws IOException{
-        String name_of_weapon = this.mapController.getNameOf_On_Ground_Weapon();
-        Armi arma = player.getClassPgClass().getWeaponByName(name_of_weapon);
-        System.out.println("Nome arma: "+arma.getName());
-        if(arma.Check_Weapon_Still_enable_to_Figth()){
-            HistoryLabel.setText("Hai raccolta l'arma '"+arma.getName()+"'\n");
-            arma.set_Holding_Weapon(true);
-            arma.setHolding_Active_Property();
-            arma.setHoldingProperty();
-            player.setCurrent_Holding_Weapon(arma);
-            player.setAlready_Holding_weapon(true);
-            player.setDiceForDamage(arma.getDice());
-            player.setNumber_Of_Dice_For_DMG(arma.getNumberofDice());
-            player.setAlready_Holding_weapon(true);
-            DiceforDamageLabel.setText(player.getNumber_Of_Dice_For_Dmg()+"d"+player.getDiceForDamage().getDiceMaxValue());
-            this.mapController.Remove_On_Ground_Weapon();
-            this.equipmentController.RefreshTableView(-1);
-        }
-        else{
-            HistoryLabel.setText("Non puoi raccogliere l'arma '"+arma.getName()+"'perché è Rotta!");
+        Race razzaplayer = player.getRaceClass();
+        if(((Wolfhedin)razzaplayer).Is_Transformed()) 
+        {
+            String name_of_weapon = this.mapController.getNameOf_On_Ground_Weapon();
+            Armi arma = player.getClassPgClass().getWeaponByName(name_of_weapon);
+            System.out.println("Nome arma: "+arma.getName());
+            if(arma.Check_Weapon_Still_enable_to_Figth()){
+                HistoryLabel.setText("Hai raccolta l'arma '"+arma.getName()+"'\n");
+                arma.set_Holding_Weapon(true);
+                arma.setHolding_Active_Property();
+                arma.setHoldingProperty();
+                player.setCurrent_Holding_Weapon(arma);
+                player.setAlready_Holding_weapon(true);
+                player.setDiceForDamage(arma.getDice());
+                player.setNumber_Of_Dice_For_DMG(arma.getNumberofDice());
+                player.setAlready_Holding_weapon(true);
+                DiceforDamageLabel.setText(player.getNumber_Of_Dice_For_Dmg()+"d"+player.getDiceForDamage().getDiceMaxValue());
+                this.mapController.Remove_On_Ground_Weapon();
+                this.equipmentController.RefreshTableView(-1);
+            }
+            else{
+                HistoryLabel.setText("Non puoi raccogliere l'arma '"+arma.getName()+"'perché è Rotta!");
+            }
         }
     }
 

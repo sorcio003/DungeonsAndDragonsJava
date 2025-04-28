@@ -1,3 +1,4 @@
+com\dnd\it\GameSystem\Traits\Wolfhedin_Traits.class
 com\dnd\it\GameSystem\Dice\D4.class
 com\dnd\it\GameSystem\Dice\D20.class
 com\dnd\it\GameSystem\Races\Elf.class
@@ -27,3 +28,4 @@ com\dnd\it\GameSystem\Races\Wolfhedin.class
 com\dnd\it\GameSystem\Model\Characters.class
 com\dnd\it\GameSystem\Classes\Barbaro.class
 com\dnd\it\InventoryController.class
+com\dnd\it\GameSystem\Model\Saver.class
